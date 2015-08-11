@@ -12,4 +12,7 @@ public class JsonTransformer implements ResponseTransformer {
         return gson.toJson(model);
     }
 
+    public <T> T parse(String json, Class<T> cls) {
+        return gson.fromJson(json, cls);
+    }
 }

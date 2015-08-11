@@ -7,12 +7,16 @@ import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldDefaults;
 
 import java.sql.SQLException;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Accessors(fluent = true, chain = true)
 @EqualsAndHashCode(callSuper = false)
 @DatabaseTable(tableName = "users")
@@ -22,13 +26,13 @@ public class User extends Entity<User> {
     transient PasswordService passwordService;
 
     @DatabaseField(generatedId = true)
-    private Long id;
+    Long id;
 
     @DatabaseField(canBeNull = false, uniqueIndex = true)
-    private String name;
+    String name;
 
     @DatabaseField(canBeNull = false)
-    private String password;
+    String password;
 
     @ForeignCollectionField(eager = false)
     ForeignCollection<Category> categories;

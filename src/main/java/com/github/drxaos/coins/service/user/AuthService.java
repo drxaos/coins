@@ -16,13 +16,13 @@ public class AuthService {
     @Autowire
     Db db;
 
-    public boolean checkAuth(String name, String password) throws SQLException {
+    public User checkAuth(String name, String password) throws SQLException {
         Dao<User, Long> users = db.getDao(User.class);
         List<User> userList = users.queryForFieldValues(Collections.singletonMap("name", name));
         if (!userList.isEmpty() && userList.get(0).checkPassword(password)) {
-            return true;
+            return userList.get(0);
         }
-        return false;
+        return null;
     }
 
 }
