@@ -1,13 +1,11 @@
 package com.github.drxaos.coins;
 
 
-import com.github.drxaos.coins.application.Application;
-import com.github.drxaos.coins.application.ApplicationInitializationException;
-import com.github.drxaos.coins.application.ApplicationProps;
-import com.github.drxaos.coins.application.Db;
+import com.github.drxaos.coins.application.*;
 import com.github.drxaos.coins.controller.JsonTransformer;
 import com.github.drxaos.coins.controller.TxController;
 import com.github.drxaos.coins.controller.auth.AuthController;
+import com.github.drxaos.coins.controller.ui.UiController;
 import com.github.drxaos.coins.domain.*;
 import com.github.drxaos.coins.service.user.AuthService;
 import com.github.drxaos.coins.service.user.PasswordService;
@@ -48,9 +46,11 @@ public class Main {
 
                 // Web
                 addObjects(
+                        Http.class,
                         JsonTransformer.class,
                         AuthController.class,
-                        TxController.class
+                        TxController.class,
+                        UiController.class
                 );
 
                 // Services

@@ -3,9 +3,10 @@ package com.github.drxaos.coins.application;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.BaseDaoEnabled;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 
-public class Entity extends BaseDaoEnabled {
+public class Entity<T> extends BaseDaoEnabled implements Serializable {
 
     static AutowiringFactory factory;
     Db db;
@@ -24,9 +25,9 @@ public class Entity extends BaseDaoEnabled {
         }
     }
 
-    public Dao.CreateOrUpdateStatus createOrUpdate() throws SQLException {
+    public T save() throws SQLException {
         checkForDao();
-        return dao.createOrUpdate(this);
+        dao.createOrUpdate((T) this);
+        return (T) this;
     }
-
 }

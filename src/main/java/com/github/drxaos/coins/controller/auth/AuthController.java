@@ -8,6 +8,8 @@ import com.github.drxaos.coins.controller.JsonTransformer;
 import com.github.drxaos.coins.service.user.AuthService;
 import spark.Spark;
 
+import java.util.Arrays;
+
 public class AuthController implements ApplicationStart {
 
     @Autowire
@@ -18,15 +20,13 @@ public class AuthController implements ApplicationStart {
 
     @Override
     public void onApplicationStart(Application application) throws ApplicationInitializationException {
-        Spark.before("/auth/*", (request, response) -> {
-            request.attribute("dont-check-auth", true);
-        });
-        Spark.before("/", (request, response) -> {
-            response.redirect("/ui/index.html");
-        });
-        Spark.before("/ui/*", (request, response) -> {
-            request.attribute("dont-check-auth", true);
-        });
+
+        // disable auth check on urls
+        for (String path : Arrays.asList("/", "/auth/*", "/ui/*")) {
+            Spark.before(path, (request, response) -> request.attribute("dont-check-auth", true));
+        }
+
+        // check auth filter
         Spark.before((request, response) -> {
             request.session(true);
 
@@ -41,6 +41,7 @@ public class AuthController implements ApplicationStart {
             }
         });
 
+        // auth
         Spark.post("/auth/:name", (request, response) -> {
 
             String name = request.params(":name");
