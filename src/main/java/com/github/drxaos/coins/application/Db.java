@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Component
-public class Database implements ApplicationInit, ApplicationStop {
+public class Db implements ApplicationInit, ApplicationStop {
 
     @Autowire
     ApplicationProps props;

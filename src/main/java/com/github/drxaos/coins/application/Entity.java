@@ -8,13 +8,13 @@ import java.sql.SQLException;
 public class Entity extends BaseDaoEnabled {
 
     static AutowiringFactory factory;
-    Database database;
+    Db db;
 
     public Entity() throws SQLException {
         if (factory != null) {
             factory.autowire(this);
-            database = factory.findObject(Database.class);
-            setDao(database.getDao(this.getClass()));
+            db = factory.findObject(Db.class);
+            setDao(db.getDao(this.getClass()));
         }
     }
 

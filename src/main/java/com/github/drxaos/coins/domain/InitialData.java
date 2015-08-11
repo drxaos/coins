@@ -12,7 +12,7 @@ import java.util.List;
 public class InitialData implements ApplicationInit {
 
     @Autowire
-    Database db;
+    Db db;
 
     @Autowire
     DateUtil dateUtil;

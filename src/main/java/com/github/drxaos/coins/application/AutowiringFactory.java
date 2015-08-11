@@ -270,6 +270,10 @@ public class AutowiringFactory {
             }
         }
 
+        if (!set.isEmpty()) {
+            throw new FactoryException("Cannot find dependencies for " + set);
+        }
+
         return result;
     }
 
