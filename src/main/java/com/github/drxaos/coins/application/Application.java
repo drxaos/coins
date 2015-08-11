@@ -29,19 +29,19 @@ public abstract class Application {
 
     public void start() throws ApplicationInitializationException {
         init();
-        for (ApplicationInit obj : factory.sortByDependencies(factory.getObjectsByInterface(ApplicationInit.class))) {
+        for (ApplicationInit obj : factory.getObjectsByInterface(ApplicationInit.class)) {
             obj.onApplicationInit(this);
         }
         state = State.INITIALIZED;
 
-        for (ApplicationStart obj : factory.sortByDependencies(factory.getObjectsByInterface(ApplicationStart.class))) {
+        for (ApplicationStart obj : factory.getObjectsByInterface(ApplicationStart.class)) {
             obj.onApplicationStart(this);
         }
         state = State.STARTED;
     }
 
     public void stop() throws ApplicationInitializationException {
-        for (ApplicationStop obj : factory.sortByDependencies(factory.getObjectsByInterface(ApplicationStop.class))) {
+        for (ApplicationStop obj : factory.getObjectsByInterface(ApplicationStop.class)) {
             obj.onApplicationStop(this);
         }
         state = State.STOPPED;

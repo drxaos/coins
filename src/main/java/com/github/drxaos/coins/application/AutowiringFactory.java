@@ -1,6 +1,7 @@
 package com.github.drxaos.coins.application;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,6 +10,8 @@ import java.util.*;
 public class AutowiringFactory {
 
     private Map<String, Object> registry = new HashMap<>();
+    private List<Object> sortedRegistry;
+
     private Set<Class> classRegistry = new HashSet<>();
 
     private class Target {
@@ -42,7 +45,10 @@ public class AutowiringFactory {
 
     public <T> List<T> getObjectsByInterface(Class<T> withInterface) {
         List<T> result = new ArrayList<>();
-        for (Object o : registry.values()) {
+        if (sortedRegistry == null) {
+            sortedRegistry = sortByDependencies(registry.values());
+        }
+        for (Object o : sortedRegistry) {
             if (withInterface == null || withInterface.isAssignableFrom(o.getClass())) {
                 result.add((T) o);
             }
@@ -52,7 +58,10 @@ public class AutowiringFactory {
 
     public List<Object> getObjectsByAnnotation(Class<? extends Annotation> withAnnotation) {
         List<Object> result = new ArrayList<>();
-        for (Object o : registry.values()) {
+        if (sortedRegistry == null) {
+            sortedRegistry = sortByDependencies(registry.values());
+        }
+        for (Object o : sortedRegistry) {
             if (withAnnotation == null || o.getClass().getAnnotation(withAnnotation) != null) {
                 result.add(o);
             }
@@ -107,12 +116,15 @@ public class AutowiringFactory {
 
         T instance;
         try {
-            instance = cls.newInstance();
+            Constructor<T> constructor = cls.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            instance = constructor.newInstance();
         } catch (Exception e) {
             throw new FactoryException("Cannot create new instance of " + cls, e);
         }
 
         registry.put(clsWiringName, instance);
+        sortedRegistry = null;
 
         List<Target> targets = targetsMap.get(clsWiringName);
         if (targets != null) {
@@ -126,26 +138,63 @@ public class AutowiringFactory {
             targetsMap.remove(clsWiringName);
         }
 
-        for (Field field : cls.getDeclaredFields()) {
-            Autowire autowire = field.getDeclaredAnnotation(Autowire.class);
-            if (autowire != null) {
-                Target target = new Target(instance, field);
-                if (registry.containsKey(autowire.value())) {
-                    try {
-                        target.set(registry.get(autowire.value()));
-                    } catch (IllegalAccessException e) {
-                        throw new FactoryException("Cannot inject instance to " + target, e);
-                    }
-                } else {
-                    if (!targetsMap.containsKey(autowire.value())) {
-                        targetsMap.put(autowire.value(), new ArrayList<>());
-                    }
-                    targetsMap.get(autowire.value()).add(target);
-                }
-            }
-        }
+        autowire(instance, true);
 
         return instance;
+    }
+
+    public <T> T autowire(T instance) {
+        return autowire(instance, false);
+    }
+
+    private <T> T autowire(T instance, boolean registerTargets) {
+        Class<T> cls = (Class<T>) instance.getClass();
+        Class c = cls;
+        while (c != null) {
+            for (Field field : c.getDeclaredFields()) {
+                Autowire autowire = field.getDeclaredAnnotation(Autowire.class);
+                if (autowire != null) {
+                    String autowireName = autowire.value();
+                    if (autowireName == null || autowireName.isEmpty()) {
+                        autowireName = getClsWiringName(field.getType());
+                    }
+                    Target target = new Target(instance, field);
+                    if (registry.containsKey(autowireName)) {
+                        try {
+                            target.set(registry.get(autowireName));
+                        } catch (IllegalAccessException e) {
+                            throw new FactoryException("Cannot inject instance to " + target, e);
+                        }
+                    } else if (registerTargets) {
+                        if (!targetsMap.containsKey(autowireName)) {
+                            targetsMap.put(autowireName, new ArrayList<>());
+                        }
+                        targetsMap.get(autowireName).add(target);
+                    }
+                }
+            }
+            c = c.getSuperclass();
+        }
+        return instance;
+    }
+
+    private Set<String> autowiredFieldsNames(Class cls) {
+        Set<String> result = new HashSet<>();
+        Class c = cls;
+        while (c != null) {
+            for (Field field : cls.getDeclaredFields()) {
+                Autowire autowire = field.getDeclaredAnnotation(Autowire.class);
+                if (autowire != null) {
+                    String autowireName = autowire.value();
+                    if (autowireName == null || autowireName.isEmpty()) {
+                        autowireName = getClsWiringName(field.getType());
+                    }
+                    result.add(autowireName);
+                }
+            }
+            c = c.getSuperclass();
+        }
+        return result;
     }
 
     public <T> String getClsWiringName(Class<T> cls) {
@@ -211,7 +260,8 @@ public class AutowiringFactory {
                 for (Class dep : deps) {
                     depsNames.add(getClsWiringName(dep));
                 }
-                if (deps.length == 0 || resultNames.containsAll(depsNames)) {
+                depsNames.addAll(autowiredFieldsNames(o.getClass()));
+                if (depsNames.isEmpty() || resultNames.containsAll(depsNames)) {
                     result.add(o);
                     resultNames.add(getClsWiringName(o.getClass()));
                     i.remove();
@@ -221,6 +271,16 @@ public class AutowiringFactory {
         }
 
         return result;
+    }
+
+    public <T> T newInstance(Class<T> cls) {
+        try {
+            T o = cls.newInstance();
+            autowire(o);
+            return o;
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new FactoryException("Cannot create new instance of " + cls, e);
+        }
     }
 
 }
