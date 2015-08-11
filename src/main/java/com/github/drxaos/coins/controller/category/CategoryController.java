@@ -94,7 +94,10 @@ public class CategoryController implements ApplicationStart {
         Spark.get("/categories", (request, response) -> {
             User user = request.session().attribute("user");
             Dao<Category, Long> categories = db.getDao(Category.class);
-            List<Category> categoryList = categories.queryForEq("user", user);
+            List<Category> categoryList = categories.queryBuilder()
+                    .orderBy("id", true)
+                    .where().eq("user_id", user)
+                    .query();
             return categoryList;
         }, json);
 
