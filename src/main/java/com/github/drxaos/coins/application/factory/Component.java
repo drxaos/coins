@@ -1,4 +1,4 @@
-package com.github.drxaos.coins.application;
+package com.github.drxaos.coins.application.factory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

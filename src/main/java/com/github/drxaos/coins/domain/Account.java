@@ -1,6 +1,6 @@
 package com.github.drxaos.coins.domain;
 
-import com.github.drxaos.coins.application.Entity;
+import com.github.drxaos.coins.application.database.Entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.AccessLevel;
@@ -18,8 +18,6 @@ import java.sql.SQLException;
 @EqualsAndHashCode(callSuper = false)
 @DatabaseTable(tableName = "accounts")
 public class Account extends Entity<Account> {
-    @DatabaseField(generatedId = true)
-    Long id;
 
     @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true)
     User user;

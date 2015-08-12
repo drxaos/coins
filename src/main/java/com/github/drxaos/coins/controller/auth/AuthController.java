@@ -2,8 +2,8 @@ package com.github.drxaos.coins.controller.auth;
 
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
-import com.github.drxaos.coins.application.ApplicationStart;
-import com.github.drxaos.coins.application.Autowire;
+import com.github.drxaos.coins.application.events.ApplicationStart;
+import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.controller.JsonTransformer;
 import com.github.drxaos.coins.domain.User;
 import com.github.drxaos.coins.service.user.AuthService;

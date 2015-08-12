@@ -1,4 +1,9 @@
-package com.github.drxaos.coins.application;
+package com.github.drxaos.coins.application.config;
+
+import com.github.drxaos.coins.application.Application;
+import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.factory.Component;
 
 import java.util.Arrays;
 import java.util.HashMap;

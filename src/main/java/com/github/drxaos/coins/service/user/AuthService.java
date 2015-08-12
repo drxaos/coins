@@ -1,8 +1,8 @@
 package com.github.drxaos.coins.service.user;
 
-import com.github.drxaos.coins.application.Autowire;
-import com.github.drxaos.coins.application.Component;
-import com.github.drxaos.coins.application.Db;
+import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.Component;
+import com.github.drxaos.coins.application.database.Db;
 import com.github.drxaos.coins.domain.User;
 import com.j256.ormlite.dao.Dao;
 

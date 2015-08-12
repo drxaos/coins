@@ -1,4 +1,4 @@
-package com.github.drxaos.coins.application;
+package com.github.drxaos.coins.application.factory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

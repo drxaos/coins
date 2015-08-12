@@ -1,6 +1,12 @@
 package com.github.drxaos.coins.controller.category;
 
-import com.github.drxaos.coins.application.*;
+import com.github.drxaos.coins.application.Application;
+import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.database.Db;
+import com.github.drxaos.coins.application.database.TypedSqlException;
+import com.github.drxaos.coins.application.events.ApplicationStart;
+import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.validation.ValidationException;
 import com.github.drxaos.coins.controller.JsonTransformer;
 import com.github.drxaos.coins.domain.Category;
 import com.github.drxaos.coins.domain.User;
@@ -8,6 +14,7 @@ import com.j256.ormlite.dao.Dao;
 import spark.Spark;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CategoryController implements ApplicationStart {
 
@@ -24,12 +31,24 @@ public class CategoryController implements ApplicationStart {
         Spark.post("/categories", (request, response) -> {
             User user = request.session().attribute("user");
 
-            Category category = new Category()
-                    .user(user)
-                    .name(request.queryParams("name"))
-                    .expense(request.queryParams("expense") != null)
-                    .income(request.queryParams("income") != null)
-                    .save();
+            Category category;
+            try {
+                category = json.parse(request.body(), Category.class)
+                        .id(null)
+                        .user(user)
+                        .save();
+            } catch (ValidationException e) {
+                response.status(400);
+                return e.getValidationResult();
+            } catch (TypedSqlException e) {
+                if (e.getType() == TypedSqlException.Type.CONFLICT) {
+                    response.status(409);
+                    return "duplicate-entity";
+                } else {
+                    response.status(400);
+                    return "invalid-entity";
+                }
+            }
 
             response.status(201); // 201 Created
             return category.id();
@@ -40,7 +59,7 @@ public class CategoryController implements ApplicationStart {
             User user = request.session().attribute("user");
             Dao<Category, Long> categories = db.getDao(Category.class);
             Category category = categories.queryForId(Long.parseLong(request.params(":id")));
-            if (category != null && category.user().equals(user)) {
+            if (category != null && Objects.equals(category.user().id(), user.id())) {
                 return category;
             } else {
                 response.status(404); // 404 Not found
@@ -54,21 +73,27 @@ public class CategoryController implements ApplicationStart {
             Dao<Category, Long> categories = db.getDao(Category.class);
             Long id = Long.parseLong(request.params(":id"));
             Category category = categories.queryForId(Long.parseLong(request.params(":id")));
-            if (category != null && category.user().equals(user)) {
-                String newName = request.queryParams("name");
-                String newExpense = request.queryParams("expense");
-                String newIncome = request.queryParams("income");
-                if (newName != null) {
-                    category.name(newName);
-                }
-                if (newExpense != null) {
-                    category.expense(newExpense.equals("true"));
-                }
-                if (newIncome != null) {
-                    category.income(newIncome.equals("true"));
+            if (category != null && Objects.equals(category.user().id(), user.id())) {
+
+                try {
+                    json.parse(request.body(), Category.class)
+                            .id(category.id())
+                            .user(user)
+                            .save();
+                } catch (ValidationException e) {
+                    response.status(400);
+                    return e.getValidationResult();
+                } catch (TypedSqlException e) {
+                    if (e.getType() == TypedSqlException.Type.CONFLICT) {
+                        response.status(409);
+                        return "duplicate-entity";
+                    } else {
+                        response.status(400);
+                        return "invalid-entity";
+                    }
                 }
 
-                return "Category with id '" + id + "' updated";
+                return "Category with id " + id + " updated";
             } else {
                 response.status(404); // 404 Not found
                 return "Category not found";
@@ -81,9 +106,21 @@ public class CategoryController implements ApplicationStart {
             Dao<Category, Long> categories = db.getDao(Category.class);
             Long id = Long.parseLong(request.params(":id"));
             Category category = categories.queryForId(Long.parseLong(request.params(":id")));
-            if (category != null && category.user().equals(user)) {
-                category.delete();
-                return "Category with id '" + id + "' deleted";
+            if (category != null && Objects.equals(category.user().id(), user.id())) {
+
+                try {
+                    category.delete();
+                } catch (TypedSqlException e) {
+                    if (e.getType() == TypedSqlException.Type.CONFLICT) {
+                        response.status(409);
+                        return "duplicate-entity";
+                    } else {
+                        response.status(400);
+                        return "invalid-entity";
+                    }
+                }
+
+                return "Category with id " + id + " deleted";
             } else {
                 response.status(404); // 404 Not found
                 return "Category not found";

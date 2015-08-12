@@ -1,4 +1,4 @@
-package com.github.drxaos.coins.application;
+package com.github.drxaos.coins.application.factory;
 
 public class FactoryException extends RuntimeException {
     public FactoryException() {

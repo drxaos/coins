@@ -1,7 +1,12 @@
 package com.github.drxaos.coins;
 
 
-import com.github.drxaos.coins.application.*;
+import com.github.drxaos.coins.application.Application;
+import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.config.ApplicationProps;
+import com.github.drxaos.coins.application.database.Db;
+import com.github.drxaos.coins.application.database.H2Dialect;
+import com.github.drxaos.coins.application.web.Http;
 import com.github.drxaos.coins.controller.JsonTransformer;
 import com.github.drxaos.coins.controller.TxController;
 import com.github.drxaos.coins.controller.auth.AuthController;
@@ -18,7 +23,7 @@ public class Main {
         @Override
         public void onApplicationInit(Application application) throws ApplicationInitializationException {
 
-            props.put("jdbc.url", "jdbc:h2:./coins");
+            props.put("jdbc.url", "jdbc:h2:./coins;database_To_Upper=false");
 
         }
     }
@@ -36,6 +41,7 @@ public class Main {
                 // Database
                 addObjects(
                         Db.class,
+                        H2Dialect.class,
                         InitialData.class
                 );
                 addClasses(

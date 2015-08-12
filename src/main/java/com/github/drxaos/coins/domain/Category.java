@@ -1,6 +1,7 @@
 package com.github.drxaos.coins.domain;
 
-import com.github.drxaos.coins.application.Entity;
+import com.github.drxaos.coins.application.database.Entity;
+import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -18,9 +19,6 @@ import java.sql.SQLException;
 @EqualsAndHashCode(callSuper = false)
 @DatabaseTable(tableName = "categories")
 public class Category extends Entity<Category> {
-    @Expose
-    @DatabaseField(generatedId = true)
-    Long id;
 
     @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true)
     User user;
@@ -38,5 +36,15 @@ public class Category extends Entity<Category> {
     boolean income = false;
 
     public Category() throws SQLException {
+    }
+
+    @Override
+    protected void validator(ValidationResult result) {
+        if (name == null || name.isEmpty()) {
+            result.fieldError("name", "name-is-empty");
+        }
+        if (user == null) {
+            result.fieldError("user", "user-is-empty");
+        }
     }
 }

@@ -1,5 +1,12 @@
-package com.github.drxaos.coins.application;
+package com.github.drxaos.coins.application.database;
 
+import com.github.drxaos.coins.application.*;
+import com.github.drxaos.coins.application.config.ApplicationProps;
+import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.events.ApplicationStop;
+import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.AutowiringFactory;
+import com.github.drxaos.coins.application.factory.Component;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;

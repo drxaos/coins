@@ -1,5 +1,10 @@
 package com.github.drxaos.coins.application;
 
+import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.events.ApplicationStart;
+import com.github.drxaos.coins.application.events.ApplicationStop;
+import com.github.drxaos.coins.application.factory.AutowiringFactory;
+
 public abstract class Application {
 
     public enum State {

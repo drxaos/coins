@@ -1,7 +1,8 @@
 package com.github.drxaos.coins.domain;
 
-import com.github.drxaos.coins.application.Autowire;
-import com.github.drxaos.coins.application.Entity;
+import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.database.Entity;
+import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.github.drxaos.coins.service.user.PasswordService;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
@@ -25,9 +26,6 @@ public class User extends Entity<User> {
     @Autowire
     transient PasswordService passwordService;
 
-    @DatabaseField(generatedId = true)
-    Long id;
-
     @DatabaseField(canBeNull = false, uniqueIndex = true)
     String name;
 
@@ -41,6 +39,17 @@ public class User extends Entity<User> {
     ForeignCollection<Account> accounts;
 
     public User() throws SQLException {
+    }
+
+    @Override
+    protected void validator(ValidationResult result) {
+        if (name == null || name.isEmpty()) {
+            result.fieldError("name", "name-is-empty");
+        } else if (name.length() < 3) {
+            result.fieldError("name", "name-min-size", 3);
+        } else if (name.length() > 100) {
+            result.fieldError("name", "name-max-size", 100);
+        }
     }
 
     public User password(String password) {

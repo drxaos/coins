@@ -1,6 +1,9 @@
 package com.github.drxaos.coins.domain;
 
 import com.github.drxaos.coins.application.*;
+import com.github.drxaos.coins.application.database.Db;
+import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.utils.DateUtil;
 import com.j256.ormlite.dao.Dao;
 import lombok.extern.slf4j.Slf4j;
