@@ -17,6 +17,10 @@ import spark.SparkBase;
 import spark.webserver.SparkServer;
 
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -44,7 +48,23 @@ public class Http implements ApplicationInit, ApplicationStop {
                 Field serverField = SparkServer.class.getDeclaredField("server");
                 serverField.setAccessible(true);
                 Server server = (Server) serverField.get(sparkServer);
-                ResourceCollection r = new ResourceCollection(Resource.newClassPathResource("static"), Resource.newClassPathResource("/META-INF/resources/"));
+
+                List<Resource> resources = new ArrayList<Resource>();
+                resources.add(Resource.newClassPathResource("static"));
+
+                ClassLoader cl = ClassLoader.getSystemClassLoader();
+                URL[] urls = ((URLClassLoader) cl).getURLs();
+                for (URL url : urls) {
+                    try {
+                        URL test = new URL("jar:" + url.toExternalForm() + "!/META-INF/resources/");
+                        test.openConnection().connect();
+                        resources.add(Resource.newResource(test));
+                    } catch (Exception e) {
+                        // not found
+                    }
+                }
+                ResourceCollection r = new ResourceCollection(resources.toArray(new Resource[resources.size()]));
+
                 Handler[] handlers = ((HandlerList) server.getHandler()).getHandlers();
                 for (Handler handler : handlers) {
                     if (handler instanceof ResourceHandler) {
