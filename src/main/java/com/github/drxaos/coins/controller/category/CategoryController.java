@@ -24,11 +24,13 @@ public class CategoryController implements ApplicationStart {
     @Autowire
     Db db;
 
+    public static final String CONTEXT = "/api/v1/categories";
+
     @Override
     public void onApplicationStart(Application application) throws ApplicationInitializationException {
 
         // create
-        Spark.post("/categories", (request, response) -> {
+        Spark.post(CONTEXT, (request, response) -> {
             User user = request.session().attribute("user");
 
             Category category;
@@ -55,7 +57,7 @@ public class CategoryController implements ApplicationStart {
         }, json);
 
         // get
-        Spark.get("/categories/:id", (request, response) -> {
+        Spark.get(CONTEXT + "/:id", (request, response) -> {
             User user = request.session().attribute("user");
             Dao<Category, Long> categories = db.getDao(Category.class);
             Category category = categories.queryForId(Long.parseLong(request.params(":id")));
@@ -68,7 +70,7 @@ public class CategoryController implements ApplicationStart {
         }, json);
 
         // update
-        Spark.put("/categories/:id", (request, response) -> {
+        Spark.put(CONTEXT + "/:id", (request, response) -> {
             User user = request.session().attribute("user");
             Dao<Category, Long> categories = db.getDao(Category.class);
             Long id = Long.parseLong(request.params(":id"));
@@ -101,7 +103,7 @@ public class CategoryController implements ApplicationStart {
         }, json);
 
         // delete
-        Spark.delete("/categories/:id", (request, response) -> {
+        Spark.delete(CONTEXT + "/:id", (request, response) -> {
             User user = request.session().attribute("user");
             Dao<Category, Long> categories = db.getDao(Category.class);
             Long id = Long.parseLong(request.params(":id"));
@@ -128,7 +130,7 @@ public class CategoryController implements ApplicationStart {
         }, json);
 
         // list
-        Spark.get("/categories", (request, response) -> {
+        Spark.get(CONTEXT, (request, response) -> {
             User user = request.session().attribute("user");
             Dao<Category, Long> categories = db.getDao(Category.class);
             List<Category> categoryList = categories.queryBuilder()

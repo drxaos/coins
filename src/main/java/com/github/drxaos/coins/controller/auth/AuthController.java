@@ -9,8 +9,6 @@ import com.github.drxaos.coins.domain.User;
 import com.github.drxaos.coins.service.user.AuthService;
 import spark.Spark;
 
-import java.util.Arrays;
-
 public class AuthController implements ApplicationStart {
 
     @Autowire
@@ -19,31 +17,12 @@ public class AuthController implements ApplicationStart {
     @Autowire
     AuthService authService;
 
+    public static final String CONTEXT = "/api/v1/auth";
+
     @Override
     public void onApplicationStart(Application application) throws ApplicationInitializationException {
 
-        // disable auth check on urls
-        for (String path : Arrays.asList("/", "/auth/*", "/ui/*")) {
-            Spark.before(path, (request, response) -> request.attribute("dont-check-auth", true));
-        }
-
-        // check auth filter
-        Spark.before((request, response) -> {
-            request.session(true);
-
-            Object dontCheckAuth = request.attribute("dont-check-auth");
-            if (dontCheckAuth != null && (boolean) dontCheckAuth) {
-                return;
-            }
-
-            User user = request.session().attribute("user");
-            if (user == null) {
-                Spark.halt(401, "Unauthorized");
-            }
-        });
-
-        // auth
-        Spark.post("/auth/sign_in", (request, response) -> {
+        Spark.post(CONTEXT + "/sign_in", (request, response) -> {
             AuthRequest req = json.parse(request.body(), AuthRequest.class);
 
             if (req.user != null && req.password != null) {
@@ -57,14 +36,14 @@ public class AuthController implements ApplicationStart {
             return new AuthResponse(false, "wrong-credentials");
         }, json);
 
-        Spark.post("/auth/sign_out", (request, response) -> {
+        Spark.post(CONTEXT + "/sign_out", (request, response) -> {
             request.session().attribute("user", null);
             return "ok";
         }, json);
 
-        Spark.get("/auth/whoami", (request, response) -> {
+        Spark.get(CONTEXT + "/whoami", (request, response) -> {
             User user = request.session().attribute("user");
-            return user != null ? user.name() : "anonymous";
+            return new WhoamiResponse(user != null ? user.name() : "anonymous");
         }, json);
 
     }

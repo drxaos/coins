@@ -11,7 +11,6 @@ import com.github.drxaos.coins.controller.JsonTransformer;
 import com.github.drxaos.coins.controller.TxController;
 import com.github.drxaos.coins.controller.auth.AuthController;
 import com.github.drxaos.coins.controller.category.CategoryController;
-import com.github.drxaos.coins.controller.ui.UiController;
 import com.github.drxaos.coins.domain.*;
 import com.github.drxaos.coins.service.user.AuthService;
 import com.github.drxaos.coins.service.user.PasswordService;
@@ -57,8 +56,7 @@ public class Main {
                         JsonTransformer.class,
                         AuthController.class,
                         TxController.class,
-                        CategoryController.class,
-                        UiController.class
+                        CategoryController.class
                 );
 
                 // Services

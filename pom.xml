@@ -40,6 +40,24 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.kodcu</groupId>
+                <artifactId>ember-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <configuration>
+                    <templatePath>${project.basedir}/src/main/resources/templates</templatePath>
+                    <outputPath>${project.basedir}/src/main/resources/static/js/compiled_templates.js</outputPath>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile-templates</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>precompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
