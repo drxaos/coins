@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app="Index">
 <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <link rel="stylesheet" href="/webjars/angular-material/0.10.0/angular-material.min.css">
@@ -35,12 +35,12 @@
         <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z5" md-component-id="left"
                     md-is-locked-open="false">
             <md-list class="menu-links">
-                <md-item ng-repeat="it in menu.menuLinks">
+                <md-item ng-repeat="(linkHref, linkInfo) in menu.menuLinks">
                     <md-item-content>
-                        <md-button ng-click="menu.selectPage(it.id)" ng-class="{'selected' : it === menu.selected }"
-                                   class="menu-link">
-                            <md-icon aria-label="Menu">{{it.icon}}</md-icon>
-                            {{it.name}}
+                        <md-button ng-href="#{{linkHref}}" target="_self" ng-class="{'active' : linkHref === menu.selected }"
+                                   ng-click="menu.menuClick(linkHref)" class="md-raised menu-link">
+                            <md-icon aria-label="Menu">{{linkInfo.icon}}</md-icon>
+                            {{linkInfo.title}}
                         </md-button>
                     </md-item-content>
                 </md-item>

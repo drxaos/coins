@@ -1,29 +1,26 @@
-function MenuCtrl($location, $mdSidenav) {
+function MenuCtrl($rootScope, $location, $mdSidenav) {
     var model = this;
 
     model.selected = null;
-    model.menuLinks = [
-        {id: 0, name: "Home", href: "/home", icon: "home"},
-        {id: 1, name: "About", href: "/about", icon: "people"},
-    ];
-    model.selectPage = selectPage;
+    model.menuLinks = {
+        "/home": {title: "Home", icon: "home"},
+        "/about": {title: "About", icon: "people"},
+    };
+    model.menuClick = menuClick;
 
-    function toggleSidenav(name) {
-        $mdSidenav(name).toggle();
+    function toggleSidenav() {
+        $mdSidenav('left').toggle();
     }
 
-    function selectPage(page) {
-        model.selected = angular.isNumber(page) ? model.menuLinks[page] : page;
+    function menuClick(href) {
         toggleSidenav('left');
-        $location.path(model.selected.href);
     }
 
-    for (link in model.menuLinks) {
-        if (link.path == $location.path) {
-            selectPage(link);
-            break;
-        }
-    }
+    $rootScope.$on('$locationChangeSuccess', function (event) {
+        var url = $location.url(),
+            params = $location.search();
+        model.selected = url;
+    })
 }
 
 InitializingModule.controller('MenuCtrl', MenuCtrl);
