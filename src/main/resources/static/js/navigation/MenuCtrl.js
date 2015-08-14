@@ -1,11 +1,16 @@
-function MenuCtrl($rootScope, $location, $mdSidenav) {
+function MenuCtrl($rootScope, $route, $location, $mdSidenav) {
     var model = this;
 
     model.selected = null;
-    model.menuLinks = {
-        "/home": {title: "Home", icon: "home"},
-        "/about": {title: "About", icon: "people"},
-    };
+
+    model.menuLinks = {}
+    for (key in $route.routes) {
+        var r = $route.routes[key];
+        if (r.menuTitle) {
+            model.menuLinks[r.originalPath] = {title: r.menuTitle, icon: r.menuIcon}
+        }
+    }
+
     model.menuClick = menuClick;
 
     function toggleSidenav() {

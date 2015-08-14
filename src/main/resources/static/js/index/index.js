@@ -4,4 +4,3 @@ require("../js/about/about.js");
 
 InitializingModule = angular.module('Index', ['ngMaterial', 'ngRoute', 'Navigation', 'Home', 'About']);
 
-require("../js/index/RouterConfig.js");
