@@ -1,9 +1,9 @@
 <!doctype html>
 <html ng-app="Index">
 <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
+    <link rel="stylesheet" href="/webjars/roboto-fontface/0.4.2/css/roboto-fontface.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/webjars/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="/webjars/angular-material/0.10.0/angular-material.min.css">
     <link rel="stylesheet" href="../css/styles.css">
     <meta name="viewport" content="initial-scale=1"/>
@@ -23,9 +23,16 @@
 <md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar">
     <div class="md-toolbar-tools">
         <md-button ng-click="toolbar.toggleSidenav('left')" class="md-icon-button">
-            <md-icon aria-label="Menu">menu</md-icon>
+            <md-icon aria-label="Menu" class="ion-navicon-round fa-lg"></md-icon>
         </md-button>
         <h1>{{toolbar.title}}</h1>
+        <span flex></span>
+        <md-button aria-label="Search" ng-click="showSearch = !showSearch" class="md-icon-button">
+            <md-icon class="ion-search fa-lg"></md-icon>
+        </md-button>
+        <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)" class="md-icon-button">
+            <md-icon class="ion-android-more-vertical fa-lg"></md-icon>
+        </md-button>
     </div>
 </md-toolbar>
 
@@ -34,16 +41,34 @@
     <div ng-controller="MenuCtrl as menu">
         <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z5" md-component-id="left"
                     md-is-locked-open="false">
+            <md-toolbar class="md-hue-2">
+                <div layout="column" class="md-toolbar-tools-bottom inset">
+                    <h1 class="md-headline">{{menu.username}}</h1>
+
+                    <h2 class="md-subhead">{{menu.email}}</h2>
+                </div>
+            </md-toolbar>
+
             <md-list class="menu-links">
-                <md-item ng-repeat="(linkHref, linkInfo) in menu.menuLinks">
-                    <md-item-content>
-                        <md-button ng-href="#{{linkHref}}" target="_self" ng-class="{'active' : linkHref === menu.selected }"
-                                   ng-click="menu.menuClick(linkHref)" class="md-raised menu-link">
-                            <md-icon aria-label="Menu">{{linkInfo.icon}}</md-icon>
+                <div ng-repeat="(linkHref, linkInfo) in menu.menuLinks">
+                    <md-divider ng-if="linkInfo.divider"></md-divider>
+                    <a ng-href="#{{linkHref}}" target="_self">
+                        <md-list-item
+                                ng-class="{'active' : linkHref === menu.selected }"
+                                ng-click="menu.menuClick(linkHref)" class="menu-link">
+                            <md-icon aria-label="Menu" class="menu-link-icon {{linkInfo.icon}}"></md-icon>
                             {{linkInfo.title}}
-                        </md-button>
-                    </md-item-content>
-                </md-item>
+                        </md-list-item>
+                    </a>
+                </div>
+                <md-divider></md-divider>
+                <div>
+                    <md-list-item
+                            ng-click="menu.logout()" class="menu-link">
+                        <md-icon aria-label="Menu" class="menu-link-icon ion-android-exit fa-lg"></md-icon>
+                        Logout
+                    </md-list-item>
+                </div>
             </md-list>
         </md-sidenav>
     </div>

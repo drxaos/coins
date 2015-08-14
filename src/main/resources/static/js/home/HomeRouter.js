@@ -5,7 +5,9 @@ function HomeRouter($routeProvider) {
             controller: 'HomeCtrl',
             controllerAs: 'home',
             menuTitle: "Home",
-            menuIcon: "home"
+            menuIcon: "ion-ios-home fa-lg",
+            headerTitle: "Project Coins",
+            menuGroup: "main",
         })
         .otherwise({
             redirectTo: '/home'

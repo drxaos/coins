@@ -5,7 +5,9 @@ function AboutRouter($routeProvider) {
             controller: 'AboutCtrl',
             controllerAs: 'about',
             menuTitle: "About",
-            menuIcon: "people"
+            menuIcon: "ion-ios-people fa-lg",
+            headerTitle: "About Coins",
+            menuGroup: "settings",
         });
 }
 

@@ -5,14 +5,9 @@
 }
 
 .menu-link {
-    width: calc(100% - 8px);
-    margin-right: 0;
+    color: black;
 }
 
-.menu-links .md-button.active {
-    background: #C5CAE9;
-}
-
-.menu-links a.md-button.active:not([disabled]):hover {
-    background: #E8EAF6;
+.menu-link-icon {
+    margin-left: 0;
 }
