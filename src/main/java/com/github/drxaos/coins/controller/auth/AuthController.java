@@ -43,7 +43,7 @@ public class AuthController implements ApplicationStart {
 
         Spark.get(CONTEXT + "/whoami", (request, response) -> {
             User user = request.session().attribute("user");
-            return new WhoamiResponse(user != null ? user.name() : "anonymous");
+            return new WhoamiResponse(user != null ? user.name() : "");
         }, json);
 
     }

@@ -1,7 +1,10 @@
-function MenuCtrl($rootScope, $route, $location, $mdSidenav) {
+function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
     var model = this;
 
     model.selected = null;
+
+    model.username = "User1";
+    model.email = "user1@example.com";
 
     model.menuLinks = {};
     var group = null;
@@ -30,8 +33,15 @@ function MenuCtrl($rootScope, $route, $location, $mdSidenav) {
 
     function logout() {
         toggleSidenav('left');
-        // TODO api/logout
-        location.reload();
+        $http.post("/api/v1/auth/sign_out")
+            .success(function () {
+                location.reload();
+            })
+            .error(function () {
+                $mdToast.show({
+                    template: "<md-toast>Server error</md-toast>"
+                });
+            });
     }
 
     $rootScope.$on('$locationChangeSuccess', function (event) {
@@ -39,9 +49,6 @@ function MenuCtrl($rootScope, $route, $location, $mdSidenav) {
             params = $location.search();
         model.selected = url;
     });
-
-    model.username = "Username Username";
-    model.email = "user@example.com";
 }
 
 InitializingModule.controller('MenuCtrl', MenuCtrl);

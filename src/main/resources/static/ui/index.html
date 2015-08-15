@@ -12,66 +12,67 @@
     <script src="/webjars/angularjs/1.4.3-1/angular.js"></script>
     <script src="/webjars/angularjs/1.4.3-1/angular-animate.min.js"></script>
     <script src="/webjars/angularjs/1.4.3-1/angular-aria.min.js"></script>
+    <script src="/webjars/angularjs/1.4.3-1/angular-resource.min.js"></script>
     <script src="/webjars/angularjs/1.4.3-1/i18n/angular-locale_ru-ru.js"></script>
     <script src="/webjars/angularjs/1.4.3-1/angular-route.min.js"></script>
     <script src="/webjars/angular-material/0.10.0/angular-material.min.js"></script>
     <script src="../js/require.js"></script>
     <script src="../js/index/index.js"></script>
 </head>
-<body layout="column">
+<body layout="row">
+<div layout="row" ng-controller="MenuCtrl as menu">
+    <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="left"
+                md-is-locked-open="$mdMedia('gt-md')">
+        <md-toolbar class="md-hue-2">
+            <div layout="column" class="md-toolbar-tools-bottom inset">
+                <h1 class="md-headline">{{menu.username}}</h1>
 
-<md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar">
-    <div class="md-toolbar-tools">
-        <md-button ng-click="toolbar.toggleSidenav('left')" class="md-icon-button">
-            <md-icon aria-label="Menu" class="ion-navicon-round fa-lg"></md-icon>
-        </md-button>
-        <h1>{{toolbar.title}}</h1>
-        <span flex></span>
-        <md-button aria-label="Search" ng-click="showSearch = !showSearch" class="md-icon-button">
-            <md-icon class="ion-search fa-lg"></md-icon>
-        </md-button>
-        <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)" class="md-icon-button">
-            <md-icon class="ion-android-more-vertical fa-lg"></md-icon>
-        </md-button>
-    </div>
-</md-toolbar>
+                <h2 class="md-subhead">{{menu.email}}</h2>
+            </div>
+        </md-toolbar>
 
-<div layout="row" flex>
-
-    <div ng-controller="MenuCtrl as menu">
-        <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z5" md-component-id="left"
-                    md-is-locked-open="false">
-            <md-toolbar class="md-hue-2">
-                <div layout="column" class="md-toolbar-tools-bottom inset">
-                    <h1 class="md-headline">{{menu.username}}</h1>
-
-                    <h2 class="md-subhead">{{menu.email}}</h2>
-                </div>
-            </md-toolbar>
-
-            <md-list class="menu-links">
-                <div ng-repeat="(linkHref, linkInfo) in menu.menuLinks">
-                    <md-divider ng-if="linkInfo.divider"></md-divider>
-                    <a ng-href="#{{linkHref}}" target="_self">
-                        <md-list-item
-                                ng-class="{'active' : linkHref === menu.selected }"
-                                ng-click="menu.menuClick(linkHref)" class="menu-link">
-                            <md-icon aria-label="Menu" class="menu-link-icon {{linkInfo.icon}}"></md-icon>
-                            {{linkInfo.title}}
-                        </md-list-item>
-                    </a>
-                </div>
-                <md-divider></md-divider>
-                <div>
+        <md-list class="menu-links">
+            <div ng-repeat="(linkHref, linkInfo) in menu.menuLinks">
+                <md-divider ng-if="linkInfo.divider"></md-divider>
+                <a ng-href="#{{linkHref}}" target="_self">
                     <md-list-item
-                            ng-click="menu.logout()" class="menu-link">
-                        <md-icon aria-label="Menu" class="menu-link-icon ion-android-exit fa-lg"></md-icon>
-                        Logout
+                            ng-class="{'active' : linkHref === menu.selected }"
+                            ng-click="menu.menuClick(linkHref)" class="menu-link">
+                        <md-icon aria-label="Menu" class="menu-link-icon {{linkInfo.icon}}"></md-icon>
+                        {{linkInfo.title}}
                     </md-list-item>
-                </div>
-            </md-list>
-        </md-sidenav>
-    </div>
+                </a>
+            </div>
+            <md-divider></md-divider>
+            <div>
+                <md-list-item
+                        ng-click="menu.logout()" class="menu-link">
+                    <md-icon aria-label="Menu" class="menu-link-icon ion-log-out fa-lg"></md-icon>
+                    Logout
+                </md-list-item>
+            </div>
+        </md-list>
+    </md-sidenav>
+</div>
+
+<div layout="column" flex>
+
+    <md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar" ng-show="toolbar.show">
+        <div class="md-toolbar-tools">
+            <md-button ng-click="toolbar.toggleSidenav('left')" class="md-icon-button">
+                <md-icon aria-label="Menu" class="ion-navicon-round fa-lg"></md-icon>
+            </md-button>
+            <h1>{{toolbar.title}}</h1>
+            <span flex></span>
+            <md-button aria-label="Search" ng-click="showSearch = !showSearch" class="md-icon-button">
+                <md-icon class="ion-search fa-lg"></md-icon>
+            </md-button>
+            <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)" class="md-icon-button">
+                <md-icon class="ion-android-more-vertical fa-lg"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
     <div layout="column" flex id="content">
         <md-content layout="column" flex class="md-padding" ng-view>
 

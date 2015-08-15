@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -31,6 +32,7 @@ public class InitialData implements ApplicationInit {
                 if (userList.isEmpty()) {
                     User user = new User()
                             .name("test")
+                            .email("test@example.com")
                             .password("test")
                             .save();
                     log.info(user.toString());
@@ -52,8 +54,10 @@ public class InitialData implements ApplicationInit {
                     Account walletAccount = new Account()
                             .user(user)
                             .name("Wallet")
+                            .type(Account.Type.CASH)
                             .currency("USD")
                             .value(new BigDecimal(0))
+                            .created(dateUtil.parseDateTime("01.01.2000", "00:00:00"))
                             .save();
                     log.info(walletAccount.toString());
 

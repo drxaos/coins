@@ -1,7 +1,11 @@
-function SettingsCtrl() {
+function SettingsCtrl(AuthService) {
     var model = this;
 
-    model.text = "This is Settings module";
+    AuthService.checkLoggedIn().then(function () {
+
+        model.text = "This is Settings module";
+
+    });
 }
 
 InitializingModule.controller('SettingsCtrl', SettingsCtrl);

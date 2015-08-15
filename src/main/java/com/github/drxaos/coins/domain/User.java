@@ -1,7 +1,7 @@
 package com.github.drxaos.coins.domain;
 
-import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.application.database.Entity;
+import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.github.drxaos.coins.service.user.PasswordService;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -32,6 +32,9 @@ public class User extends Entity<User> {
     @DatabaseField(canBeNull = false)
     String password;
 
+    @DatabaseField(canBeNull = false)
+    String email;
+
     @ForeignCollectionField(eager = false)
     ForeignCollection<Category> categories;
 
@@ -49,6 +52,11 @@ public class User extends Entity<User> {
             result.fieldError("name", "name-min-size", 3);
         } else if (name.length() > 100) {
             result.fieldError("name", "name-max-size", 100);
+        }
+        if (email == null || email.isEmpty()) {
+            result.fieldError("email", "email-is-empty");
+        } else if (!email.contains("@")) {
+            result.fieldError("email", "email-wrong");
         }
     }
 

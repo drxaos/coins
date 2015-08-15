@@ -14,7 +14,10 @@ function ToolbarCtrl($rootScope, $location, $route, $mdSidenav) {
             params = $location.search();
         var r = $route.routes[url];
         model.title = r.headerTitle;
+        model.show = !r.auth;
     });
+
+    model.show = true;
 }
 
 InitializingModule.controller('ToolbarCtrl', ToolbarCtrl);

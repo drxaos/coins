@@ -31,7 +31,7 @@ public class Account extends Entity<Account> {
     @DatabaseField(canBeNull = false, uniqueCombo = true)
     String name;
     @DatabaseField(dataType = DataType.ENUM_INTEGER, unknownEnumName = "CASH")
-    Type ourEnum;
+    Type type;
     @DatabaseField(canBeNull = false)
     String currency;
     @DatabaseField(canBeNull = false)

@@ -11,3 +11,7 @@
 .menu-link-icon {
     margin-left: 0;
 }
+
+.auth-dialog .auth-dialog-content {
+    margin: 1em;
+}

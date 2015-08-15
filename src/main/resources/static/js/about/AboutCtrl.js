@@ -1,7 +1,11 @@
-function AboutCtrl() {
+function AboutCtrl(AuthService) {
     var model = this;
 
-    model.text = "This is About module";
+    AuthService.checkLoggedIn().then(function () {
+
+        model.text = "This is About module";
+
+    });
 }
 
 InitializingModule.controller('AboutCtrl', AboutCtrl);
