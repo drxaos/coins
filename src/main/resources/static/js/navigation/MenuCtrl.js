@@ -48,6 +48,8 @@ function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
         var url = $location.url(),
             params = $location.search();
         model.selected = url;
+        var r = $route.routes[url];
+        model.show = !r.auth;
     });
 }
 

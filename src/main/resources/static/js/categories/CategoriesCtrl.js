@@ -1,4 +1,4 @@
-function CategoriesCtrl(AuthService, CategoriesCollection) {
+function CategoriesCtrl(AuthService, CategoriesCollection, $rootScope) {
     var model = this;
 
     AuthService.checkLoggedIn().then(function () {
@@ -8,6 +8,25 @@ function CategoriesCtrl(AuthService, CategoriesCollection) {
         return CategoriesCollection.query().$promise;
     }).then(function (entries) {
         model.count = entries.length;
+
+
+        $rootScope.toolbarTools - [
+            {
+                name: "Search",
+                icon: "ion-search fa-lg",
+                click: function () {
+
+                }
+            },
+            {
+                name: "Settings",
+                icon: "ion-android-more-vertical fa-lg",
+                click: function () {
+
+                }
+            },
+
+        ];
     });
 }
 

@@ -6,7 +6,7 @@ function CategoriesRouter($routeProvider) {
             controllerAs: 'categories',
             menuTitle: "Categories",
             menuIcon: "ion-ios-filing fa-lg",
-            headerTitle: "Transaction categories",
+            headerTitle: "Categories",
             menuGroup: "main",
         });
 }

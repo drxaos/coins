@@ -21,3 +21,8 @@ InitializingModule = angular.module('Index', [
     'About'
 ]);
 
+InitializingModule.controller('IndexCtrl', function ($scope) {
+    $scope.$on('$viewContentLoaded', function(){
+        angular.element(document.querySelector(".app-loading")).fadeOut();
+    });
+});

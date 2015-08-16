@@ -19,11 +19,17 @@
     <script src="../js/require.js"></script>
     <script src="../js/index/index.js"></script>
 </head>
-<body layout="row">
-<div layout="row" ng-controller="MenuCtrl as menu">
+<body layout="row" ng-controller="IndexCtrl as index">
+
+<md-backdrop class="app-loading md-dialog-backdrop md-opaque ng-scope md-default-theme" aria-hidden="true"
+             style="background-color: white; text-align: center; z-index: 999">
+    <div class="app-loading-spiner" style="margin-top: 1em"><i class="fa fa-cog fa-spin fa-3x"></i></div>
+</md-backdrop>
+
+<div layout="row" ng-controller="MenuCtrl as menu" ng-show="menu.show">
     <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="left"
                 md-is-locked-open="$mdMedia('gt-md')">
-        <md-toolbar class="md-hue-2">
+        <md-toolbar class="md-hue-2 md-tall">
             <div layout="column" class="md-toolbar-tools-bottom inset">
                 <h1 class="md-headline">{{menu.username}}</h1>
 
@@ -59,16 +65,14 @@
 
     <md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar" ng-show="toolbar.show">
         <div class="md-toolbar-tools">
-            <md-button ng-click="toolbar.toggleSidenav('left')" class="md-icon-button">
+            <md-button hide-gt-md ng-click="toolbar.toggleSidenav('left')" class="md-icon-button">
                 <md-icon aria-label="Menu" class="ion-navicon-round fa-lg"></md-icon>
             </md-button>
             <h1>{{toolbar.title}}</h1>
             <span flex></span>
-            <md-button aria-label="Search" ng-click="showSearch = !showSearch" class="md-icon-button">
-                <md-icon class="ion-search fa-lg"></md-icon>
-            </md-button>
-            <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)" class="md-icon-button">
-                <md-icon class="ion-android-more-vertical fa-lg"></md-icon>
+            <md-button ng-repeat="tool in $root.toolbarTools" aria-label="{{tool.name}}" ng-click="tool.click()"
+                       class="md-icon-button">
+                <md-icon class="{{tool.icon}}"></md-icon>
             </md-button>
         </div>
     </md-toolbar>
