@@ -7,25 +7,19 @@ function CategoriesCtrl(AuthService, CategoriesCollection, $rootScope) {
 
         return CategoriesCollection.query().$promise;
     }).then(function (entries) {
-        model.count = entries.length;
+        model.categories = entries;
 
+        function search() {
+        }
 
-        $rootScope.toolbarTools - [
-            {
-                name: "Search",
-                icon: "ion-search fa-lg",
-                click: function () {
+        function menu() {
+        }
 
-                }
-            },
-            {
-                name: "Settings",
-                icon: "ion-android-more-vertical fa-lg",
-                click: function () {
+        model.search = {name: ""};
 
-                }
-            },
-
+        $rootScope.toolbarTools = [
+            {name: "Search", icon: "ion-search fa-lg", click: search},
+            {name: "Settings", icon: "ion-android-more-vertical fa-lg", click: menu},
         ];
     });
 }

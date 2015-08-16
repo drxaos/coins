@@ -15,7 +15,7 @@
     <script src="/webjars/angularjs/1.4.3-1/angular-resource.min.js"></script>
     <script src="/webjars/angularjs/1.4.3-1/i18n/angular-locale_ru-ru.js"></script>
     <script src="/webjars/angularjs/1.4.3-1/angular-route.min.js"></script>
-    <script src="/webjars/angular-material/0.10.0/angular-material.min.js"></script>
+    <script src="/webjars/angular-material/0.10.0/angular-material.js"></script>
     <script src="../js/require.js"></script>
     <script src="../js/index/index.js"></script>
 </head>
@@ -41,7 +41,7 @@
             <div ng-repeat="(linkHref, linkInfo) in menu.menuLinks">
                 <md-divider ng-if="linkInfo.divider"></md-divider>
                 <a ng-href="#{{linkHref}}" target="_self">
-                    <md-list-item
+                    <md-list-item tabindex="-1"
                             ng-class="{'active' : linkHref === menu.selected }"
                             ng-click="menu.menuClick(linkHref)" class="menu-link">
                         <md-icon aria-label="Menu" class="menu-link-icon {{linkInfo.icon}}"></md-icon>
@@ -78,7 +78,7 @@
     </md-toolbar>
 
     <div layout="column" flex id="content">
-        <md-content layout="column" flex class="md-padding" ng-view>
+        <md-content layout="column" flex class="md-padding md-default-theme" ng-view>
 
         </md-content>
     </div>

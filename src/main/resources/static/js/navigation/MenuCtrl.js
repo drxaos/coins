@@ -24,15 +24,15 @@ function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
     model.logout = logout;
 
     function toggleSidenav() {
-        $mdSidenav('left').toggle();
+        $mdSidenav('left').close();
     }
 
     function menuClick(href) {
-        toggleSidenav('left');
+        toggleSidenav();
     }
 
     function logout() {
-        toggleSidenav('left');
+        toggleSidenav();
         $http.post("/api/v1/auth/sign_out")
             .success(function () {
                 location.reload();

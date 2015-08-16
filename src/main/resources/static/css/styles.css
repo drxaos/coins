@@ -4,6 +4,12 @@
     margin: inherit;
 }
 
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .menu-link {
     color: black;
 }
@@ -15,3 +21,12 @@
 .auth-dialog .auth-dialog-content {
     margin: 1em;
 }
+
+md-content.md-default-theme {
+    background-color: #eee;
+}
+
+md-card {
+    background-color: #fff;
+}
+

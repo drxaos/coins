@@ -1,3 +1,28 @@
 <spinner/>
-<p>{{categories.text}}</p>
-<p>Categories count: {{categories.count}}</p>
+<md-card flex-sm="100" flex-gt-sm="90" flex-gt-md="80">
+    <md-card-content>
+        <md-list>
+            <md-item ng-repeat="item in categories.categories | filter:categories.search">
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <div layout-gt-sm="row" layout-sm="column">
+                            <div flex="33">
+                                <div style="margin: 13px; font-weight: bold" class="ellipsis" title="{{item.name}}">{{item.name}}</div>
+                            </div>
+                            <div flex layout-gt-sm="row" layout-sm="column">
+                                <md-checkbox class="md-primary" ng-model="item.expense" aria-label="Expense">Expense</md-checkbox>
+                                <md-checkbox class="md-primary" ng-model="item.income" aria-label="Income">Income</md-checkbox>
+                                <div flex layout="row" layout-align="end center">
+                                    <md-button class="md-icon-button" aria-label="Delete">
+                                        <md-icon class="ion-trash-b fa-lg"></md-icon>
+                                    </md-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </md-item-content>
+                <md-divider ng-if="!$last"></md-divider>
+            </md-item>
+        </md-list>
+    </md-card-content>
+</md-card>
