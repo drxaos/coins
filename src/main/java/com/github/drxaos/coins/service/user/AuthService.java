@@ -2,7 +2,7 @@ package com.github.drxaos.coins.service.user;
 
 import com.github.drxaos.coins.application.database.Db;
 import com.github.drxaos.coins.application.database.TypedSqlException;
-import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.domain.User;
 import com.j256.ormlite.dao.Dao;
@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class AuthService {
 
-    @Autowire
+    @Inject
     Db db;
 
     public User checkAuth(String name, String password) throws TypedSqlException {

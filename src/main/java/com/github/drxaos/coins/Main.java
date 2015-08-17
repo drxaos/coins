@@ -17,7 +17,6 @@ import com.github.drxaos.coins.service.settings.SettingsService;
 import com.github.drxaos.coins.service.user.AuthService;
 import com.github.drxaos.coins.service.user.PasswordService;
 import com.github.drxaos.coins.utils.DateUtil;
-import spark.Spark;
 
 public class Main {
     public static class Config extends ApplicationProps {
@@ -79,9 +78,6 @@ public class Main {
         };
 
         application.start();
-        System.out.println("Started: http://localhost:4567/ui/");
-
-        application.stop();
     }
 }
 

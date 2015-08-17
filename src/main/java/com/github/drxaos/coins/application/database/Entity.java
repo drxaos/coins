@@ -1,6 +1,6 @@
 package com.github.drxaos.coins.application.database;
 
-import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
 import com.github.drxaos.coins.application.validation.ValidationError;
 import com.github.drxaos.coins.application.validation.ValidationException;
@@ -31,10 +31,10 @@ public class Entity<T> implements Serializable {
 
     static AutowiringFactory factory;
 
-    @Autowire
+    @Inject
     Db db;
 
-    @Autowire
+    @Inject
     DbDialect dialect;
 
     protected transient Dao dao;

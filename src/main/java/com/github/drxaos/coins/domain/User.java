@@ -2,7 +2,7 @@ package com.github.drxaos.coins.domain;
 
 import com.github.drxaos.coins.application.database.Entity;
 import com.github.drxaos.coins.application.database.TypedSqlException;
-import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.github.drxaos.coins.service.user.PasswordService;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -25,7 +25,7 @@ public class User extends Entity<User> {
     public static final String LANG_EN = "en";
     public static final String LANG_RU = "ru";
 
-    @Autowire
+    @Inject
     transient PasswordService passwordService;
 
     @DatabaseField(canBeNull = false, uniqueIndex = true)

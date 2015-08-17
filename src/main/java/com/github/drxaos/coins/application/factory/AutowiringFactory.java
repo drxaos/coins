@@ -23,6 +23,11 @@ public class AutowiringFactory {
             this.field = field;
         }
 
+        public <T> T get() throws IllegalAccessException {
+            field.setAccessible(true);
+            return (T) field.get(obj);
+        }
+
         public <T> void set(T instance) throws IllegalAccessException {
             field.setAccessible(true);
             field.set(obj, instance);
@@ -152,24 +157,37 @@ public class AutowiringFactory {
         Class c = cls;
         while (c != null) {
             for (Field field : c.getDeclaredFields()) {
-                Autowire autowire = field.getDeclaredAnnotation(Autowire.class);
-                if (autowire != null) {
-                    String autowireName = autowire.value();
-                    if (autowireName == null || autowireName.isEmpty()) {
-                        autowireName = getClsWiringName(field.getType());
+                {
+                    Inject inject = field.getDeclaredAnnotation(Inject.class);
+                    if (inject != null) {
+                        String autowireName = inject.value();
+                        if (autowireName == null || autowireName.isEmpty()) {
+                            autowireName = getClsWiringName(field.getType());
+                        }
+                        Target target = new Target(instance, field);
+                        if (registry.containsKey(autowireName)) {
+                            try {
+                                target.set(registry.get(autowireName));
+                            } catch (IllegalAccessException e) {
+                                throw new FactoryException("Cannot inject instance to " + target, e);
+                            }
+                        } else if (registerTargets) {
+                            if (!targetsMap.containsKey(autowireName)) {
+                                targetsMap.put(autowireName, new ArrayList<>());
+                            }
+                            targetsMap.get(autowireName).add(target);
+                        }
                     }
-                    Target target = new Target(instance, field);
-                    if (registry.containsKey(autowireName)) {
+                }
+                {
+                    Autowire autowire = field.getDeclaredAnnotation(Autowire.class);
+                    if (autowire != null) {
+                        Target target = new Target(instance, field);
                         try {
-                            target.set(registry.get(autowireName));
+                            autowire(target.get());
                         } catch (IllegalAccessException e) {
-                            throw new FactoryException("Cannot inject instance to " + target, e);
+                            throw new FactoryException("Cannot autowire instance " + target, e);
                         }
-                    } else if (registerTargets) {
-                        if (!targetsMap.containsKey(autowireName)) {
-                            targetsMap.put(autowireName, new ArrayList<>());
-                        }
-                        targetsMap.get(autowireName).add(target);
                     }
                 }
             }
@@ -183,7 +201,7 @@ public class AutowiringFactory {
         Class c = cls;
         while (c != null) {
             for (Field field : cls.getDeclaredFields()) {
-                Autowire autowire = field.getDeclaredAnnotation(Autowire.class);
+                Inject autowire = field.getDeclaredAnnotation(Inject.class);
                 if (autowire != null) {
                     String autowireName = autowire.value();
                     if (autowireName == null || autowireName.isEmpty()) {

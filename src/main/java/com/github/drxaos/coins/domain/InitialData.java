@@ -4,7 +4,7 @@ import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.Db;
 import com.github.drxaos.coins.application.events.ApplicationInit;
-import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.utils.DateUtil;
 import com.j256.ormlite.dao.Dao;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +17,10 @@ import java.util.List;
 @Slf4j
 public class InitialData implements ApplicationInit {
 
-    @Autowire
+    @Inject
     Db db;
 
-    @Autowire
+    @Inject
     DateUtil dateUtil;
 
     @Override

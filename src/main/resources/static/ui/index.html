@@ -36,9 +36,10 @@
     <div class="app-loading-spiner" style="margin-top: 1em"><i class="fa fa-cog fa-spin fa-3x"></i></div>
 </md-backdrop>
 
-<div layout="row" ng-controller="MenuCtrl as menu" ng-show="menu.show">
-    <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="left"
-                md-is-locked-open="$mdMedia('gt-md')">
+<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="left"
+            md-is-locked-open="$mdMedia('gt-md')">
+    <div ng-controller="MenuCtrl as menu" ng-show="menu.show">
+
         <md-toolbar class="md-hue-2 md-tall">
             <div layout="column" class="md-toolbar-tools-bottom inset">
                 <h1 class="md-headline">{{menu.username}}</h1>
@@ -68,10 +69,10 @@
                 </md-list-item>
             </div>
         </md-list>
-    </md-sidenav>
-</div>
+    </div>
+</md-sidenav>
 
-<div layout="column" flex>
+<div layout="column" class="relative" layout-fill role="main">
 
     <md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar" ng-show="toolbar.show">
         <div class="md-toolbar-tools">
@@ -90,11 +91,14 @@
         </div>
     </md-toolbar>
 
-    <div layout="column" flex id="content">
-        <md-content layout="column" flex class="md-padding md-default-theme app-view" ng-view>
 
-        </md-content>
-    </div>
+    <md-content md-scroll-y layout="column" flex class="md-padding md-default-theme app-view">
+        <ui-view layout="column" layout-fill layout-padding ng-view>
+
+        </ui-view>
+        <div style="width: 100%; text-align: center; font-size: small">Footer</div>
+    </md-content>
+
 </div>
 </body>
 </html>

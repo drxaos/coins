@@ -6,5 +6,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Autowire {
+public @interface Inject {
+    String value() default "";
 }

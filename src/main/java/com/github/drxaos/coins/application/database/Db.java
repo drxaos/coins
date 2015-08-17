@@ -5,7 +5,7 @@ import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.events.ApplicationStop;
-import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
 import com.github.drxaos.coins.application.factory.Component;
 import com.j256.ormlite.dao.Dao;
@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 @Component
 public class Db implements ApplicationInit, ApplicationStop {
 
-    @Autowire
+    @Inject
     ApplicationProps props;
 
     private AutowiringFactory factory;

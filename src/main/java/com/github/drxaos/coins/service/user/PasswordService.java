@@ -3,7 +3,7 @@ package com.github.drxaos.coins.service.user;
 import com.github.drxaos.coins.application.*;
 import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.events.ApplicationInit;
-import com.github.drxaos.coins.application.factory.Autowire;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.factory.Component;
 
 import java.security.MessageDigest;
@@ -13,7 +13,7 @@ import java.util.Base64;
 @Component
 public class PasswordService implements ApplicationInit {
 
-    @Autowire
+    @Inject
     ApplicationProps props;
 
     public String encode(String password) {
