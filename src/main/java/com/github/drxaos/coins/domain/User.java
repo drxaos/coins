@@ -1,6 +1,7 @@
 package com.github.drxaos.coins.domain;
 
 import com.github.drxaos.coins.application.database.Entity;
+import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.github.drxaos.coins.service.user.PasswordService;
@@ -14,14 +15,15 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
-import java.sql.SQLException;
-
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Accessors(fluent = true, chain = true)
 @EqualsAndHashCode(callSuper = false)
 @DatabaseTable(tableName = "users")
 public class User extends Entity<User> {
+
+    public static final String LANG_EN = "en";
+    public static final String LANG_RU = "ru";
 
     @Autowire
     transient PasswordService passwordService;
@@ -35,13 +37,16 @@ public class User extends Entity<User> {
     @DatabaseField(canBeNull = false)
     String email;
 
+    @DatabaseField(canBeNull = false)
+    String lang;
+
     @ForeignCollectionField(eager = false)
     ForeignCollection<Category> categories;
 
     @ForeignCollectionField(eager = false)
     ForeignCollection<Account> accounts;
 
-    public User() throws SQLException {
+    public User() throws TypedSqlException {
     }
 
     @Override

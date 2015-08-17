@@ -9,6 +9,7 @@ require("../js/loading/loading.js");
 InitializingModule = angular.module('Index', [
     'ngMaterial',
     'ngRoute',
+    'pascalprecht.translate',
 
     'directive.loading',
     'Navigation',
@@ -22,7 +23,9 @@ InitializingModule = angular.module('Index', [
 ]);
 
 InitializingModule.controller('IndexCtrl', function ($scope) {
-    $scope.$on('$viewContentLoaded', function(){
+    $scope.$on('$viewContentLoaded', function () {
         angular.element(document.querySelector(".app-loading")).fadeOut();
     });
 });
+
+require("../js/index/IndexI18n.js");

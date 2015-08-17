@@ -4,9 +4,9 @@ function SettingsRouter($routeProvider) {
             templateUrl: '../js/settings/settings.html',
             controller: 'SettingsCtrl',
             controllerAs: 'settings',
-            menuTitle: "Settings",
+            menuTitle: "SETTINGS_MENU_TITLE",
             menuIcon: "ion-wrench fa-lg",
-            headerTitle: "Settings",
+            headerTitle: "SETTINGS_TOOLBAR_TITLE",
             menuGroup: "settings",
         });
 }

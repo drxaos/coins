@@ -7,13 +7,23 @@
                     <div class="md-tile-content">
                         <div layout-gt-sm="row" layout-sm="column">
                             <div flex="33">
-                                <div style="margin: 13px; font-weight: bold" class="ellipsis" title="{{item.name}}">{{item.name}}</div>
+                                <div style="margin: 13px; font-weight: bold" class="ellipsis" title="{{item.name}}">
+                                    {{item.name}}
+                                </div>
                             </div>
                             <div flex layout-gt-sm="row" layout-sm="column">
-                                <md-checkbox class="md-primary" ng-model="item.expense" aria-label="Expense">Expense</md-checkbox>
-                                <md-checkbox class="md-primary" ng-model="item.income" aria-label="Income">Income</md-checkbox>
+                                <md-checkbox class="md-primary" ng-model="item.expense"
+                                             aria-label="{{'CATEGORIES_EXPENSE'|translate}}">
+                                    {{'CATEGORIES_EXPENSE'|translate}}
+                                </md-checkbox>
+                                <md-checkbox class="md-primary" ng-model="item.income"
+                                             aria-label="{{'CATEGORIES_INCOME'|translate}}">
+                                    {{'CATEGORIES_INCOME'|translate}}
+                                </md-checkbox>
                                 <div flex layout="row" layout-align="end center">
-                                    <md-button class="md-icon-button" aria-label="Delete">
+                                    <md-button class="md-icon-button"
+                                               aria-label="{{'CATEGORIES_DELETE'|translate}}"
+                                               title="{{'CATEGORIES_DELETE'|translate}}">
                                         <md-icon class="ion-trash-b fa-lg"></md-icon>
                                     </md-button>
                                 </div>

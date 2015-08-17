@@ -43,7 +43,7 @@ public class Entity<T> implements Serializable {
         this.dao = dao;
     }
 
-    public Entity() throws SQLException {
+    public Entity() throws TypedSqlException {
         if (factory != null) {
             factory.autowire(this);
             setDao(db.getDao(this.getClass()));

@@ -3,7 +3,7 @@ function AboutCtrl(AuthService, $rootScope) {
 
     AuthService.checkLoggedIn().then(function () {
 
-        model.text = "This is About module";
+        model.text = "ABOUT_TEXT";
 
         $rootScope.toolbarTools = [];
     });

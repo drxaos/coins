@@ -1,6 +1,7 @@
 package com.github.drxaos.coins.application.database;
 
-import com.github.drxaos.coins.application.*;
+import com.github.drxaos.coins.application.Application;
+import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.events.ApplicationStop;
@@ -11,6 +12,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 
@@ -50,7 +52,16 @@ public class Db implements ApplicationInit, ApplicationStop {
                 if (!getDao(domainClass).isTableExists()) {
                     TableUtils.createTable(getConnectionSource(), domainClass);
                 }
-            } catch (SQLException e) {
+
+                // Check schema
+                Dao dao = getDao(domainClass);
+                PreparedQuery preparedQuery = dao.queryBuilder().orderBy("id", true).limit(1l).prepare();
+                List<Object> list = dao.query(preparedQuery);
+                if (list == null || list.size() > 1) {
+                    throw new ApplicationInitializationException("Database error");
+                }
+
+            } catch (SQLException | TypedSqlException e) {
                 throw new ApplicationInitializationException("Cannot create table for " + domainClass, e);
             }
         }
@@ -80,9 +91,13 @@ public class Db implements ApplicationInit, ApplicationStop {
         return connectionSource;
     }
 
-    public <T> Dao<T, Long> getDao(Class<T> domainCls) throws SQLException {
+    public <T> Dao<T, Long> getDao(Class<T> domainCls) throws TypedSqlException {
         if (!daoMap.containsKey(domainCls)) {
-            daoMap.put(domainCls, DaoManager.createDao(connectionSource, domainCls));
+            try {
+                daoMap.put(domainCls, DaoManager.createDao(connectionSource, domainCls));
+            } catch (SQLException e) {
+                throw new TypedSqlException(e, TypedSqlException.Type.ORM);
+            }
         }
         return daoMap.get(domainCls);
     }

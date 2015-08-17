@@ -1,12 +1,25 @@
-function SettingsCtrl(AuthService, $rootScope) {
+function SettingsCtrl(AuthService, $rootScope, $translate, $http) {
     var model = this;
 
-    AuthService.checkLoggedIn().then(function () {
+    AuthService.checkLoggedIn()
+        .then(function () {
+            return $http.get("/api/v1/settings");
+        })
+        .then(function (settings) {
+            $rootScope.toolbarTools = [];
 
-        model.text = "This is Settings module";
+            model.langs = [
+                {name: "ru", title: "Русский"},
+                {name: "en", title: "English"},
+            ];
 
-        $rootScope.toolbarTools = [];
-    });
+            model.lang = settings.data.lang;
+
+            model.updateLang = function () {
+                $translate.use(model.lang);
+                $http.put("/api/v1/settings/lang", {lang: model.lang});
+            }
+        });
 }
 
 InitializingModule.controller('SettingsCtrl', SettingsCtrl);

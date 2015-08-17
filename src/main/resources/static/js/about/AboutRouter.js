@@ -4,9 +4,9 @@ function AboutRouter($routeProvider) {
             templateUrl: '../js/about/about.html',
             controller: 'AboutCtrl',
             controllerAs: 'about',
-            menuTitle: "About",
+            menuTitle: "ABOUT_MENU_TITLE",
             menuIcon: "ion-ios-people fa-lg",
-            headerTitle: "About Coins",
+            headerTitle: "ABOUT_TOOLBAR_TITLE",
             menuGroup: "settings",
         });
 }

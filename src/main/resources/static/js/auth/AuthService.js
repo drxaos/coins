@@ -3,7 +3,7 @@ function AuthError(message) {
 }
 AuthError.prototype = new Error;
 
-function AuthService($mdToast, $http, $location, $q) {
+function AuthService($mdToast, $http, $location, $q, $translate) {
     var svc = this;
 
     svc.user = null;
@@ -32,6 +32,9 @@ function AuthService($mdToast, $http, $location, $q) {
             $http.get("/api/v1/auth/whoami")
                 .success(function (data) {
                     svc.user = data.username;
+                    if (data.lang != null) {
+                        $translate.use(data.lang);
+                    }
                     if (svc.user) {
                         yes(svc.user);
                     } else {

@@ -1,6 +1,7 @@
 package com.github.drxaos.coins.domain;
 
-import com.github.drxaos.coins.application.*;
+import com.github.drxaos.coins.application.Application;
+import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.Db;
 import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.factory.Autowire;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -34,6 +34,7 @@ public class InitialData implements ApplicationInit {
                             .name("test")
                             .email("test@example.com")
                             .password("test")
+                            .lang(User.LANG_EN)
                             .save();
                     log.info(user.toString());
 

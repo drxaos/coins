@@ -1,6 +1,7 @@
 package com.github.drxaos.coins.domain;
 
 import com.github.drxaos.coins.application.database.Entity;
+import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -11,7 +12,6 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Date;
 
 @Data
@@ -41,6 +41,6 @@ public class Account extends Entity<Account> {
     @DatabaseField(canBeNull = true)
     Date closed;
 
-    public Account() throws SQLException {
+    public Account() throws TypedSqlException {
     }
 }

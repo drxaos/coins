@@ -1,6 +1,7 @@
 package com.github.drxaos.coins.domain;
 
 import com.github.drxaos.coins.application.database.Entity;
+import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
@@ -10,8 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-
-import java.sql.SQLException;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -35,7 +34,7 @@ public class Category extends Entity<Category> {
     @DatabaseField(canBeNull = false)
     boolean income = false;
 
-    public Category() throws SQLException {
+    public Category() throws TypedSqlException {
     }
 
     @Override

@@ -4,9 +4,9 @@ function CategoriesRouter($routeProvider) {
             templateUrl: '../js/categories/categories.html',
             controller: 'CategoriesCtrl',
             controllerAs: 'categories',
-            menuTitle: "Categories",
+            menuTitle: "CATEGORIES_MENU_TITLE",
             menuIcon: "ion-ios-filing fa-lg",
-            headerTitle: "Categories",
+            headerTitle: "CATEGORIES_TOOLBAR_TITLE",
             menuGroup: "main",
         });
 }

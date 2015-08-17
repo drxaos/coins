@@ -22,7 +22,7 @@
     margin: 1em;
 }
 
-md-content.md-default-theme {
+md-content.md-default-theme.app-view {
     background-color: #eee;
 }
 

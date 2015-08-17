@@ -11,7 +11,9 @@ import com.github.drxaos.coins.controller.JsonTransformer;
 import com.github.drxaos.coins.controller.TxController;
 import com.github.drxaos.coins.controller.auth.AuthController;
 import com.github.drxaos.coins.controller.category.CategoryController;
+import com.github.drxaos.coins.controller.settings.SettingsController;
 import com.github.drxaos.coins.domain.*;
+import com.github.drxaos.coins.service.settings.SettingsService;
 import com.github.drxaos.coins.service.user.AuthService;
 import com.github.drxaos.coins.service.user.PasswordService;
 import com.github.drxaos.coins.utils.DateUtil;
@@ -56,13 +58,15 @@ public class Main {
                         JsonTransformer.class,
                         AuthController.class,
                         TxController.class,
-                        CategoryController.class
+                        CategoryController.class,
+                        SettingsController.class
                 );
 
                 // Services
                 addObjects(
                         PasswordService.class,
-                        AuthService.class
+                        AuthService.class,
+                        SettingsService.class
                 );
 
                 // Utils

@@ -4,9 +4,9 @@ function HomeRouter($routeProvider) {
             templateUrl: '../js/home/home.html',
             controller: 'HomeCtrl',
             controllerAs: 'home',
-            menuTitle: "Home",
+            menuTitle: "HOME_MENU_TITLE",
             menuIcon: "ion-ios-home fa-lg",
-            headerTitle: "Project Coins",
+            headerTitle: "HOME_TOOLBAR_TITLE",
             menuGroup: "main",
         })
         .otherwise({

@@ -7,7 +7,11 @@ public class WhoamiResponse {
     @Expose
     String username;
 
-    public WhoamiResponse(String username) {
+    @Expose
+    String lang;
+
+    public WhoamiResponse(String username, String lang) {
         this.username = username;
+        this.lang = lang;
     }
 }
