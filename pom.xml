@@ -109,6 +109,40 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.samaxes.maven</groupId>
+                <artifactId>minify-maven-plugin</artifactId>
+                <version>1.7.4</version>
+                <executions>
+                    <execution>
+                        <id>default-minify</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <charset>UTF-8</charset>
+                            <webappSourceDir>${project.basedir}/src/main/resources/static</webappSourceDir>
+                            <webappTargetDir>${build.directory}/classes/static</webappTargetDir>
+                            <cssSourceDir>css</cssSourceDir>
+                            <cssSourceIncludes>
+                                <cssSourceInclude>**/*.css</cssSourceInclude>
+                            </cssSourceIncludes>
+                            <cssFinalFile>compiled.css</cssFinalFile>
+                            <jsSourceDir>js</jsSourceDir>
+                            <jsSourceIncludes>
+                                <jsSourceInclude>**/*.js</jsSourceInclude>
+                            </jsSourceIncludes>
+                            <jsFinalFile>compiled-r0.0.1.js</jsFinalFile>
+                            <jsEngine>CLOSURE</jsEngine>
+                            <closureCompilationLevel>WHITESPACE_ONLY</closureCompilationLevel>
+                            <closureCreateSourceMap>true</closureCreateSourceMap>
+                            <closureLanguage>ECMASCRIPT5</closureLanguage>
+                            <munge>true</munge>
+                        </configuration>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>

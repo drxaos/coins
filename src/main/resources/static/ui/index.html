@@ -19,8 +19,15 @@
     <script src="/webjars/angular-translate/2.7.2/angular-translate.min.js"></script>
     <script src="/webjars/angularjs/1.4.3-1/angular-route.min.js"></script>
     <script src="/webjars/angular-material/0.10.0/angular-material.js"></script>
-    <script src="../js/require.js"></script>
-    <script src="../js/index/index.js"></script>
+    <script>
+        JS_COMPILED = true;
+        function loadScripts() {
+            JS_COMPILED = false;
+            document.write('\x3Cscript type="text/javascript" src="../js/require.js">\x3C/script>');
+            document.write('\x3Cscript type="text/javascript" src="../js/index/index.js">\x3C/script>');
+        }
+        document.write('\x3Cscript type="text/javascript" src="../js/compiled-r0.0.1.min.js" onerror="loadScripts()">\x3C/script>');
+    </script>
 </head>
 <body layout="row" ng-controller="IndexCtrl as index">
 
