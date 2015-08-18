@@ -6,6 +6,7 @@ function AboutCtrl(AuthService, $rootScope) {
         model.text = "ABOUT_TEXT";
 
         $rootScope.toolbarTools = [];
+        $rootScope.fab = {show: false};
     });
 }
 

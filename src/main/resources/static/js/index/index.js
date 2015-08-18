@@ -22,10 +22,16 @@ InitializingModule = angular.module('Index', [
     'About'
 ]);
 
-InitializingModule.controller('IndexCtrl', function ($scope) {
+InitializingModule.controller('IndexCtrl', function ($scope, $rootScope) {
+    var model = this;
+
     $scope.$on('$viewContentLoaded', function () {
         angular.element(document.querySelector(".app-loading")).fadeOut();
     });
+
+    $rootScope.toolbarTools = [];
+    $rootScope.fab = {show: false};
+
 });
 
 require("../js/index/IndexI18n.js");

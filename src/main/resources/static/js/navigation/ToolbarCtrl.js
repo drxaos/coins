@@ -1,6 +1,8 @@
 function ToolbarCtrl($rootScope, $location, $route, $mdSidenav) {
     var model = this;
 
+    model.template = '../js/navigation/toolbar.html';
+
     model.toggleSidenav = toggleSidenav;
 
     function toggleSidenav(name) {

@@ -37,66 +37,32 @@
 </md-backdrop>
 
 <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="left"
-            md-is-locked-open="$mdMedia('gt-md')">
-    <div ng-controller="MenuCtrl as menu" ng-show="menu.show">
-
-        <md-toolbar class="md-hue-2 md-tall">
-            <div layout="column" class="md-toolbar-tools-bottom inset">
-                <h1 class="md-headline">{{menu.username}}</h1>
-
-                <h2 class="md-subhead">{{menu.email}}</h2>
-            </div>
-        </md-toolbar>
-
-        <md-list class="menu-links">
-            <div ng-repeat="(linkHref, linkInfo) in menu.menuLinks">
-                <md-divider ng-if="linkInfo.divider"></md-divider>
-                <a ng-href="#{{linkHref}}" target="_self">
-                    <md-list-item tabindex="-1"
-                                  ng-class="{'active' : linkHref === menu.selected }"
-                                  ng-click="menu.menuClick(linkHref)" class="menu-link">
-                        <md-icon aria-label="Menu" class="menu-link-icon {{linkInfo.icon}}"></md-icon>
-                        {{linkInfo.title | translate}}
-                    </md-list-item>
-                </a>
-            </div>
-            <md-divider></md-divider>
-            <div>
-                <md-list-item
-                        ng-click="menu.logout()" class="menu-link">
-                    <md-icon aria-label="Menu" class="menu-link-icon ion-log-out fa-lg"></md-icon>
-                    {{'INDEX_MENU_LOGOUT' | translate}}
-                </md-list-item>
-            </div>
-        </md-list>
+            md-is-locked-open="$mdMedia('gt-md')" ng-show="$root.menuShow">
+    <div ng-controller="MenuCtrl as menu" ng-include="menu.template">
+        <!-- menu.html -->
     </div>
 </md-sidenav>
 
 <div layout="column" class="relative" layout-fill role="main">
 
-    <md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar" ng-show="toolbar.show">
-        <div class="md-toolbar-tools">
-            <md-button hide-gt-md ng-click="toolbar.toggleSidenav('left')" class="md-icon-button">
-                <md-icon aria-label="Menu" class="ion-navicon-round fa-lg"></md-icon>
-            </md-button>
-            <h1>{{toolbar.title | translate}}</h1>
-            <span flex></span>
-            <md-button ng-repeat="tool in $root.toolbarTools"
-                       aria-label="{{tool.name | translate}}"
-                       title="{{tool.name | translate}}"
-                       ng-click="tool.click()"
-                       class="md-icon-button">
-                <md-icon class="{{tool.icon}}"></md-icon>
-            </md-button>
-        </div>
+    <md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar"
+                ng-show="toolbar.show" ng-include="toolbar.template">
+        <!-- toolbar.html -->
     </md-toolbar>
 
+    <md-button ng-show="$root.fab.show" class="md-fab md-fab-bottom-right"
+               aria-label="{{$root.fab.title}}" title="{{$root.fab.title}}"
+               ng-click="$root.fab.click($event)">
+        <md-icon class="{{$root.fab.icon}}"></md-icon>
+    </md-button>
 
-    <md-content md-scroll-y layout="column" flex class="md-padding md-default-theme app-view">
-        <ui-view layout="column" layout-fill layout-padding ng-view>
+    <md-content md-scroll-y layout="column" flex class="md-default-theme app-view">
+
+        <ui-view layout="column" layout-fill ng-view>
+
+            <!-- page content -->
 
         </ui-view>
-        <div style="width: 100%; text-align: center; font-size: small">Footer</div>
     </md-content>
 
 </div>

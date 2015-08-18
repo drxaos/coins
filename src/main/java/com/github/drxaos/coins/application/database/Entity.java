@@ -1,7 +1,7 @@
 package com.github.drxaos.coins.application.database;
 
-import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.validation.ValidationError;
 import com.github.drxaos.coins.application.validation.ValidationException;
 import com.github.drxaos.coins.application.validation.ValidationResult;
@@ -19,6 +19,9 @@ public class Entity<T> implements Serializable {
     @Expose
     @DatabaseField(generatedId = true)
     Long id;
+
+    @DatabaseField(version = true)
+    private Long version;
 
     public Long id() {
         return id;

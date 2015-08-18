@@ -27,8 +27,9 @@ public abstract class CrudUpdateRoute<T extends Entity> extends SecureRoute<T, O
         T entityFromDb = dao.queryForId(Long.parseLong(request().params(":id")));
         if (entityFromDb != null) {
 
+            T updatedEntity;
             try {
-                T updatedEntity = input(collectionType);
+                updatedEntity = input(collectionType);
                 updatedEntity = process(entityFromDb, updatedEntity);
                 updatedEntity.id(entityFromDb.id());
                 updatedEntity.save();
@@ -48,7 +49,7 @@ public abstract class CrudUpdateRoute<T extends Entity> extends SecureRoute<T, O
                 return e.getMessage();
             }
 
-            return "Entity with id " + id + " updated";
+            return updatedEntity;
         } else {
             response().status(404); // 404 Not found
             return "Not found";

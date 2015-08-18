@@ -6,6 +6,7 @@ function HomeCtrl($location, AuthService, $rootScope) {
         model.text = "This is Home module";
 
         $rootScope.toolbarTools = [];
+        $rootScope.fab = {show: false};
 
     });
 }

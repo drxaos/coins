@@ -26,18 +26,18 @@ public abstract class CrudCreateRoute<T extends Entity> extends SecureRoute<T, O
         } catch (TypedSqlException e) {
             if (e.getType() == TypedSqlException.Type.CONFLICT) {
                 response().status(409);
-                return "duplicate-entity";
+                return new CrudError("duplicate-entity");
             } else {
                 response().status(400);
-                return "invalid-entity";
+                return new CrudError("invalid-entity");
             }
         } catch (CrudException e) {
             response().status(e.httpCode);
-            return e.getMessage();
+            return new CrudError(e.getMessage());
         }
 
-        response().status(201); // 201 Created
-        return entity.id();
+        response().status(201);
+        return entity;
     }
 
     abstract protected T process(T entity) throws CrudException;

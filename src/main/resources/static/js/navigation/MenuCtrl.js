@@ -1,22 +1,25 @@
 function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
     var model = this;
 
+    model.template = '../js/navigation/menu.html';
+
     model.selected = null;
 
     model.username = "User1";
     model.email = "user1@example.com";
 
     model.menuLinks = {};
-    var group = null;
     for (key in $route.routes) {
         var r = $route.routes[key];
         if (r.menuTitle) {
-            var divider = false;
-            if (group != null && group != r.menuGroup) {
-                divider = true;
+            if (!model.menuLinks[r.menuGroup]) {
+                model.menuLinks[r.menuGroup] = {};
             }
-            model.menuLinks[r.originalPath] = {title: r.menuTitle, icon: r.menuIcon, divider: divider};
-            group = r.menuGroup;
+            model.menuLinks[r.menuGroup][r.originalPath] = {
+                title: r.menuTitle,
+                icon: r.menuIcon,
+                group: r.menuGroup,
+            };
         }
     }
 
@@ -44,13 +47,16 @@ function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
             });
     }
 
-    $rootScope.$on('$locationChangeSuccess', function (event) {
+    function updatemenu(event) {
         var url = $location.url(),
             params = $location.search();
         model.selected = url;
         var r = $route.routes[url];
-        model.show = !r.auth;
-    });
+        $rootScope.menuShow = !r.auth;
+    }
+
+    $rootScope.$on('$locationChangeSuccess', updatemenu);
+    updatemenu();
 }
 
 InitializingModule.controller('MenuCtrl', MenuCtrl);

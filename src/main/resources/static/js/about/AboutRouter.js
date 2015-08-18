@@ -7,7 +7,7 @@ function AboutRouter($routeProvider) {
             menuTitle: "ABOUT_MENU_TITLE",
             menuIcon: "ion-ios-people fa-lg",
             headerTitle: "ABOUT_TOOLBAR_TITLE",
-            menuGroup: "settings",
+            menuGroup: "MENU_GROUP_SETTINGS",
         });
 }
 

@@ -7,6 +7,7 @@ function SettingsCtrl(AuthService, $rootScope, $translate, $http) {
         })
         .then(function (settings) {
             $rootScope.toolbarTools = [];
+            $rootScope.fab = {show: false};
 
             model.langs = [
                 {name: "ru", title: "Русский"},

@@ -7,7 +7,7 @@ function SettingsRouter($routeProvider) {
             menuTitle: "SETTINGS_MENU_TITLE",
             menuIcon: "ion-wrench fa-lg",
             headerTitle: "SETTINGS_TOOLBAR_TITLE",
-            menuGroup: "settings",
+            menuGroup: "MENU_GROUP_SETTINGS",
         });
 }
 

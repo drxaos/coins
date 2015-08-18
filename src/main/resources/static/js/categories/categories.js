@@ -4,5 +4,5 @@ InitializingModule = angular.module('Categories', [
 
 require("../js/categories/CategoriesCtrl.js");
 require("../js/categories/CategoriesRouter.js");
-require("../js/categories/CategoriesCollection.js");
+require("../js/categories/CategoryEntity.js");
 require("../js/categories/CategoriesI18n.js");

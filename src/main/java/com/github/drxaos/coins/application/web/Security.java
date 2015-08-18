@@ -23,6 +23,7 @@ public class Security implements ApplicationInit {
                 "/ui/*",
                 "/js/*",
                 "/css/*",
+                "/libs/*",
                 "/templates/*"
 
         )) {

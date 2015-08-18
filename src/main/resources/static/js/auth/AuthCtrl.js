@@ -1,4 +1,4 @@
-function AuthCtrl($scope, $http, AuthService, $location) {
+function AuthCtrl($scope, $http, AuthService, $location, $rootScope) {
     var model = this;
 
     // todo check auth
@@ -12,6 +12,9 @@ function AuthCtrl($scope, $http, AuthService, $location) {
             $location.path("/");
         });
     }
+
+    $rootScope.toolbarTools = [];
+    $rootScope.fab = {show: false};
 }
 
 InitializingModule.controller('AuthCtrl', AuthCtrl);

@@ -31,20 +31,20 @@ public abstract class CrudDeleteRoute<T extends Entity> extends SecureRoute<T, O
             } catch (TypedSqlException e) {
                 if (e.getType() == TypedSqlException.Type.CONFLICT) {
                     response().status(409);
-                    return "duplicate-entity";
+                    return new CrudError("duplicate-entity");
                 } else {
                     response().status(400);
-                    return "invalid-entity";
+                    return new CrudError("cannot-delete");
                 }
             } catch (CrudException e) {
                 response().status(e.httpCode);
                 return e.getMessage();
             }
 
-            return "Entity with id " + id + " deleted";
+            return new CrudSuccess("entity-deleted");
         } else {
-            response().status(404); // 404 Not found
-            return "Not found";
+            response().status(404);
+            return new CrudError("not-found");
         }
     }
 

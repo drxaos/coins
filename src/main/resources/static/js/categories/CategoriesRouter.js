@@ -7,7 +7,7 @@ function CategoriesRouter($routeProvider) {
             menuTitle: "CATEGORIES_MENU_TITLE",
             menuIcon: "ion-ios-filing fa-lg",
             headerTitle: "CATEGORIES_TOOLBAR_TITLE",
-            menuGroup: "main",
+            menuGroup: "MENU_GROUP_MAIN",
         });
 }
 
