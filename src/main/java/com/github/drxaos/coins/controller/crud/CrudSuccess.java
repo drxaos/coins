@@ -6,7 +6,11 @@ public class CrudSuccess {
     @Expose
     String success;
 
-    public CrudSuccess(String success) {
+    @Expose
+    Object data;
+
+    public CrudSuccess(String success, Object data) {
         this.success = success;
+        this.data = data;
     }
 }

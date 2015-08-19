@@ -52,7 +52,7 @@ function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
             params = $location.search();
         model.selected = url;
         var r = $route.routes[url];
-        $rootScope.menuShow = !r.auth;
+        $rootScope.menuShow = r && !r.auth;
     }
 
     $rootScope.$on('$locationChangeSuccess', updatemenu);

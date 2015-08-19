@@ -8,22 +8,26 @@ angular.module('directive.loading', [])
                     return $http.pendingRequests.length > 0;
                 };
 
+                var first = true;
+                var delayed = null;
                 scope.$watch(scope.isLoading, function (v) {
                     if (v) {
-                        var parent = $(elm[0]).parent();
-                        var viewableTop = parent.scrollTop;
-                        var viewableBottom = parent.innerHeight() + parent.scrollTop;
-                        //getting child position within the parent
-                        var childPos = $(elm[0]).position().top;
-//getting difference between the childs top and parents viewable area
-                        var yDiff = ($(elm[0]).position().top + $(elm[0]).outerHeight()) - parent.innerHeight();
-
-                        //$(elm[0]).css('position', 'fixed');
-                        //$(elm[0]).css('top', 0);
-
-                        elm.fadeIn();
+                        if (!first && delayed == null) {
+                            delayed = setTimeout(function () {
+                                delayed = null;
+                                elm.fadeIn();
+                            }, 800);
+                        }
                     } else {
-                        elm.fadeOut();
+                        if (delayed == null) {
+                            elm.fadeOut();
+                            if (first) {
+                                first = false;
+                                elm.removeClass("app-loading");
+                            }
+                        } else {
+                            clearTimeout(delayed);
+                        }
                     }
                 });
             }

@@ -29,7 +29,7 @@ public abstract class CrudListRoute<T extends Entity> extends SecureRoute<T, Obj
             processQuery(queryBuilder);
         } catch (CrudException e) {
             response().status(e.httpCode);
-            return e.getMessage();
+            return new CrudError(e.getMessage(), e.data);
         }
 
         List<T> list = queryBuilder.query();
@@ -37,7 +37,7 @@ public abstract class CrudListRoute<T extends Entity> extends SecureRoute<T, Obj
             list = processList(list);
         } catch (CrudException e) {
             response().status(e.httpCode);
-            return e.getMessage();
+            return new CrudError(e.getMessage(), e.data);
         }
         return list;
     }

@@ -6,7 +6,11 @@ public class CrudError {
     @Expose
     String error;
 
-    public CrudError(String error) {
+    @Expose
+    Object data;
+
+    public CrudError(String error, Object data) {
         this.error = error;
+        this.data = data;
     }
 }

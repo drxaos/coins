@@ -9,39 +9,57 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
 
         model.list = entries;
 
+        function showMessage(data) {
+            var msg = null;
+            var obj = null;
+            var error = false;
+            if (data.success) {
+                msg = data.success;
+                obj = data.data;
+            } else if (data.data && data.data.success) {
+                msg = data.data.success;
+                obj = data.data.data;
+            } else if (data.error) {
+                msg = data.error;
+                obj = data.data;
+                error = true;
+            } else if (data.data && data.data.error) {
+                msg = data.data.error;
+                obj = data.data.data;
+                error = true;
+            }
+            if (msg != null) {
+                $translate('CATEGORIES_API: ' + msg, obj).then(function (text) {
+                    $mdToast.show({
+                        template: "<md-toast>" + text + "</md-toast>"
+                    });
+                });
+            }
+            if (error) {
+                $(".categories-new-item").find("input").focus().select();
+            }
+        }
+
         model.updateEntity = function (item) {
             if (item.newEntity) {
                 return;
             }
             item.$update(function (res) {
-                if (res.success) {
-                    $mdToast.show({
-                        template: "<md-toast>{{'CATEGORIES_SUCCESS_" + res.success + "'|translate}}</md-toast>"
-                    });
-                }
-            }, function (res) {
-                if (res.data.error) {
-                    $mdToast.show({
-                        template: "<md-toast>{{'CATEGORIES_ERROR_" + res.data.error + "'|translate}}</md-toast>"
-                    });
-                }
-            });
+                item.editEntity = null;
+                showMessage(res);
+            }, showMessage);
+        };
+
+        model.editEntity = function (item) {
+            item.editEntity = true;
         };
 
         model.deleteEntity = function (item) {
+            var name = item.name;
             item.$delete(function (res) {
-                if (res.success) {
-                    $mdToast.show({
-                        template: "<md-toast>{{'CATEGORIES_SUCCESS_" + res.success + "'|translate}}</md-toast>"
-                    });
-                }
-            }, function (res) {
-                if (res.data.error) {
-                    $mdToast.show({
-                        template: "<md-toast>{{'CATEGORIES_ERROR_" + res.data.error + "'|translate}}</md-toast>"
-                    });
-                }
-            });
+                res.data.name = name;
+                showMessage(res);
+            }, showMessage);
         };
 
         model.addEntity = function () {
@@ -60,22 +78,24 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
         };
 
         model.saveEntity = function (item) {
-            CategoryEntity.save(item, function (saved) {
-                model.list[model.list.indexOf(item)] = saved;
-                $mdToast.show({
-                    template: "<md-toast>{{'CATEGORIES_SUCCESS_entity-saved'|translate}}</md-toast>"
-                });
-            }, function (res) {
-                if (res.data.error) {
-                    $mdToast.show({
-                        template: "<md-toast>{{'CATEGORIES_ERROR_" + res.data.error + "'|translate}}</md-toast>"
-                    });
-                }
-            });
+            if (item.newEntity) {
+                CategoryEntity.save(item, function (saved) {
+                    model.list[model.list.indexOf(item)] = saved;
+                }, showMessage);
+            } else if (item.editEntity) {
+                model.updateEntity(item);
+            }
         };
 
         model.cancelEntity = function (item) {
-            model.list.splice(model.list.indexOf(item), 1);
+            if (item.newEntity) {
+                model.list.splice(model.list.indexOf(item), 1);
+            } else if (item.editEntity) {
+                item.editEntity = false;
+                CategoryEntity.get({id: item.id}, function (loaded) {
+                    model.list[model.list.indexOf(item)] = loaded;
+                }, showMessage);
+            }
         };
 
         // menu

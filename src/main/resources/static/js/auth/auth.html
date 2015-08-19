@@ -1,6 +1,6 @@
 <div layout="row" layout-align="center center" class="ng-scope">
     <md-card class="md-whiteframe-z2">
-        <form class="auth-dialog">
+        <div class="auth-dialog">
             <md-toolbar class="login-toolbar">
                 <div class="md-toolbar-tools">
                     <h2>Coins Login</h2>
@@ -10,26 +10,28 @@
                     </md-button>
                 </div>
             </md-toolbar>
-            <md-content class="md-default-theme auth-dialog-content" layout="column">
-                <md-input-container class="md-icon-float">
-                    <label>Name</label>
-                    <md-icon class="ion-person fa-lg"></md-icon>
-                    <input ng-model="auth.username" type="text">
-                </md-input-container>
-                <md-input-container class="md-icon-float">
-                    <label>Password</label>
-                    <md-icon class="ion-locked fa-lg"></md-icon>
-                    <input ng-model="auth.password" type="password">
-                </md-input-container>
-                <div class="md-actions" layout="row">
-                    <span flex></span>
-                    <md-button ng-click="auth.login()">
-                        Login
-                        <md-icon class="ion-log-in fa-lg"></md-icon>
-                    </md-button>
-                </div>
-            </md-content>
-        </form>
+            <form>
+                <md-content class="md-default-theme auth-dialog-content" layout="column">
+                    <md-input-container class="md-icon-float">
+                        <label>Name</label>
+                        <md-icon class="ion-person fa-lg"></md-icon>
+                        <input ng-model="auth.username" type="text" autofocus>
+                    </md-input-container>
+                    <md-input-container class="md-icon-float">
+                        <label>Password</label>
+                        <md-icon class="ion-locked fa-lg"></md-icon>
+                        <input ng-model="auth.password" type="password">
+                    </md-input-container>
+                    <div class="md-actions" layout="row">
+                        <span flex></span>
+                        <md-button ng-click="auth.login()" type="submit">
+                            Login
+                            <md-icon class="ion-log-in fa-lg"></md-icon>
+                        </md-button>
+                    </div>
+                </md-content>
+            </form>
+        </div>
     </md-card>
 </div>
 

@@ -1,9 +1,10 @@
 package com.github.drxaos.coins.service.settings;
 
 import com.github.drxaos.coins.application.database.Db;
+import com.github.drxaos.coins.application.database.OptimisticLockException;
 import com.github.drxaos.coins.application.database.TypedSqlException;
-import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.factory.Component;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.validation.ValidationException;
 import com.github.drxaos.coins.domain.User;
 import com.j256.ormlite.dao.Dao;
@@ -16,7 +17,7 @@ public class SettingsService {
     @Inject
     Db db;
 
-    public User changeLang(User user, String lang) throws ValidationException, TypedSqlException {
+    public User changeLang(User user, String lang) throws ValidationException, TypedSqlException, OptimisticLockException {
         try {
             Dao<User, Long> users = db.getDao(User.class);
             User userForChange = users.queryForId(user.id());

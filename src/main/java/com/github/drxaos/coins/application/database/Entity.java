@@ -32,6 +32,15 @@ public class Entity<T> implements Serializable {
         return (T) this;
     }
 
+    public Long version() {
+        return version;
+    }
+
+    public T version(Long version) {
+        this.version = version;
+        return (T) this;
+    }
+
     static AutowiringFactory factory;
 
     @Inject
@@ -78,25 +87,31 @@ public class Entity<T> implements Serializable {
         }
     }
 
-    public T save() throws ValidationException, TypedSqlException {
+    public T save() throws ValidationException, TypedSqlException, OptimisticLockException {
         validate();
         if (hasErrors()) {
             throw new ValidationException(validationResult);
         }
         checkForDao();
         try {
-            dao.createOrUpdate((T) this);
+            Dao.CreateOrUpdateStatus status = dao.createOrUpdate((T) this);
+            if (status.getNumLinesChanged() != 1) {
+                throw new OptimisticLockException("Entity not deleted");
+            }
             return (T) this;
         } catch (SQLException e) {
             throw new TypedSqlException(e, dialect.resolveErrorType(e));
         }
     }
 
-    public void delete() throws TypedSqlException {
+    public void delete() throws TypedSqlException, OptimisticLockException {
         checkForDao();
         T t = (T) this;
         try {
-            dao.delete(t);
+            int rows = dao.delete(t);
+            if (rows != 1) {
+                throw new OptimisticLockException("Entity not deleted");
+            }
         } catch (SQLException e) {
             throw new TypedSqlException(e, dialect.resolveErrorType(e));
         }

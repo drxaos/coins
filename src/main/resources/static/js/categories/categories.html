@@ -1,25 +1,25 @@
-<spinner/>
 <md-card flex-sm="100" flex-gt-sm="100" flex-gt-md="100" style="margin-bottom: 100px">
     <md-card-content>
         <md-list>
             <md-item ng-repeat="item in categories.list | filter:categories.search">
                 <md-item-content>
-                    <div class="md-tile-content">
+                    <form class="md-tile-content">
                         <div layout-gt-sm="row" layout-sm="column">
                             <div flex="33" layout="row" layout-aling="start center">
-                                <div ng-if="!item.newEntity" ng-required="true"
+                                <div ng-if="!item.newEntity && !item.editEntity" ng-required="true"
                                      style="padding: 13px 0; font-weight: bold"
                                      class="ellipsis"
                                      title="{{item.name}}">
                                     {{item.name}}
-                                    <md-button class="md-icon-button" aria-label="Edit">
+                                    <md-button class="md-icon-button" aria-label="Edit"
+                                               ng-click="categories.editEntity(item)">
                                         <md-icon class="ion-edit fa-lg"></md-icon>
                                     </md-button>
                                 </div>
-                                <md-input-container ng-if="item.newEntity == true"
+                                <md-input-container ng-if="item.newEntity || item.editEntity"
                                                     class="categories-new-item">
                                     <label>{{'CATEGORIES_EDIT_NAME'|translate}}</label>
-                                    <input ng-model="item.name" autofocus/>
+                                    <input ng-model="item.name" autofocus reset-with-esc/>
                                     <script>$(".categories-new-item").find("input").focus().select();</script>
                                 </md-input-container>
                             </div>
@@ -36,29 +36,35 @@
                                              ng-change="categories.updateEntity(item)">
                                     {{'CATEGORIES_INCOME'|translate}}
                                 </md-checkbox>
-                                <div flex layout="row" layout-align="end center">
-                                    <md-button ng-if="!item.newEntity" class="md-icon-button"
+                                <div flex ng-if="!item.newEntity && !item.editEntity"
+                                     layout="row" layout-align="end center">
+                                    <md-button class="md-icon-button"
                                                aria-label="{{'CATEGORIES_DELETE'|translate}}"
                                                title="{{'CATEGORIES_DELETE'|translate}}"
                                                ng-click="categories.deleteEntity(item)">
                                         <md-icon class="ion-trash-b fa-lg"></md-icon>
                                     </md-button>
-                                    <md-button ng-if="item.newEntity" class="md-raised md-primary"
-                                               aria-label="{{'CATEGORIES_SAVE'|translate}}"
-                                               title="{{'CATEGORIES_SAVE'|translate}}"
-                                               ng-click="categories.saveEntity(item)">
-                                        {{'CATEGORIES_NEW_SAVE'|translate}}
-                                    </md-button>
-                                    <md-button ng-if="item.newEntity" class="md-raised"
-                                               aria-label="{{'CATEGORIES_SAVE'|translate}}"
-                                               title="{{'CATEGORIES_SAVE'|translate}}"
-                                               ng-click="categories.cancelEntity(item)">
-                                        {{'CATEGORIES_NEW_CANCEL'|translate}}
-                                    </md-button>
                                 </div>
                             </div>
+                            <div ng-if="item.newEntity || item.editEntity"
+                                 flex layout="row" layout-align="end center">
+                                <md-button class="md-raised md-primary"
+                                           aria-label="{{'CATEGORIES_SAVE'|translate}}"
+                                           title="{{'CATEGORIES_SAVE'|translate}}"
+                                           ng-click="categories.saveEntity(item)"
+                                           type="submit">
+                                    {{'CATEGORIES_NEW_SAVE'|translate}}
+                                </md-button>
+                                <md-button class="md-raised"
+                                           aria-label="{{'CATEGORIES_SAVE'|translate}}"
+                                           title="{{'CATEGORIES_SAVE'|translate}}"
+                                           ng-click="categories.cancelEntity(item)"
+                                           type="reset">
+                                    {{'CATEGORIES_NEW_CANCEL'|translate}}
+                                </md-button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </md-item-content>
                 <md-divider ng-if="!$last"></md-divider>
             </md-item>

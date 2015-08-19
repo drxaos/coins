@@ -5,6 +5,7 @@ require("../js/categories/categories.js");
 require("../js/settings/settings.js");
 require("../js/auth/auth.js");
 require("../js/loading/loading.js");
+require("../js/forms/forms.js");
 
 InitializingModule = angular.module('Index', [
     'ngMaterial',
@@ -12,6 +13,7 @@ InitializingModule = angular.module('Index', [
     'pascalprecht.translate',
 
     'directive.loading',
+    'directive.forms',
     'Navigation',
     'Auth',
 

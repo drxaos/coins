@@ -8,6 +8,7 @@ import com.github.drxaos.coins.controller.SecureRoute;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
+import java.util.Collections;
 
 public abstract class CrudGetRoute<T extends Entity> extends SecureRoute<T, Object> {
     @Inject
@@ -22,18 +23,19 @@ public abstract class CrudGetRoute<T extends Entity> extends SecureRoute<T, Obje
     @Override
     public Object handle() throws SQLException, TypedSqlException {
         Dao<T, Long> dao = db.getDao(collectionType);
-        T entity = dao.queryForId(Long.parseLong(request().params(":id")));
-        try {
-            entity = process(entity);
-        } catch (CrudException e) {
-            response().status(e.httpCode);
-            return e.getMessage();
-        }
+        Long id = Long.parseLong(request().params(":id"));
+        T entity = dao.queryForId(id);
         if (entity != null) {
+            try {
+                entity = process(entity);
+            } catch (CrudException e) {
+                response().status(e.httpCode);
+                return new CrudError(e.getMessage(), e.data);
+            }
             return entity;
         } else {
             response().status(404);
-            return "Not found";
+            return new CrudError("not-found", Collections.singletonMap("id", id));
         }
     }
 

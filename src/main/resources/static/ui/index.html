@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/webjars/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/webjars/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="/webjars/angular-material/0.10.0/angular-material.min.css">
+    <link rel="stylesheet" href="../css/loading.css">
     <link rel="stylesheet" href="../css/styles.css">
     <meta name="viewport" content="initial-scale=1"/>
 
@@ -31,10 +32,7 @@
 </head>
 <body layout="row" ng-controller="IndexCtrl as index">
 
-<md-backdrop class="app-loading md-dialog-backdrop md-opaque ng-scope md-default-theme" aria-hidden="true"
-             style="background-color: white; text-align: center; z-index: 999">
-    <div class="app-loading-spiner" style="margin-top: 1em"><i class="fa fa-cog fa-spin fa-3x"></i></div>
-</md-backdrop>
+<spinner></spinner>
 
 <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="left"
             md-is-locked-open="$mdMedia('gt-md')" ng-show="$root.menuShow">
