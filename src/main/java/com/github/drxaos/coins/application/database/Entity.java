@@ -75,7 +75,7 @@ public class Entity<T> implements Serializable {
     }
 
     public List<ValidationError> getErrors() {
-        return validationResult != null ? validationResult.getErrors() : Collections.emptyList();
+        return validationResult != null ? validationResult.getErrors() : Collections.<ValidationError>emptyList();
     }
 
     protected void validator(ValidationResult result) {

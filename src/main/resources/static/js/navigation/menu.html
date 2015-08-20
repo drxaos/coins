@@ -1,5 +1,12 @@
 <md-toolbar class="md-hue-2 md-tall">
     <div layout="column" class="md-toolbar-tools-bottom inset">
+        <md-button class="md-icon-button"
+                   ng-click="menu.closeSidenav()"
+                   ng-hide="menu.$mdMedia('gt-md')"
+                   style="position: absolute; right: 0; top: 0">
+            <md-icon class="ion-ios-close-empty fa-lg"></md-icon>
+        </md-button>
+
         <h1 class="md-headline ellipsis" style="height: 32px;">{{menu.username}}</h1>
 
         <h2 class="md-subhead ellipsis" style="height: 24px;">{{menu.email}}</h2>

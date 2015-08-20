@@ -73,7 +73,7 @@ public class Db implements ApplicationInit, ApplicationStop {
                                     " FOREIGN KEY (" + thisColumn + ")" +
                                     " REFERENCES " + foreignTable + "(" + foreignColumn + ");";
                             if (!foreignKeyCreate.containsKey(dao)) {
-                                foreignKeyCreate.put(dao, new ArrayList<>());
+                                foreignKeyCreate.put(dao, new ArrayList());
                             }
                             foreignKeyCreate.get(dao).add(sql);
                         }

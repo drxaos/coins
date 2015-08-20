@@ -1,5 +1,7 @@
-function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
+function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http, $mdMedia) {
     var model = this;
+
+    model.$mdMedia = $mdMedia;
 
     model.template = '../js/navigation/menu.html';
 
@@ -29,6 +31,8 @@ function MenuCtrl($rootScope, $route, $location, $mdSidenav, $mdToast, $http) {
     function toggleSidenav() {
         $mdSidenav('left').close();
     }
+
+    model.closeSidenav = toggleSidenav;
 
     function menuClick(href) {
         toggleSidenav();

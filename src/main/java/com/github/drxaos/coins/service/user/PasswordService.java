@@ -1,14 +1,15 @@
 package com.github.drxaos.coins.service.user;
 
-import com.github.drxaos.coins.application.*;
+import com.github.drxaos.coins.application.Application;
+import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.events.ApplicationInit;
-import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.factory.Component;
+import com.github.drxaos.coins.application.factory.Inject;
 
+import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 @Component
 public class PasswordService implements ApplicationInit {
@@ -29,7 +30,7 @@ public class PasswordService implements ApplicationInit {
                 messageDigest.update(source);
                 digest = messageDigest.digest();
             }
-            return Base64.getEncoder().encodeToString(digest);
+            return DatatypeConverter.printBase64Binary(digest);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("error", e);
         }

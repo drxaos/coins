@@ -15,16 +15,27 @@
             <version>1.16.4</version>
             <scope>provided</scope>
         </dependency>
+
+        <!--WEB-->
+        <dependency>
+            <groupId>com.nanohttpd</groupId>
+            <artifactId>nanohttpd</artifactId>
+            <version>2.1.1</version>
+        </dependency>
         <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
             <version>2.2</version>
         </dependency>
+
+        <!--JSON-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.4</version>
         </dependency>
+
+        <!--DB-->
         <dependency>
             <groupId>com.j256.ormlite</groupId>
             <artifactId>ormlite-jdbc</artifactId>
@@ -36,8 +47,7 @@
             <version>1.4.187</version>
         </dependency>
 
-        <!--WEBJARS-->
-
+        <!--JAVASCRIPT-->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>

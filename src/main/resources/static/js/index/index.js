@@ -24,12 +24,27 @@ InitializingModule = angular.module('Index', [
     'About'
 ]);
 
-InitializingModule.controller('IndexCtrl', function ($scope, $rootScope) {
+InitializingModule.controller('IndexCtrl', function ($scope, $rootScope, $mdSidenav) {
     var model = this;
 
     $scope.$on('$viewContentLoaded', function () {
         angular.element(document.querySelector(".app-loading")).fadeOut();
     });
+
+    model.openSidenav = function () {
+        if (window.isMobile) {
+            $mdSidenav('left').open();
+        }
+    };
+    model.closeSidenav = function () {
+        if (window.isMobile) {
+            $mdSidenav('left').close();
+        }
+    };
+
+    if (window.isMobile) {
+        $("body").addClass("noselect");
+    }
 
     $rootScope.toolbarTools = [];
     $rootScope.fab = {show: false};

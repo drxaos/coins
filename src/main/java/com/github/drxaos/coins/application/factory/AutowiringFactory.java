@@ -158,7 +158,12 @@ public class AutowiringFactory {
         while (c != null) {
             for (Field field : c.getDeclaredFields()) {
                 {
-                    Inject inject = field.getDeclaredAnnotation(Inject.class);
+                    Inject inject = null;
+                    for (Annotation annotation : field.getDeclaredAnnotations()) {
+                        if (annotation instanceof Inject) {
+                            inject = (Inject) annotation;
+                        }
+                    }
                     if (inject != null) {
                         String autowireName = inject.value();
                         if (autowireName == null || autowireName.isEmpty()) {
@@ -173,14 +178,19 @@ public class AutowiringFactory {
                             }
                         } else if (registerTargets) {
                             if (!targetsMap.containsKey(autowireName)) {
-                                targetsMap.put(autowireName, new ArrayList<>());
+                                targetsMap.put(autowireName, new ArrayList());
                             }
                             targetsMap.get(autowireName).add(target);
                         }
                     }
                 }
                 {
-                    Autowire autowire = field.getDeclaredAnnotation(Autowire.class);
+                    Autowire autowire = null;
+                    for (Annotation annotation : field.getDeclaredAnnotations()) {
+                        if (annotation instanceof Autowire) {
+                            autowire = (Autowire) annotation;
+                        }
+                    }
                     if (autowire != null) {
                         Target target = new Target(instance, field);
                         try {
@@ -201,9 +211,14 @@ public class AutowiringFactory {
         Class c = cls;
         while (c != null) {
             for (Field field : cls.getDeclaredFields()) {
-                Inject autowire = field.getDeclaredAnnotation(Inject.class);
-                if (autowire != null) {
-                    String autowireName = autowire.value();
+                Inject inject = null;
+                for (Annotation annotation : field.getDeclaredAnnotations()) {
+                    if (annotation instanceof Inject) {
+                        inject = (Inject) annotation;
+                    }
+                }
+                if (inject != null) {
+                    String autowireName = inject.value();
                     if (autowireName == null || autowireName.isEmpty()) {
                         autowireName = getClsWiringName(field.getType());
                     }

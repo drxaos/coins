@@ -39,40 +39,43 @@ public class Http implements ApplicationInit, ApplicationStop {
         Spark.staticFileLocation("static");
 
         // Hack Spark server to support multiple folders with static resources
-        new Thread(() -> {
-            try {
-                Spark.awaitInitialization();
-                Field sparkServerField = SparkBase.class.getDeclaredField("server");
-                sparkServerField.setAccessible(true);
-                SparkServer sparkServer = (SparkServer) sparkServerField.get(null);
-                Field serverField = SparkServer.class.getDeclaredField("server");
-                serverField.setAccessible(true);
-                Server server = (Server) serverField.get(sparkServer);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Spark.awaitInitialization();
+                    Field sparkServerField = SparkBase.class.getDeclaredField("server");
+                    sparkServerField.setAccessible(true);
+                    SparkServer sparkServer = (SparkServer) sparkServerField.get(null);
+                    Field serverField = SparkServer.class.getDeclaredField("server");
+                    serverField.setAccessible(true);
+                    Server server = (Server) serverField.get(sparkServer);
 
-                List<Resource> resources = new ArrayList<Resource>();
-                resources.add(Resource.newClassPathResource("static"));
+                    List<Resource> resources = new ArrayList<Resource>();
+                    resources.add(Resource.newClassPathResource("static"));
 
-                ClassLoader cl = ClassLoader.getSystemClassLoader();
-                URL[] urls = ((URLClassLoader) cl).getURLs();
-                for (URL url : urls) {
-                    try {
-                        URL test = new URL("jar:" + url.toExternalForm() + "!/META-INF/resources/");
-                        test.openConnection().connect();
-                        resources.add(Resource.newResource(test));
-                    } catch (Exception e) {
-                        // not found
+                    ClassLoader cl = ClassLoader.getSystemClassLoader();
+                    URL[] urls = ((URLClassLoader) cl).getURLs();
+                    for (URL url : urls) {
+                        try {
+                            URL test = new URL("jar:" + url.toExternalForm() + "!/META-INF/resources/");
+                            test.openConnection().connect();
+                            resources.add(Resource.newResource(test));
+                        } catch (Exception e) {
+                            // not found
+                        }
                     }
-                }
-                ResourceCollection r = new ResourceCollection(resources.toArray(new Resource[resources.size()]));
+                    ResourceCollection r = new ResourceCollection(resources.toArray(new Resource[resources.size()]));
 
-                Handler[] handlers = ((HandlerList) server.getHandler()).getHandlers();
-                for (Handler handler : handlers) {
-                    if (handler instanceof ResourceHandler) {
-                        ((ResourceHandler) handler).setBaseResource(r);
+                    Handler[] handlers = ((HandlerList) server.getHandler()).getHandlers();
+                    for (Handler handler : handlers) {
+                        if (handler instanceof ResourceHandler) {
+                            ((ResourceHandler) handler).setBaseResource(r);
+                        }
                     }
+                } catch (Exception e) {
+                    log.error("Spark init error", e);
                 }
-            } catch (Exception e) {
-                log.error("Spark init error", e);
             }
         }).start();
     }
