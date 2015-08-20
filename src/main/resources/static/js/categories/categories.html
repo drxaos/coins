@@ -7,10 +7,13 @@
                         <div layout-gt-sm="row" layout-sm="column">
                             <div flex="33" layout="row" layout-aling="start center">
                                 <div ng-if="!item.newEntity && !item.editEntity" ng-required="true"
-                                     style="padding: 13px 0; font-weight: bold"
+                                     style="padding: 13px 0; font-weight: bold; line-height: 48px;"
                                      class="ellipsis"
                                      title="{{item.name}}">
                                     {{item.name}}
+                                </div>
+                                <div ng-if="!item.newEntity && !item.editEntity" ng-required="true"
+                                     style="padding: 13px 0">
                                     <md-button class="md-icon-button" aria-label="Edit"
                                                ng-click="categories.editEntity(item)">
                                         <md-icon class="ion-edit fa-lg"></md-icon>
@@ -19,7 +22,8 @@
                                 <md-input-container ng-if="item.newEntity || item.editEntity"
                                                     class="categories-new-item">
                                     <label>{{'CATEGORIES_EDIT_NAME'|translate}}</label>
-                                    <input ng-model="item.name" autofocus reset-with-esc/>
+                                    <input ng-model="item.name" autofocus reset-with-esc
+                                           focus-on="item.newEntity || item.editEntity"/>
                                     <script>$(".categories-new-item").find("input").focus().select();</script>
                                 </md-input-container>
                             </div>

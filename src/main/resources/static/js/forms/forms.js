@@ -14,14 +14,29 @@ angular.module('directive.forms', [])
         };
     })
 
+    .directive('onEsc', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attr) {
+                $element.on('keydown', function (ev) {
+                    if (ev.keyCode != 27) return;
+                    $scope.$apply($attr.onEsc);
+                });
+            }
+        }
+    })
+
     .directive('focusOn', function ($timeout) {
         return {
             restrict: 'A',
             link: function ($scope, $element, $attr) {
                 $scope.$watch($attr.focusOn, function (_focusVal) {
                     $timeout(function () {
-                        _focusVal ? $element.focus() :
+                        if (_focusVal) {
+                            $element.focus().select();
+                        } else {
                             $element.blur();
+                        }
                     }, 100);
                 });
             }

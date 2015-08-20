@@ -8,7 +8,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
         // list
 
         model.list = entries;
-        model.newEntity = null;
+        model.editing = null;
 
         function showMessage(data) {
             var msg = null;
@@ -41,6 +41,12 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
             }
         }
 
+        function cleanList() {
+            model.list = model.list.filter(function (el) {
+                return el.id !== undefined;
+            });
+        }
+
         model.updateEntity = function (item) {
             if (item.newEntity) {
                 return;
@@ -52,18 +58,27 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
         };
 
         model.editEntity = function (item) {
+            if (model.editing != null) {
+                model.cancelEntity(model.editing);
+            }
             item.editEntity = true;
+            model.editing = item;
         };
 
         model.deleteEntity = function (item) {
             var name = item.name;
             item.$delete(function (res) {
                 res.data.name = name;
+                cleanList();
                 showMessage(res);
             }, showMessage);
         };
 
         model.addEntity = function () {
+            if (model.editing != null) {
+                model.cancelEntity(model.editing);
+            }
+
             for (e in model.list) {
                 if (model.list[e].newEntity) {
                     $(".categories-new-item").find("input").focus().select();
@@ -79,7 +94,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
             });
 
             model.list.push(item);
-            model.newEntity = item;
+            model.editing = item;
 
             $(".app-view").animate({scrollTop: $(".app-view")[0].scrollHeight - 250}, 300);
         };
@@ -88,6 +103,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
             if (item.newEntity) {
                 CategoryEntity.save(item, function (saved) {
                     model.list[model.list.indexOf(item)] = saved;
+                    model.addEntity();
                 }, showMessage);
             } else if (item.editEntity) {
                 model.updateEntity(item);
@@ -96,8 +112,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
 
         model.cancelEntity = function (item) {
             if (item.newEntity) {
-                model.list.splice(model.list.indexOf(item), 1);
-                model.newEntity = null;
+                cleanList();
             } else if (item.editEntity) {
                 item.editEntity = false;
                 CategoryEntity.get({id: item.id}, function (loaded) {
@@ -109,8 +124,8 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
         // menu
 
         function search() {
-            if (model.newEntity != null) {
-                model.cancelEntity(model.newEntity);
+            if (model.editing != null) {
+                model.cancelEntity(model.editing);
             }
             $rootScope.appSearch = !$rootScope.appSearch;
         }

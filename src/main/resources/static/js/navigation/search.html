@@ -1,10 +1,10 @@
 <div class="md-toolbar-tools">
-    <md-button ng-click="toolbar.cancelSearch()" aria-label="Back">
+    <md-button ng-click="toolbar.cancelSearch()" aria-label="Back" class="md-icon-button">
         <md-icon class="ion-android-arrow-back fa-lg"></md-icon>
     </md-button>
     <md-input-container md-theme="input" flex>
         <label>&nbsp;</label>
         <input ng-model="$root.appSearchInput" placeholder="{{'TOOLBAR_SEARCH' | translate}}" autofocus
-               focus-on="$root.appSearch">
+               focus-on="$root.appSearch" on-esc="toolbar.cancelSearch()">
     </md-input-container>
 </div>
