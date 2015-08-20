@@ -6,8 +6,6 @@ function SettingsCtrl(AuthService, $rootScope, $translate, $http) {
             return $http.get("/api/v1/settings");
         })
         .then(function (settings) {
-            $rootScope.toolbarTools = [];
-            $rootScope.fab = {show: false};
 
             model.langs = [
                 {name: "ru", title: "Русский"},
@@ -19,7 +17,11 @@ function SettingsCtrl(AuthService, $rootScope, $translate, $http) {
             model.updateLang = function () {
                 $translate.use(model.lang);
                 $http.put("/api/v1/settings/lang", {lang: model.lang});
-            }
+            };
+
+            $rootScope.toolbarTools = [];
+            $rootScope.fab = {show: false};
+            $("ui-view .card-loading").removeClass("card-loading");
         });
 }
 

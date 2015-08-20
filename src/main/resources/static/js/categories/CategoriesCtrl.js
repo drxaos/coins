@@ -62,6 +62,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
                 model.cancelEntity(model.editing);
             }
             item.editEntity = true;
+            item.oldName = item.name;
             model.editing = item;
         };
 
@@ -103,7 +104,6 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
             if (item.newEntity) {
                 CategoryEntity.save(item, function (saved) {
                     model.list[model.list.indexOf(item)] = saved;
-                    model.addEntity();
                 }, showMessage);
             } else if (item.editEntity) {
                 model.updateEntity(item);
@@ -144,6 +144,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
                 model.addEntity();
             }
         };
+        $("ui-view .card-loading").removeClass("card-loading");
     });
 }
 

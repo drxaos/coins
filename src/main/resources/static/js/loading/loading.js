@@ -27,6 +27,7 @@ angular.module('directive.loading', [])
                             }
                         } else {
                             clearTimeout(delayed);
+                            delayed = null;
                         }
                     }
                 });

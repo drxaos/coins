@@ -1,5 +1,5 @@
 body {
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 .md-toolbar-tools h1 {
@@ -32,6 +32,10 @@ md-content.md-default-theme.app-view {
 
 md-card {
     background-color: #fff;
+}
+
+.card-loading {
+    display: none;
 }
 
 .md-button.md-fab.app-fab {
