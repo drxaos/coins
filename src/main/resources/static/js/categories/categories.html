@@ -1,7 +1,7 @@
 <md-card flex-sm="100" flex-gt-sm="100" flex-gt-md="100" style="margin-bottom: 100px">
     <md-card-content>
         <md-list>
-            <md-item ng-repeat="item in categories.list | filter:categories.search">
+            <md-item ng-repeat="item in categories.list | filter:$root.appSearchInput">
                 <md-item-content>
                     <form class="md-tile-content">
                         <div layout-gt-sm="row" layout-sm="column">

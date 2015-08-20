@@ -8,6 +8,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
         // list
 
         model.list = entries;
+        model.newEntity = null;
 
         function showMessage(data) {
             var msg = null;
@@ -69,12 +70,18 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
                     return;
                 }
             }
-            model.list.push(new CategoryEntity({
+
+            var item = new CategoryEntity({
                 name: "",
                 expense: false,
                 income: false,
                 newEntity: true
-            }));
+            });
+
+            model.list.push(item);
+            model.newEntity = item;
+
+            $(".app-view").animate({scrollTop: $(".app-view")[0].scrollHeight - 250}, 300);
         };
 
         model.saveEntity = function (item) {
@@ -90,6 +97,7 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
         model.cancelEntity = function (item) {
             if (item.newEntity) {
                 model.list.splice(model.list.indexOf(item), 1);
+                model.newEntity = null;
             } else if (item.editEntity) {
                 item.editEntity = false;
                 CategoryEntity.get({id: item.id}, function (loaded) {
@@ -101,16 +109,17 @@ function CategoriesCtrl(AuthService, CategoryEntity, $rootScope, $mdToast, $tran
         // menu
 
         function search() {
-        }
-
-        function menu() {
+            if (model.newEntity != null) {
+                model.cancelEntity(model.newEntity);
+            }
+            $rootScope.appSearch = !$rootScope.appSearch;
         }
 
         model.search = {name: ""};
 
         $rootScope.toolbarTools = [
             {name: "CATEGORIES_SEARCH", icon: "ion-search fa-lg", click: search},
-            {name: "CATEGORIES_MENU", icon: "ion-android-more-vertical fa-lg", click: menu},
+            //{name: "CATEGORIES_MENU", icon: "ion-android-more-vertical fa-lg", click: menu},
         ];
         $rootScope.fab = {
             show: true,

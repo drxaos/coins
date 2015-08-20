@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 .md-toolbar-tools h1 {
     font-size: inherit;
     font-weight: inherit;
@@ -28,4 +32,31 @@ md-content.md-default-theme.app-view {
 
 md-card {
     background-color: #fff;
+}
+
+.md-button.md-fab.app-fab {
+    transition: transform .4s cubic-bezier(.25, .8, .25, 1),
+    background-color 0.2s linear,
+    box-shadow 0.2s linear;
+}
+
+.app-search .md-button.md-fab.app-fab,
+.md-button.md-fab.app-fab.fab-hidden {
+    transform: translate3d(0px, 100px, 0);
+}
+
+.md-hue-1 *::-webkit-input-placeholder {
+    color: white;
+}
+
+.md-hue-1 *:-moz-placeholder {
+    color: white;
+}
+
+.md-hue-1 *::-moz-placeholder {
+    color: white;
+}
+
+.md-hue-1 *:-ms-input-placeholder {
+    color: white;
 }

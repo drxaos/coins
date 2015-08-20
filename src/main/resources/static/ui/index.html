@@ -41,14 +41,21 @@
     </div>
 </md-sidenav>
 
-<div layout="column" class="relative" layout-fill role="main">
+<div layout="column" class="relative" layout-fill role="main" ng-class="{'app-search': $root.appSearch}">
 
     <md-toolbar layout="row" ng-controller="ToolbarCtrl as toolbar"
-                ng-show="toolbar.show" ng-include="toolbar.template">
+                ng-show="toolbar.show && !$root.appSearch" ng-include="toolbar.template">
         <!-- toolbar.html -->
     </md-toolbar>
+    <md-toolbar class="md-hue-1"
+                ng-show="$root.appSearch"
+                ng-controller="ToolbarCtrl as toolbar"
+                ng-include="toolbar.searchTemplate">
+        <!-- search.html -->
+    </md-toolbar>
 
-    <md-button ng-show="$root.fab.show" class="md-fab md-fab-bottom-right"
+
+    <md-button ng-class="{'fab-hidden':!$root.fab.show}" class="md-fab md-fab-bottom-right app-fab"
                aria-label="{{$root.fab.title}}" title="{{$root.fab.title}}"
                ng-click="$root.fab.click($event)">
         <md-icon class="{{$root.fab.icon}}"></md-icon>
