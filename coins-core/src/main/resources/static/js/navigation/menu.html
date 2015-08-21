@@ -1,0 +1,40 @@
+<md-toolbar class="md-hue-2 md-tall">
+    <div layout="column" class="md-toolbar-tools-bottom inset">
+        <md-button class="md-icon-button"
+                   ng-click="menu.closeSidenav()"
+                   ng-hide="menu.$mdMedia('gt-md')"
+                   aria-label="Close sidebar"
+                   style="position: absolute; right: 0; top: 0">
+            <md-icon class="ion-ios-close-empty fa-lg"></md-icon>
+        </md-button>
+
+        <h1 class="md-headline ellipsis" style="height: 32px;">{{menu.username}}</h1>
+
+        <h2 class="md-subhead ellipsis" style="height: 24px;">{{menu.email}}</h2>
+    </div>
+</md-toolbar>
+
+<md-list class="menu-links">
+    <section ng-repeat="(linkGroup, links) in menu.menuLinks">
+        <md-subheader ng-repeat-start="(linkHref, linkInfo) in links" class="md-primary"
+                      ng-show="$first && !$parent.$first">
+            {{linkGroup | translate}}
+        </md-subheader>
+        <a ng-repeat-end ng-href="#{{linkHref}}" target="_self">
+            <md-list-item tabindex="-1"
+                          ng-class="{'active' : linkHref === menu.selected }"
+                          ng-click="menu.menuClick(linkHref)" class="menu-link">
+                <md-icon aria-label="Menu" class="menu-link-icon {{linkInfo.icon}}"></md-icon>
+                {{linkInfo.title | translate}}
+            </md-list-item>
+        </a>
+        <md-divider></md-divider>
+    </section>
+    <section>
+        <md-list-item
+                ng-click="menu.logout()" class="menu-link">
+            <md-icon aria-label="Menu" class="menu-link-icon ion-log-out fa-lg"></md-icon>
+            {{'INDEX_MENU_LOGOUT' | translate}}
+        </md-list-item>
+    </section>
+</md-list>
