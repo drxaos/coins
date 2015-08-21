@@ -12,6 +12,7 @@
     <modules>
         <module>coins-spark</module>
         <module>coins-core</module>
+        <module>coins-android</module>
     </modules>
 
     <build>
