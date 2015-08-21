@@ -25,6 +25,7 @@ public class Security implements ApplicationInit {
                 "/favicon.ico",
                 "/webjars/*",
                 "/api/v1/auth/*",
+                "/ui",
                 "/ui/*",
                 "/js/*",
                 "/css/*",

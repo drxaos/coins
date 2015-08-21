@@ -13,6 +13,7 @@
         <module>coins-spark</module>
         <module>coins-core</module>
         <module>coins-android</module>
+        <module>coins-javafx</module>
     </modules>
 
     <build>
