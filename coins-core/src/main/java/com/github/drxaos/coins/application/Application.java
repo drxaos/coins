@@ -5,8 +5,6 @@ import com.github.drxaos.coins.application.events.ApplicationStart;
 import com.github.drxaos.coins.application.events.ApplicationStop;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
 
-import java.util.List;
-
 public abstract class Application {
 
     public enum State {
@@ -36,14 +34,12 @@ public abstract class Application {
 
     public void start() throws ApplicationInitializationException {
         init();
-        List<ApplicationInit> initList = factory.getObjectsByInterface(ApplicationInit.class);
-        for (ApplicationInit obj : initList) {
+        for (ApplicationInit obj : factory.getObjectsByInterface(ApplicationInit.class)) {
             obj.onApplicationInit(this);
         }
         state = State.INITIALIZED;
 
-        List<ApplicationStart> startList = factory.getObjectsByInterface(ApplicationStart.class);
-        for (ApplicationStart obj : startList) {
+        for (ApplicationStart obj : factory.getObjectsByInterface(ApplicationStart.class)) {
             obj.onApplicationStart(this);
         }
         state = State.STARTED;

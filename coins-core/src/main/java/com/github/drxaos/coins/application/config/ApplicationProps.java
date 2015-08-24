@@ -1,9 +1,14 @@
 package com.github.drxaos.coins.application.config;
 
 import com.github.drxaos.coins.application.Application;
-import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.factory.Component;
+import com.google.common.base.Optional;
+import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Floats;
+import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,69 +21,29 @@ public abstract class ApplicationProps implements ApplicationInit {
     protected Map<String, String> props = new HashMap<>();
 
     public String getString(String key, String defaultValue) {
-        if (props.containsKey(key)) {
-            return props.get(key);
-        } else {
-            return defaultValue;
-        }
+        return Optional.fromNullable(props.get(key)).or(defaultValue);
     }
 
     private static final List<String> TRUES = Arrays.asList("true", "yes", "1", "y", "on");
 
     public Boolean getBoolean(String key, Boolean defaultValue) {
-        if (props.containsKey(key)) {
-            return TRUES.contains(props.get(key).trim());
-        } else {
-            return defaultValue;
-        }
+        return Optional.fromNullable(props.get(key)).transform(input -> TRUES.contains(input.trim())).or(defaultValue);
     }
 
     public Integer getInteger(String key, Integer defaultValue) {
-        if (props.containsKey(key)) {
-            try {
-                return Integer.parseInt(props.get(key));
-            } catch (NumberFormatException e) {
-                return defaultValue;
-            }
-        } else {
-            return defaultValue;
-        }
+        return Optional.fromNullable(Ints.tryParse(props.get(key))).or(defaultValue);
     }
 
     public Long getLong(String key, Long defaultValue) {
-        if (props.containsKey(key)) {
-            try {
-                return Long.parseLong(props.get(key));
-            } catch (NumberFormatException e) {
-                return defaultValue;
-            }
-        } else {
-            return defaultValue;
-        }
+        return Optional.fromNullable(Longs.tryParse(props.get(key))).or(defaultValue);
     }
 
     public Float getFloat(String key, Float defaultValue) {
-        if (props.containsKey(key)) {
-            try {
-                return Float.parseFloat(props.get(key));
-            } catch (NumberFormatException e) {
-                return defaultValue;
-            }
-        } else {
-            return defaultValue;
-        }
+        return Optional.fromNullable(Floats.tryParse(props.get(key))).or(defaultValue);
     }
 
     public Double getDouble(String key, Double defaultValue) {
-        if (props.containsKey(key)) {
-            try {
-                return Double.parseDouble(props.get(key));
-            } catch (NumberFormatException e) {
-                return defaultValue;
-            }
-        } else {
-            return defaultValue;
-        }
+        return Optional.fromNullable(Doubles.tryParse(props.get(key))).or(defaultValue);
     }
 
     @Override

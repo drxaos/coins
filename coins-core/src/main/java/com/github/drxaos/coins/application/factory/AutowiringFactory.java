@@ -1,5 +1,14 @@
 package com.github.drxaos.coins.application.factory;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -10,10 +19,12 @@ import java.util.*;
 public class AutowiringFactory {
 
     private Map<String, Object> registry = new HashMap<>();
-    private List<Object> sortedRegistry;
+    private List<Object> sortedRegistryCache;
 
     private Set<Class> classRegistry = new HashSet<>();
 
+    @ToString
+    @EqualsAndHashCode
     private class Target {
         Object obj;
         Field field;
@@ -32,14 +43,6 @@ public class AutowiringFactory {
             field.setAccessible(true);
             field.set(obj, instance);
         }
-
-        @Override
-        public String toString() {
-            return "Target{" +
-                    "obj=" + obj +
-                    ", field=" + field +
-                    '}';
-        }
     }
 
     private Map<String, List<Target>> targetsMap = new HashMap<>();
@@ -49,49 +52,34 @@ public class AutowiringFactory {
     }
 
     public <T> List<T> getObjectsByInterface(Class<T> withInterface) {
-        List<T> result = new ArrayList<>();
-        if (sortedRegistry == null) {
-            sortedRegistry = sortByDependencies(registry.values());
-        }
-        for (Object o : sortedRegistry) {
-            if (withInterface == null || withInterface.isAssignableFrom(o.getClass())) {
-                result.add((T) o);
-            }
-        }
-        return result;
+        cacheSortedRegistry();
+        return FluentIterable.from(sortedRegistryCache)
+                .filter((o) -> withInterface == null || withInterface.isAssignableFrom(o.getClass()))
+                .transform((o) -> (T) o).toList();
+    }
+
+    public void cacheSortedRegistry() {
+        sortedRegistryCache = Optional.fromNullable(sortedRegistryCache)
+                .or(() -> sortByDependencies(registry.values()));
     }
 
     public List<Object> getObjectsByAnnotation(Class<? extends Annotation> withAnnotation) {
-        List<Object> result = new ArrayList<>();
-        if (sortedRegistry == null) {
-            sortedRegistry = sortByDependencies(registry.values());
-        }
-        for (Object o : sortedRegistry) {
-            if (withAnnotation == null || o.getClass().getAnnotation(withAnnotation) != null) {
-                result.add(o);
-            }
-        }
-        return result;
+        cacheSortedRegistry();
+        return FluentIterable.from(sortedRegistryCache)
+                .filter((o) -> withAnnotation == null || o.getClass().getAnnotation(withAnnotation) != null)
+                .toList();
     }
 
     public List<Class> getClassesByAnnotation(Class<? extends Annotation> withAnnotation) {
-        List<Class> result = new ArrayList<>();
-        for (Class c : classRegistry) {
-            if (withAnnotation == null || c.getAnnotation(withAnnotation) != null) {
-                result.add(c);
-            }
-        }
-        return result;
+        return FluentIterable.from(classRegistry)
+                .filter((c) -> withAnnotation == null || c.getAnnotation(withAnnotation) != null)
+                .toList();
     }
 
-    public <T> List<T> getClassesBySuperclass(Class<T> withSuperclass) {
-        List<T> result = new ArrayList<>();
-        for (Class c : classRegistry) {
-            if (withSuperclass == null || withSuperclass.isAssignableFrom(c)) {
-                result.add((T) c);
-            }
-        }
-        return result;
+    public <T> List<Class<T>> getClassesBySuperclass(Class<T> withSuperclass) {
+        return FluentIterable.from(classRegistry)
+                .filter((c) -> withSuperclass == null || withSuperclass.isAssignableFrom(c))
+                .transform((c) -> (Class<T>) c).toList();
     }
 
     public void registerClass(Class... classes) {
@@ -105,11 +93,7 @@ public class AutowiringFactory {
     }
 
     public List<Object> createObject(Class... classes) throws FactoryException {
-        List<Object> result = new ArrayList<>();
-        for (Class aClass : classes) {
-            result.add(createObject(aClass));
-        }
-        return result;
+        return FluentIterable.of(classes).<Object>transform((c) -> createObject(c)).toList();
     }
 
     public <T> T createObject(Class<T> cls) throws FactoryException {
@@ -129,7 +113,7 @@ public class AutowiringFactory {
         }
 
         registry.put(clsWiringName, instance);
-        sortedRegistry = null;
+        sortedRegistryCache = null;
 
         List<Target> targets = targetsMap.get(clsWiringName);
         if (targets != null) {
@@ -158,12 +142,10 @@ public class AutowiringFactory {
         while (c != null) {
             for (Field field : c.getDeclaredFields()) {
                 {
-                    Inject inject = null;
-                    for (Annotation annotation : field.getDeclaredAnnotations()) {
-                        if (annotation instanceof Inject) {
-                            inject = (Inject) annotation;
-                        }
-                    }
+                    Inject inject = (Inject) Iterables.tryFind(
+                            Arrays.asList(field.getDeclaredAnnotations()),
+                            (a) -> (a instanceof Inject)).orNull();
+
                     if (inject != null) {
                         String autowireName = inject.value();
                         if (autowireName == null || autowireName.isEmpty()) {
@@ -185,12 +167,10 @@ public class AutowiringFactory {
                     }
                 }
                 {
-                    Autowire autowire = null;
-                    for (Annotation annotation : field.getDeclaredAnnotations()) {
-                        if (annotation instanceof Autowire) {
-                            autowire = (Autowire) annotation;
-                        }
-                    }
+                    Autowire autowire = (Autowire) Iterables.tryFind(
+                            Arrays.asList(field.getDeclaredAnnotations()),
+                            (a) -> (a instanceof Autowire)).orNull();
+
                     if (autowire != null) {
                         Target target = new Target(instance, field);
                         try {
@@ -211,18 +191,14 @@ public class AutowiringFactory {
         Class c = cls;
         while (c != null) {
             for (Field field : cls.getDeclaredFields()) {
-                Inject inject = null;
-                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation instanceof Inject) {
-                        inject = (Inject) annotation;
-                    }
-                }
+                Inject inject = (Inject) Iterables.tryFind(
+                        Arrays.asList(field.getDeclaredAnnotations()),
+                        (a) -> (a instanceof Inject)).orNull();
+
                 if (inject != null) {
-                    String autowireName = inject.value();
-                    if (autowireName == null || autowireName.isEmpty()) {
-                        autowireName = getClsWiringName(field.getType());
-                    }
-                    result.add(autowireName);
+                    result.add(Optional
+                            .fromNullable(Strings.emptyToNull(inject.value()))
+                            .or(getClsWiringName(field.getType())));
                 }
             }
             c = c.getSuperclass();
@@ -304,18 +280,12 @@ public class AutowiringFactory {
         }
 
         if (!set.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (T o : set) {
-                Class[] deps = getDependencies(o.getClass());
-                List<String> depsNames = new ArrayList<>();
-                for (Class dep : deps) {
-                    depsNames.add(getClsWiringName(dep));
-                }
-                depsNames.addAll(autowiredFieldsNames(o.getClass()));
-                depsNames.removeAll(resultNames);
-                sb.append(o.getClass().getName()).append(": ").append(depsNames).append("\n");
-            }
-            throw new FactoryException("Cannot find dependencies:\n" + sb.toString());
+            throw new FactoryException("Cannot find dependencies:\n" +
+                    Joiner.on("\n").join(Collections2.transform(set, (o) ->
+                            o.getClass().getName() + ": " + FluentIterable.of(getDependencies(o.getClass()))
+                                    .transform(this::getClsWiringName)
+                                    .append(autowiredFieldsNames(o.getClass()))
+                                    .filter(resultNames::contains))));
         }
 
         return result;

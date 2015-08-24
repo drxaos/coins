@@ -9,6 +9,7 @@ import com.github.drxaos.coins.spark.components.JsonTransformer;
 import com.github.drxaos.coins.spark.components.SparkPublisher;
 import com.github.drxaos.coins.spark.config.Http;
 import com.github.drxaos.coins.spark.config.Security;
+import spark.Spark;
 
 public class Main {
     public static class Config extends ApplicationProps {

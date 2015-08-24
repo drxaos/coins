@@ -92,6 +92,7 @@ public class Db implements ApplicationInit, ApplicationStop {
             }
         }
 
+        // Create foreign keys constraints
         for (Map.Entry<Dao, List<String>> entry : foreignKeyCreate.entrySet()) {
             for (String sql : entry.getValue()) {
                 try {

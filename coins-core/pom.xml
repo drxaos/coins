@@ -18,12 +18,10 @@
             <version>1.16.4</version>
             <scope>compile</scope>
         </dependency>
-
-        <!--WEB-->
         <dependency>
-            <groupId>com.nanohttpd</groupId>
-            <artifactId>nanohttpd</artifactId>
-            <version>2.1.1</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
         </dependency>
 
         <!--LOGGING-->
@@ -57,92 +55,19 @@
             <version>1.4.187</version>
         </dependency>
 
-        <!--JAVASCRIPT-->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>jquery</artifactId>
-            <version>2.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>modernizr</artifactId>
-            <version>2.8.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>angularjs</artifactId>
-            <version>1.4.3-1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>angular-translate</artifactId>
-            <version>2.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>angular-material</artifactId>
-            <version>0.10.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>angular-chart.js</artifactId>
-            <version>0.7.1</version>
-        </dependency>
-
-        <!--ICONS-->
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>font-awesome</artifactId>
-            <version>4.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>ionicons</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-
-        <!--FONTS-->
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>roboto-fontface</artifactId>
-            <version>0.4.2</version>
-        </dependency>
-
-
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>com.samaxes.maven</groupId>
-                <artifactId>minify-maven-plugin</artifactId>
-                <version>1.7.4</version>
+                <groupId>net.orfjackal.retrolambda</groupId>
+                <artifactId>retrolambda-maven-plugin</artifactId>
+                <version>2.0.5</version>
                 <executions>
                     <execution>
-                        <id>default-minify</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <charset>UTF-8</charset>
-                            <webappSourceDir>${project.basedir}/src/main/resources/static</webappSourceDir>
-                            <webappTargetDir>${build.directory}/classes/static</webappTargetDir>
-                            <cssSourceDir>css</cssSourceDir>
-                            <cssSourceIncludes>
-                                <cssSourceInclude>**/*.css</cssSourceInclude>
-                            </cssSourceIncludes>
-                            <cssFinalFile>compiled.css</cssFinalFile>
-                            <jsSourceDir>js</jsSourceDir>
-                            <jsSourceIncludes>
-                                <jsSourceInclude>**/*.js</jsSourceInclude>
-                            </jsSourceIncludes>
-                            <jsFinalFile>compiled-r0.0.1.js</jsFinalFile>
-                            <jsEngine>CLOSURE</jsEngine>
-                            <closureCompilationLevel>WHITESPACE_ONLY</closureCompilationLevel>
-                            <closureCreateSourceMap>true</closureCreateSourceMap>
-                            <closureLanguage>ECMASCRIPT5</closureLanguage>
-                            <munge>true</munge>
-                        </configuration>
                         <goals>
-                            <goal>minify</goal>
+                            <goal>process-main</goal>
+                            <goal>process-test</goal>
                         </goals>
                     </execution>
                 </executions>
