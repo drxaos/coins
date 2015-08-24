@@ -1,0 +1,75 @@
+body {
+    overflow: hidden !important;
+}
+
+.md-toolbar-tools h1 {
+    font-size: inherit;
+    font-weight: inherit;
+    margin: inherit;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.menu-link {
+    color: black;
+}
+
+.menu-link-icon {
+    margin-left: 0;
+}
+
+.auth-dialog .auth-dialog-content {
+    margin: 1em;
+}
+
+md-content.md-default-theme.app-view {
+    background-color: #eee;
+}
+
+md-card {
+    background-color: #fff;
+}
+
+.card-loading {
+    display: none;
+}
+
+.md-button.md-fab.app-fab {
+    transition: transform .4s cubic-bezier(.25, .8, .25, 1),
+    background-color 0.2s linear,
+    box-shadow 0.2s linear;
+}
+
+.app-search .md-button.md-fab.app-fab,
+.md-button.md-fab.app-fab.fab-hidden {
+    transform: translate3d(0px, 100px, 0);
+}
+
+.md-hue-1 *::-webkit-input-placeholder {
+    color: white;
+}
+
+.md-hue-1 *:-moz-placeholder {
+    color: white;
+}
+
+.md-hue-1 *::-moz-placeholder {
+    color: white;
+}
+
+.md-hue-1 *:-ms-input-placeholder {
+    color: white;
+}

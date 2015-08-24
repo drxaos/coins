@@ -1,0 +1,14 @@
+<div class="md-toolbar-tools">
+    <md-button hide-gt-md ng-click="toolbar.toggleSidenav('left')" class="md-icon-button">
+        <md-icon aria-label="Menu" class="ion-navicon-round fa-lg"></md-icon>
+    </md-button>
+    <h1>{{toolbar.title | translate}}</h1>
+    <span flex></span>
+    <md-button ng-repeat="tool in $root.toolbarTools"
+               aria-label="{{tool.name | translate}}"
+               title="{{tool.name | translate}}"
+               ng-click="tool.click()"
+               class="md-icon-button">
+        <md-icon class="{{tool.icon}}"></md-icon>
+    </md-button>
+</div>
