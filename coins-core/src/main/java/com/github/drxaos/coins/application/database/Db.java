@@ -29,79 +29,86 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @Component
-public class Db implements ApplicationInit, ApplicationStop {
+public abstract class Db implements ApplicationInit, ApplicationStop {
 
-    @Inject
-    ApplicationProps props;
+    protected AutowiringFactory factory;
 
-    private AutowiringFactory factory;
-
-    private JdbcConnectionSource connectionSource;
-    private Map<Class, Dao> daoMap = new HashMap<>();
+    protected JdbcConnectionSource connectionSource;
+    protected Map<Class, Dao> daoMap = new HashMap<>();
 
     @Override
     public void onApplicationInit(Application application) throws ApplicationInitializationException {
         factory = application.getFactory();
         Entity.factory = factory;
 
-        String jdbcUrl = props.getString("jdbc.url", "jdbc:h2:mem:test");
-
-        try {
-            connectionSource = new JdbcConnectionSource(jdbcUrl);
-        } catch (SQLException e) {
-            throw new ApplicationInitializationException("Cannot connect to database", e);
-        }
+        initConnection();
 
         List<Class> domainClasses = application.getFactory().getClassesByAnnotation(DatabaseTable.class);
-        Map<Dao, List<String>> foreignKeyCreate = new HashMap<>();
+        Map<Dao, List<String>> postCheckSql = new HashMap<>();
         for (Class domainClass : domainClasses) {
             try {
-                Dao dao = getDao(domainClass);
-                if (!dao.isTableExists()) {
-                    TableUtils.createTable(getConnectionSource(), domainClass);
-                    TableInfo tableInfo = ((BaseDaoImpl) dao).getTableInfo();
-                    for (FieldType fieldType : tableInfo.getFieldTypes()) {
-                        if (fieldType.isForeign()) {
-                            FieldType foreignIdField = fieldType.getForeignIdField();
-                            String thisTable = fieldType.getTableName();
-                            String thisColumn = fieldType.getColumnName();
-                            String foreignTable = foreignIdField.getTableName();
-                            String foreignColumn = foreignIdField.getColumnName();
-
-                            String sql = "ALTER TABLE " + thisTable +
-                                    " ADD CONSTRAINT FK_" + thisTable + "_" + thisColumn + "_" + foreignTable + "_" + foreignColumn +
-                                    " FOREIGN KEY (" + thisColumn + ")" +
-                                    " REFERENCES " + foreignTable + "(" + foreignColumn + ");";
-                            if (!foreignKeyCreate.containsKey(dao)) {
-                                foreignKeyCreate.put(dao, new ArrayList());
-                            }
-                            foreignKeyCreate.get(dao).add(sql);
-                        }
-                    }
-                }
-
-                // Check schema
-                PreparedQuery preparedQuery = dao.queryBuilder().orderBy("id", true).limit(1l).prepare();
-                List<Object> list = dao.query(preparedQuery);
-                if (list == null || list.size() > 1) {
-                    throw new ApplicationInitializationException("Database error");
-                }
-
+                checkTable(domainClass, postCheckSql);
             } catch (SQLException | TypedSqlException e) {
-                throw new ApplicationInitializationException("Cannot create table for " + domainClass, e);
+                throw new ApplicationInitializationException("Cannot check table " + domainClass, e);
             }
         }
 
-        // Create foreign keys constraints
-        for (Map.Entry<Dao, List<String>> entry : foreignKeyCreate.entrySet()) {
+        for (Map.Entry<Dao, List<String>> entry : postCheckSql.entrySet()) {
             for (String sql : entry.getValue()) {
                 try {
                     entry.getKey().executeRaw(sql);
                     log.info("executed " + sql);
                 } catch (SQLException e) {
-                    throw new ApplicationInitializationException("Cannot create foreign key: " + entry.getValue(), e);
+                    throw new ApplicationInitializationException("Cannot execute post check sql: " + entry.getValue(), e);
                 }
             }
+        }
+    }
+
+    protected void checkTable(Class domainClass, Map<Dao, List<String>> postCreationSql) throws TypedSqlException, SQLException, ApplicationInitializationException {
+        Dao dao = getDao(domainClass);
+        if (!dao.isTableExists()) {
+            TableUtils.createTable(getConnectionSource(), domainClass);
+            makeForeignKeyConstraints(dao, postCreationSql);
+        }
+
+        // Check schema
+        PreparedQuery preparedQuery = dao.queryBuilder().orderBy("id", true).limit(1l).prepare();
+        List<Object> list = dao.query(preparedQuery);
+        if (list == null || list.size() > 1) {
+            throw new ApplicationInitializationException("Database error: got " + list + " from [" + preparedQuery + "]");
+        }
+    }
+
+    protected void makeForeignKeyConstraints(Dao dao, Map<Dao, List<String>> postCreationSql) {
+        TableInfo tableInfo = ((BaseDaoImpl) dao).getTableInfo();
+        for (FieldType fieldType : tableInfo.getFieldTypes()) {
+            if (fieldType.isForeign()) {
+                FieldType foreignIdField = fieldType.getForeignIdField();
+                String thisTable = fieldType.getTableName();
+                String thisColumn = fieldType.getColumnName();
+                String foreignTable = foreignIdField.getTableName();
+                String foreignColumn = foreignIdField.getColumnName();
+
+                String sql = "ALTER TABLE " + thisTable +
+                        " ADD CONSTRAINT FK_" + thisTable + "_" + thisColumn + "_" + foreignTable + "_" + foreignColumn +
+                        " FOREIGN KEY (" + thisColumn + ")" +
+                        " REFERENCES " + foreignTable + "(" + foreignColumn + ");";
+                if (!postCreationSql.containsKey(dao)) {
+                    postCreationSql.put(dao, new ArrayList<String>());
+                }
+                postCreationSql.get(dao).add(sql);
+            }
+        }
+    }
+
+    protected abstract void initConnection() throws ApplicationInitializationException;
+
+    protected void initConnection(String jdbcUrl) throws ApplicationInitializationException {
+        try {
+            connectionSource = new JdbcConnectionSource(jdbcUrl);
+        } catch (SQLException e) {
+            throw new ApplicationInitializationException("Cannot connect to database", e);
         }
     }
 

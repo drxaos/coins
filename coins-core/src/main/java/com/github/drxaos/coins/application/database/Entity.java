@@ -96,7 +96,7 @@ public class Entity<T> implements Serializable {
         try {
             Dao.CreateOrUpdateStatus status = dao.createOrUpdate((T) this);
             if (status.getNumLinesChanged() != 1) {
-                throw new OptimisticLockException("Entity not deleted");
+                throw new OptimisticLockException("Entity not updated");
             }
             return (T) this;
         } catch (SQLException e) {

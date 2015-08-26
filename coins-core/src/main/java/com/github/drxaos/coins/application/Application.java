@@ -5,6 +5,9 @@ import com.github.drxaos.coins.application.events.ApplicationStart;
 import com.github.drxaos.coins.application.events.ApplicationStop;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
 
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class Application {
 
     public enum State {
@@ -23,10 +26,18 @@ public abstract class Application {
     }
 
     public void addObjects(Class... classes) {
+        addObjects(Arrays.asList(classes));
+    }
+
+    public void addObjects(List<Class> classes) {
         factory.createObject(classes);
     }
 
     public void addClasses(Class... classes) {
+        addClasses(Arrays.asList(classes));
+    }
+
+    public void addClasses(List<Class> classes) {
         factory.registerClass(classes);
     }
 

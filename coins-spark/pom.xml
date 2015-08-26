@@ -19,6 +19,11 @@
         </dependency>
         <dependency>
             <groupId>com.github.drxaos</groupId>
+            <artifactId>coins-db-h2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.drxaos</groupId>
             <artifactId>coins-front-angular</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

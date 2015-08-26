@@ -5,11 +5,14 @@ import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.events.ApplicationStop;
 import com.github.drxaos.coins.application.factory.Component;
+import com.github.drxaos.coins.application.factory.Inject;
+import com.github.drxaos.coins.spark.sessions.DbSessionManager;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceCollection;
 import spark.Spark;
@@ -25,6 +28,9 @@ import java.util.List;
 @Slf4j
 @Component
 public class Http implements ApplicationInit, ApplicationStop {
+
+    @Inject
+    DbSessionManager dbSessionManager;
 
     @Override
     public void onApplicationInit(Application application) throws ApplicationInitializationException {
@@ -50,6 +56,10 @@ public class Http implements ApplicationInit, ApplicationStop {
                     Field serverField = SparkServer.class.getDeclaredField("server");
                     serverField.setAccessible(true);
                     Server server = (Server) serverField.get(sparkServer);
+                    server.stop();
+                    Field handlerField = SparkServer.class.getDeclaredField("handler");
+                    handlerField.setAccessible(true);
+                    SessionHandler sessionHandler = (SessionHandler) handlerField.get(sparkServer);
 
                     List<Resource> resources = new ArrayList<Resource>();
                     resources.add(Resource.newClassPathResource("static"));
@@ -73,6 +83,10 @@ public class Http implements ApplicationInit, ApplicationStop {
                             ((ResourceHandler) handler).setBaseResource(r);
                         }
                     }
+
+                    sessionHandler.setSessionManager(dbSessionManager);
+
+                    server.start();
                 } catch (Exception e) {
                     log.error("Spark init error", e);
                 }

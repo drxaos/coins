@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public abstract class ApplicationProps implements ApplicationInit {
@@ -26,24 +27,32 @@ public abstract class ApplicationProps implements ApplicationInit {
 
     private static final List<String> TRUES = Arrays.asList("true", "yes", "1", "y", "on");
 
+    <T, R> R consumeExceptions(T val, Function<T, R> func) {
+        try {
+            return func.apply(val);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public Boolean getBoolean(String key, Boolean defaultValue) {
         return Optional.fromNullable(props.get(key)).transform(input -> TRUES.contains(input.trim())).or(defaultValue);
     }
 
     public Integer getInteger(String key, Integer defaultValue) {
-        return Optional.fromNullable(Ints.tryParse(props.get(key))).or(defaultValue);
+        return Optional.fromNullable(consumeExceptions(props.get(key), Ints::tryParse)).or(defaultValue);
     }
 
     public Long getLong(String key, Long defaultValue) {
-        return Optional.fromNullable(Longs.tryParse(props.get(key))).or(defaultValue);
+        return Optional.fromNullable(consumeExceptions(props.get(key), Longs::tryParse)).or(defaultValue);
     }
 
     public Float getFloat(String key, Float defaultValue) {
-        return Optional.fromNullable(Floats.tryParse(props.get(key))).or(defaultValue);
+        return Optional.fromNullable(consumeExceptions(props.get(key), Floats::tryParse)).or(defaultValue);
     }
 
     public Double getDouble(String key, Double defaultValue) {
-        return Optional.fromNullable(Doubles.tryParse(props.get(key))).or(defaultValue);
+        return Optional.fromNullable(consumeExceptions(props.get(key), Doubles::tryParse)).or(defaultValue);
     }
 
     @Override

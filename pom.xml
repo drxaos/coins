@@ -12,9 +12,10 @@
     <modules>
         <module>coins-spark</module>
         <module>coins-core</module>
-        <module>coins-android</module>
-        <module>coins-javafx</module>
+        <!--<module>coins-android</module>-->
+        <!--<module>coins-javafx</module>-->
         <module>coins-front-angular</module>
+        <module>coins-db-h2</module>
     </modules>
 
     <build>

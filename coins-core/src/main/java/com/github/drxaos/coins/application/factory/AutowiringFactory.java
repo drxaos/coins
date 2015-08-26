@@ -8,6 +8,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -16,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+@Slf4j
 public class AutowiringFactory {
 
     private Map<String, Object> registry = new HashMap<>();
@@ -83,6 +85,10 @@ public class AutowiringFactory {
     }
 
     public void registerClass(Class... classes) {
+        registerClass(Arrays.asList(classes));
+    }
+
+    public void registerClass(List<Class> classes) {
         for (Class aClass : classes) {
             registerClass(aClass);
         }
@@ -93,7 +99,11 @@ public class AutowiringFactory {
     }
 
     public List<Object> createObject(Class... classes) throws FactoryException {
-        return FluentIterable.of(classes).<Object>transform((c) -> createObject(c)).toList();
+        return createObject(Arrays.asList(classes));
+    }
+
+    public List<Object> createObject(List<Class> classes) throws FactoryException {
+        return FluentIterable.from(classes).<Object>transform((c) -> createObject(c)).toList();
     }
 
     public <T> T createObject(Class<T> cls) throws FactoryException {
@@ -102,6 +112,8 @@ public class AutowiringFactory {
         if (registry.containsKey(clsWiringName)) {
             throw new FactoryException("Object '" + clsWiringName + "' already in registry");
         }
+
+        log.debug("New object: " + clsWiringName);
 
         T instance;
         try {
@@ -119,6 +131,7 @@ public class AutowiringFactory {
         if (targets != null) {
             for (Target target : targets) {
                 try {
+                    log.debug("Injecting " + instance.getClass() + " to " + target.obj.getClass() + "." + target.field.getName());
                     target.set(instance);
                 } catch (IllegalAccessException e) {
                     throw new FactoryException("Cannot inject instance to " + target, e);
@@ -137,9 +150,11 @@ public class AutowiringFactory {
     }
 
     private <T> T autowire(T instance, boolean registerTargets) {
+        log.debug("Autowiring " + instance.getClass());
+
         Class<T> cls = (Class<T>) instance.getClass();
         Class c = cls;
-        while (c != null) {
+        while (c != null && c != Object.class) {
             for (Field field : c.getDeclaredFields()) {
                 {
                     Inject inject = (Inject) Iterables.tryFind(
@@ -154,7 +169,9 @@ public class AutowiringFactory {
                         Target target = new Target(instance, field);
                         if (registry.containsKey(autowireName)) {
                             try {
-                                target.set(registry.get(autowireName));
+                                Object o = registry.get(autowireName);
+                                log.debug("Injecting " + o.getClass() + " to " + target.obj.getClass() + "." + target.field.getName());
+                                target.set(o);
                             } catch (IllegalAccessException e) {
                                 throw new FactoryException("Cannot inject instance to " + target, e);
                             }
@@ -174,7 +191,7 @@ public class AutowiringFactory {
                     if (autowire != null) {
                         Target target = new Target(instance, field);
                         try {
-                            autowire(target.get());
+                            autowire(target.get(), true);
                         } catch (IllegalAccessException e) {
                             throw new FactoryException("Cannot autowire instance " + target, e);
                         }
@@ -285,7 +302,7 @@ public class AutowiringFactory {
                             o.getClass().getName() + ": " + FluentIterable.of(getDependencies(o.getClass()))
                                     .transform(this::getClsWiringName)
                                     .append(autowiredFieldsNames(o.getClass()))
-                                    .filter(resultNames::contains))));
+                                    .filter((e) -> !resultNames.contains(e)))));
         }
 
         return result;

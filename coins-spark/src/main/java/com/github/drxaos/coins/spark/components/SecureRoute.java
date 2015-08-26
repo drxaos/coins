@@ -1,5 +1,7 @@
 package com.github.drxaos.coins.spark.components;
 
+import com.github.drxaos.coins.application.database.Db;
+import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.controller.AbstractTransport;
 import com.github.drxaos.coins.controller.RestHandler;
@@ -8,10 +10,15 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.sql.SQLException;
+
 public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
 
     @Inject
     protected JsonTransformer json;
+
+    @Inject
+    Db db;
 
     protected RestHandler<IN, OUT> handler;
 
@@ -52,11 +59,24 @@ public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
     }
 
     public User loggedInUser() {
-        return threadLocal.get().request.session().attribute("user");
+        User user = threadLocal.get().request.session().attribute("user");
+        if (user == null) {
+            Long userId = threadLocal.get().request.session().attribute("__userId");
+            if (userId != null) {
+                try {
+                    user = db.getDao(User.class).queryForId(userId);
+                    auth(user);
+                } catch (SQLException | TypedSqlException e) {
+                    // no user
+                }
+            }
+        }
+        return user;
     }
 
     public void auth(User user) {
         threadLocal.get().request.session().attribute("user", user);
+        threadLocal.get().request.session().attribute("__userId", user != null ? user.id() : null);
     }
 
     @Override
