@@ -22,17 +22,17 @@ public class Tx extends Entity<Tx> {
 
     @DatabaseField(canBeNull = false, foreign = true)
     User user;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, index = true)
     Date date;
-    @DatabaseField(canBeNull = true, foreign = true)
+    @DatabaseField(canBeNull = true, foreign = true, index = true)
     Category category;
 
-    @DatabaseField(canBeNull = true, foreign = true)
+    @DatabaseField(canBeNull = true, foreign = true, index = true)
     Account outcomeAccount;
     @DatabaseField(canBeNull = true)
     BigDecimal outcomeValue;
 
-    @DatabaseField(canBeNull = true, foreign = true)
+    @DatabaseField(canBeNull = true, foreign = true, index = true)
     Account incomeAccount;
     @DatabaseField(canBeNull = true)
     BigDecimal incomeValue;

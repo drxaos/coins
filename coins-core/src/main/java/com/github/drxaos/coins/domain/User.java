@@ -34,7 +34,7 @@ public class User extends Entity<User> {
     @DatabaseField(canBeNull = false)
     String password;
 
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, index = true)
     String email;
 
     @DatabaseField(canBeNull = false)

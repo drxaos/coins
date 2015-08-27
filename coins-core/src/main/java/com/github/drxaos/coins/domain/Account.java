@@ -26,9 +26,9 @@ public class Account extends Entity<Account> {
         BANK  // 1
     }
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true)
+    @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true, index = true)
     User user;
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false, uniqueCombo = true, index = true)
     String name;
     @DatabaseField(dataType = DataType.ENUM_INTEGER, unknownEnumName = "CASH")
     Type type;
@@ -36,9 +36,9 @@ public class Account extends Entity<Account> {
     String currency;
     @DatabaseField(canBeNull = false)
     BigDecimal value;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, index = true)
     Date created;
-    @DatabaseField(canBeNull = true)
+    @DatabaseField(canBeNull = true, index = true)
     Date closed;
 
     public Account() throws TypedSqlException {

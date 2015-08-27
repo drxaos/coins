@@ -19,11 +19,11 @@ import lombok.experimental.FieldDefaults;
 @DatabaseTable(tableName = "categories")
 public class Category extends Entity<Category> {
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true)
+    @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true, index = true)
     User user;
 
     @Expose
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false, uniqueCombo = true, index = true)
     String name;
 
     @Expose
