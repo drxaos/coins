@@ -5,6 +5,7 @@ import com.github.drxaos.coins.application.database.Entity;
 import com.github.drxaos.coins.application.database.OptimisticLockException;
 import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.factory.Inject;
+import com.github.drxaos.coins.application.validation.ValidationException;
 import com.github.drxaos.coins.controller.RestHandler;
 import com.j256.ormlite.dao.Dao;
 
@@ -34,7 +35,7 @@ public abstract class CrudDeleteRoute<T extends Entity> extends RestHandler<T, O
                     boolean done = false;
                     for (int i = 0; i < 3; i++) {
                         try {
-                            entity.delete();
+                            action(entity);
                             done = true;
                             break;
                         } catch (OptimisticLockException e) {
@@ -48,6 +49,9 @@ public abstract class CrudDeleteRoute<T extends Entity> extends RestHandler<T, O
                     if (!done) {
                         throw new TypedSqlException(null, TypedSqlException.Type.LOCK);
                     }
+                } catch (ValidationException e) {
+                    transport.status(400);
+                    return new CrudError("error-fields", e.getValidationResult());
                 } catch (TypedSqlException e) {
                     transport.status(400);
                     return new CrudError("cannot-delete", sqlExceptionData(entity, e));
@@ -62,6 +66,10 @@ public abstract class CrudDeleteRoute<T extends Entity> extends RestHandler<T, O
             transport.status(404);
             return new CrudError("not-found", Collections.singletonMap("id", id));
         }
+    }
+
+    protected void action(T entity) throws TypedSqlException, OptimisticLockException, ValidationException {
+        entity.delete();
     }
 
     abstract protected void process(T entity) throws CrudException;

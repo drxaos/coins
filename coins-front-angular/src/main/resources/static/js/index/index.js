@@ -2,6 +2,7 @@ require("../js/navigation/navigation.js");
 require("../js/home/home.js");
 require("../js/about/about.js");
 require("../js/categories/categories.js");
+require("../js/accounts/accounts.js");
 require("../js/settings/settings.js");
 require("../js/auth/auth.js");
 require("../js/loading/loading.js");
@@ -19,6 +20,7 @@ InitializingModule = angular.module('Index', [
 
     'Home',
     'Categories',
+    'Accounts',
 
     'Settings',
     'About'

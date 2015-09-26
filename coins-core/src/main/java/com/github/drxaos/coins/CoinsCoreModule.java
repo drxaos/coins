@@ -1,6 +1,7 @@
 package com.github.drxaos.coins;
 
 
+import com.github.drxaos.coins.controller.account.AccountController;
 import com.github.drxaos.coins.controller.auth.AuthController;
 import com.github.drxaos.coins.controller.category.CategoryController;
 import com.github.drxaos.coins.controller.settings.SettingsController;
@@ -9,6 +10,7 @@ import com.github.drxaos.coins.domain.Category;
 import com.github.drxaos.coins.domain.Tx;
 import com.github.drxaos.coins.domain.User;
 import com.github.drxaos.coins.service.settings.SettingsService;
+import com.github.drxaos.coins.service.tx.TxService;
 import com.github.drxaos.coins.service.user.AuthService;
 import com.github.drxaos.coins.service.user.PasswordService;
 import com.github.drxaos.coins.utils.DateUtil;
@@ -30,12 +32,14 @@ public interface CoinsCoreModule {
             // Controllers
             AuthController.class,
             CategoryController.class,
+            AccountController.class,
             SettingsController.class,
 
             // Services
             PasswordService.class,
             AuthService.class,
             SettingsService.class,
+            TxService.class,
 
             // Utils
             DateUtil.class

@@ -1,0 +1,68 @@
+<md-card flex-sm="100" flex-gt-sm="100" flex-gt-md="100" style="margin-bottom: 100px" class="card-loading">
+    <md-card-content>
+        <md-list>
+            <md-item ng-repeat="item in accounts.list | filter:$root.appSearchInput">
+                <md-item-content>
+                    <form class="md-tile-content">
+                        <div layout-gt-sm="row" layout-sm="column">
+                            <div flex="33" layout="row" layout-aling="start center">
+                                <div ng-if="!item.newEntity && !item.editEntity" ng-required="true"
+                                     style="padding: 13px 0; font-weight: bold; line-height: 48px;"
+                                     class="ellipsis"
+                                     title="{{item.name}}">
+                                    {{item.name}}
+                                </div>
+                                <div ng-if="!item.newEntity && !item.editEntity" ng-required="true"
+                                     style="padding: 13px 0">
+                                    <md-button class="md-icon-button" aria-label="Edit"
+                                               ng-click="accounts.editEntity(item)">
+                                        <md-icon class="ion-edit fa-lg"></md-icon>
+                                    </md-button>
+                                </div>
+                                <md-input-container ng-if="item.newEntity || item.editEntity"
+                                                    class="accounts-new-item">
+                                    <label>{{'ACCOUNTS_EDIT_NAME'|translate}}</label>
+                                    <input ng-model="item.name" autofocus reset-with-esc
+                                           focus-on="item.newEntity || item.editEntity"/>
+                                    <script>$(".accounts-new-item").find("input").focus().select();</script>
+                                </md-input-container>
+                            </div>
+                            <div flex layout="row" layout-aling="start center">
+                                <div style="padding: 13px 0; font-weight: bold; line-height: 48px;">
+                                    {{ item.value | currency }}
+                                </div>
+                                <div flex ng-if="!item.newEntity && !item.editEntity"
+                                     layout="row" layout-align="end center">
+                                    <md-button class="md-icon-button"
+                                               aria-label="{{'ACCOUNTS_DELETE'|translate}}"
+                                               title="{{'ACCOUNTS_DELETE'|translate}}"
+                                               ng-click="accounts.deleteEntity(item)">
+                                        <md-icon class="ion-trash-b fa-lg"></md-icon>
+                                    </md-button>
+                                </div>
+                            </div>
+                            <div ng-if="item.newEntity || item.editEntity"
+                                 flex layout="row" layout-align="end center">
+                                <md-button class="md-raised md-primary"
+                                           aria-label="{{'ACCOUNTS_SAVE'|translate}}"
+                                           title="{{'ACCOUNTS_SAVE'|translate}}"
+                                           ng-click="accounts.saveEntity(item)"
+                                           type="submit">
+                                    {{'ACCOUNTS_NEW_SAVE'|translate}}
+                                </md-button>
+                                <md-button class="md-raised"
+                                           aria-label="{{'ACCOUNTS_SAVE'|translate}}"
+                                           title="{{'ACCOUNTS_SAVE'|translate}}"
+                                           ng-click="accounts.cancelEntity(item)"
+                                           type="reset">
+                                    {{'ACCOUNTS_NEW_CANCEL'|translate}}
+                                </md-button>
+                            </div>
+                        </div>
+                    </form>
+                </md-item-content>
+                <md-divider ng-if="!$last"></md-divider>
+            </md-item>
+        </md-list>
+    </md-card-content>
+</md-card>

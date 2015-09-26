@@ -29,12 +29,12 @@ public class Tx extends Entity<Tx> {
 
     @DatabaseField(canBeNull = true, foreign = true, index = true)
     Account outcomeAccount;
-    @DatabaseField(canBeNull = true)
+    @DatabaseField(canBeNull = true, columnDefinition = "DECIMAL(20,2)")
     BigDecimal outcomeValue;
 
     @DatabaseField(canBeNull = true, foreign = true, index = true)
     Account incomeAccount;
-    @DatabaseField(canBeNull = true)
+    @DatabaseField(canBeNull = true, columnDefinition = "DECIMAL(20,2)")
     BigDecimal incomeValue;
 
     @DatabaseField(canBeNull = true)

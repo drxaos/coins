@@ -2,6 +2,9 @@ package com.github.drxaos.coins.domain;
 
 import com.github.drxaos.coins.application.database.Entity;
 import com.github.drxaos.coins.application.database.TypedSqlException;
+import com.github.drxaos.coins.application.factory.Inject;
+import com.github.drxaos.coins.utils.DateUtil;
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -28,16 +31,29 @@ public class Account extends Entity<Account> {
 
     @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true, index = true)
     User user;
+
+    @Expose
     @DatabaseField(canBeNull = false, uniqueCombo = true, index = true)
     String name;
-    @DatabaseField(dataType = DataType.ENUM_INTEGER, unknownEnumName = "CASH")
-    Type type;
+
+    @Expose
+    @DatabaseField(canBeNull = false, dataType = DataType.ENUM_INTEGER, unknownEnumName = "CASH")
+    Type type = Type.CASH;
+
+    @Expose
     @DatabaseField(canBeNull = false)
-    String currency;
-    @DatabaseField(canBeNull = false)
+    String currency = "RUR";
+
+    @Expose
+    @DatabaseField(canBeNull = false, columnDefinition = "DECIMAL(20,2)")
+    BigDecimal startValue = BigDecimal.ZERO;
+
+    @Expose
     BigDecimal value;
+
     @DatabaseField(canBeNull = false, index = true)
     Date created;
+
     @DatabaseField(canBeNull = true, index = true)
     Date closed;
 
