@@ -2,6 +2,7 @@ package com.github.drxaos.coins.controller.account;
 
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.database.Db;
 import com.github.drxaos.coins.application.database.OptimisticLockException;
 import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.events.ApplicationStart;
@@ -11,8 +12,10 @@ import com.github.drxaos.coins.application.validation.ValidationException;
 import com.github.drxaos.coins.controller.AbstractRestPublisher;
 import com.github.drxaos.coins.controller.crud.*;
 import com.github.drxaos.coins.domain.Account;
+import com.github.drxaos.coins.domain.User;
 import com.github.drxaos.coins.service.tx.TxService;
 import com.github.drxaos.coins.utils.DateUtil;
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +40,9 @@ public class AccountController implements ApplicationStart {
     @Inject
     TxService txService;
 
+    @Inject
+    Db db;
+
     @Override
     public void onApplicationStart(Application application) throws ApplicationInitializationException {
         publisher.publish(AbstractRestPublisher.Method.POST, CONTEXT, create);
@@ -46,10 +52,27 @@ public class AccountController implements ApplicationStart {
         publisher.publish(AbstractRestPublisher.Method.GET, CONTEXT, list);
     }
 
+    protected boolean checkAccountExists(Account entity, User user) throws CrudException {
+        try {
+            Dao<Account, Long> dao = db.getDao(Account.class);
+            QueryBuilder<Account, Long> qb = dao.queryBuilder();
+            qb.where().eq("user_id", user.id())
+                    .and().eq("name", entity.name())
+                    .and().isNull("closed");
+            Account found = qb.queryForFirst();
+            return found != null;
+        } catch (TypedSqlException | SQLException e) {
+            throw new CrudException(500, "Server error", null);
+        }
+    }
+
     @Autowire
     public final CrudCreateRoute<Account> create = new CrudCreateRoute<Account>(Account.class) {
         @Override
         protected Account process(Account entity) throws CrudException {
+            if (checkAccountExists(entity, transport.loggedInUser())) {
+                throw new CrudException(409, "duplicate-entity", sqlExceptionData(entity, null));
+            }
             return entity
                     .user(transport.loggedInUser())
                     .created(dateUtil.now())
@@ -84,6 +107,9 @@ public class AccountController implements ApplicationStart {
         protected Account process(Account oldEntity, Account newEntity) throws CrudException {
             if (!Objects.equals(oldEntity.user().id(), transport.loggedInUser().id()) || oldEntity.closed() != null) {
                 throw new CrudException(404, "not-found", Collections.singletonMap("id", oldEntity.id()));
+            }
+            if (checkAccountExists(newEntity, transport.loggedInUser())) {
+                throw new CrudException(409, "duplicate-entity", sqlExceptionData(newEntity, null));
             }
             return newEntity
                     .user(oldEntity.user())

@@ -29,11 +29,11 @@ public class Account extends Entity<Account> {
         BANK  // 1
     }
 
-    @DatabaseField(canBeNull = false, uniqueCombo = true, foreign = true, index = true)
+    @DatabaseField(canBeNull = false, foreign = true, index = true)
     User user;
 
     @Expose
-    @DatabaseField(canBeNull = false, uniqueCombo = true, index = true)
+    @DatabaseField(canBeNull = false, index = true)
     String name;
 
     @Expose

@@ -12,7 +12,7 @@ import java.util.Collections;
 
 public abstract class CrudGetRoute<T extends Entity> extends RestHandler<T, Object> {
     @Inject
-    Db db;
+    protected Db db;
 
     protected Class<T> collectionType;
 

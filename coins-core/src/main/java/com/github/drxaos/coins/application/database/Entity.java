@@ -55,6 +55,10 @@ public class Entity<T> implements Serializable {
         this.dao = dao;
     }
 
+    public Dao getDao() {
+        return dao;
+    }
+
     public Entity() throws TypedSqlException {
         if (factory != null) {
             factory.autowire(this);

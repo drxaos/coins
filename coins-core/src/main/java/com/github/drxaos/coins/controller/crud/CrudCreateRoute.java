@@ -1,12 +1,18 @@
 package com.github.drxaos.coins.controller.crud;
 
+import com.github.drxaos.coins.application.database.Db;
 import com.github.drxaos.coins.application.database.Entity;
 import com.github.drxaos.coins.application.database.OptimisticLockException;
 import com.github.drxaos.coins.application.database.TypedSqlException;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.validation.ValidationException;
 import com.github.drxaos.coins.controller.RestHandler;
 
 public abstract class CrudCreateRoute<T extends Entity> extends RestHandler<T, Object> {
+
+    @Inject
+    protected Db db;
+
     protected Class<T> collectionType;
 
     public CrudCreateRoute(Class<T> collectionType) {
