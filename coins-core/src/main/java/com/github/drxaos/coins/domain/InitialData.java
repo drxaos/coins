@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -55,35 +56,73 @@ public class InitialData implements ApplicationInit {
                                 .save();
                         log.info(foodCategory.toString());
 
+                        Category otherCategory = new Category()
+                                .user(user)
+                                .name("Other")
+                                .expense(true)
+                                .save();
+                        log.info(otherCategory.toString());
+
                         Account walletAccount = new Account()
                                 .user(user)
                                 .name("Wallet")
                                 .type(Account.Type.CASH)
                                 .currency("USD")
                                 .value(new BigDecimal(0))
-                                .created(dateUtil.parseDateTime("01.01.2000", "00:00:00"))
+                                .created(dateUtil.parseDate("01.01.2000"))
                                 .save();
                         log.info(walletAccount.toString());
 
                         Tx salaryTx = new Tx()
                                 .user(user)
-                                .date(dateUtil.parseDateTime("01.01.2000", "12:00:00"))
+                                .date(dateUtil.parseDate("02.01.2000"))
                                 .category(salaryCategory)
                                 .incomeAccount(walletAccount)
-                                .incomeValue(new BigDecimal(100))
+                                .incomeValue(new BigDecimal(500))
                                 .comment("Whee! Got salary!")
                                 .save();
                         log.info(salaryTx.toString());
 
                         Tx foodTx = new Tx()
                                 .user(user)
-                                .date(dateUtil.parseDateTime("01.01.2000", "18:00:00"))
+                                .date(dateUtil.parseDate("03.01.2000"))
                                 .category(foodCategory)
                                 .outcomeAccount(walletAccount)
                                 .outcomeValue(new BigDecimal(50))
                                 .comment("Bought some food")
                                 .save();
                         log.info(foodTx.toString());
+
+                        Date date = dateUtil.parseDate("03.01.2000");
+                        BigDecimal val = new BigDecimal(450);
+                        for (int i = 0; i < 50; i++) {
+                            date = new Date(date.getTime() + 1000 * 60 * 60 * 24 * (Math.round(Math.random() * 10)));
+                            BigDecimal spent = new BigDecimal(Math.round(Math.random() * 100));
+                            Tx genericTx = new Tx()
+                                    .user(user)
+                                    .date(date)
+                                    .category(otherCategory)
+                                    .outcomeAccount(walletAccount)
+                                    .outcomeValue(spent)
+                                    .comment("Gasoline")
+                                    .save();
+                            log.info(genericTx.toString());
+
+                            val = val.subtract(spent);
+                            if (val.signum() < 0) {
+                                BigDecimal salary = new BigDecimal(500);
+                                Tx salary2Tx = new Tx()
+                                        .user(user)
+                                        .date(date)
+                                        .category(otherCategory)
+                                        .incomeAccount(walletAccount)
+                                        .incomeValue(salary)
+                                        .comment("Salary")
+                                        .save();
+                                log.info(salary2Tx.toString());
+                                val = val.add(salary);
+                            }
+                        }
                     }
                     return null;
                 }

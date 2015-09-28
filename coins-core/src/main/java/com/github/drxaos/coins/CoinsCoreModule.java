@@ -5,6 +5,8 @@ import com.github.drxaos.coins.controller.account.AccountController;
 import com.github.drxaos.coins.controller.auth.AuthController;
 import com.github.drxaos.coins.controller.category.CategoryController;
 import com.github.drxaos.coins.controller.settings.SettingsController;
+import com.github.drxaos.coins.controller.transactions.ChartsController;
+import com.github.drxaos.coins.controller.transactions.TxController;
 import com.github.drxaos.coins.domain.Account;
 import com.github.drxaos.coins.domain.Category;
 import com.github.drxaos.coins.domain.Tx;
@@ -34,6 +36,8 @@ public interface CoinsCoreModule {
             CategoryController.class,
             AccountController.class,
             SettingsController.class,
+            ChartsController.class,
+            TxController.class,
 
             // Services
             PasswordService.class,

@@ -64,6 +64,18 @@
             <version>0.4.2</version>
         </dependency>
 
+        <!--CHARTS-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>highstock</artifactId>
+            <version>2.1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>highslide</artifactId>
+            <version>4.1.13</version>
+        </dependency>
+
     </dependencies>
 
     <build>
