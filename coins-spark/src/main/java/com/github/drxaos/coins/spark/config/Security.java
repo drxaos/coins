@@ -27,6 +27,8 @@ public class Security implements ApplicationInit {
                 "/api/v1/auth/*",
                 "/ui",
                 "/ui/*",
+                "/img",
+                "/img/*",
                 "/js/*",
                 "/css/*",
                 "/libs/*",

@@ -73,3 +73,13 @@ md-card {
 .md-hue-1 *:-ms-input-placeholder {
     color: white;
 }
+
+.highcharts-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.highcharts-container svg {
+    width: 100% !important;
+    height: 100% !important;
+}
