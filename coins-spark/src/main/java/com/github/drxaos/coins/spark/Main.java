@@ -17,6 +17,7 @@ import spark.Spark;
 
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.util.TimeZone;
 
 public class Main {
 
@@ -30,6 +31,14 @@ public class Main {
                 charset.setAccessible(true);
                 charset.set(null, null);
             }
+        } catch (Exception e) {
+            //skip
+        }
+
+        // force UTC timezone
+        try {
+            System.setProperty("user.timezone", "UTC");
+            TimeZone.setDefault(null);
         } catch (Exception e) {
             //skip
         }
