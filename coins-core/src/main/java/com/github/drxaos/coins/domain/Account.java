@@ -3,6 +3,7 @@ package com.github.drxaos.coins.domain;
 import com.github.drxaos.coins.application.database.Entity;
 import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.factory.Inject;
+import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.github.drxaos.coins.utils.DateUtil;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
@@ -58,5 +59,24 @@ public class Account extends Entity<Account> {
     Date closed;
 
     public Account() throws TypedSqlException {
+    }
+
+    @Override
+    protected void validator(ValidationResult result) {
+        if (name == null || name.isEmpty()) {
+            result.fieldError("name", "name-is-empty");
+        }
+        if (user == null) {
+            result.fieldError("user", "user-is-empty");
+        }
+        if (type == null) {
+            result.fieldError("type", "type-is-empty");
+        }
+        if (startValue == null) {
+            result.fieldError("startValue", "startValue-is-empty");
+        }
+        if (created == null) {
+            result.fieldError("created", "created-is-empty");
+        }
     }
 }
