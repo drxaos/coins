@@ -10,9 +10,12 @@ public class H2Db extends Db {
     @Inject
     protected ApplicationProps props;
 
+    public String getJdbcUrl() {
+        return props.getString("jdbc.url", "jdbc:h2:mem:test");
+    }
+
     @Override
     protected void initConnection() throws ApplicationInitializationException {
-        String jdbcUrl = props.getString("jdbc.url", "jdbc:h2:mem:test");
-        initConnection(jdbcUrl);
+        initConnection(getJdbcUrl());
     }
 }

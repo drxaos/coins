@@ -2,12 +2,10 @@ package com.github.drxaos.coins.application.database;
 
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
-import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.events.ApplicationStop;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
 import com.github.drxaos.coins.application.factory.Component;
-import com.github.drxaos.coins.application.factory.Inject;
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -65,18 +63,40 @@ public abstract class Db implements ApplicationInit, ApplicationStop {
         }
     }
 
+    protected boolean createSchema = false;
+
+    public void setCreateSchema(boolean createSchema) {
+        this.createSchema = createSchema;
+    }
+
+    public boolean isCreateSchema() {
+        return createSchema;
+    }
+
+    protected boolean checkSchema = true;
+
+    public boolean isCheckSchema() {
+        return checkSchema;
+    }
+
+    public void setCheckSchema(boolean checkSchema) {
+        this.checkSchema = checkSchema;
+    }
+
     protected void checkTable(Class domainClass, Map<Dao, List<String>> postCreationSql) throws TypedSqlException, SQLException, ApplicationInitializationException {
         Dao dao = getDao(domainClass);
-        if (!dao.isTableExists()) {
+        if (!dao.isTableExists() && createSchema) {
             TableUtils.createTable(getConnectionSource(), domainClass);
             makeForeignKeyConstraints(dao, postCreationSql);
         }
 
         // Check schema
-        PreparedQuery preparedQuery = dao.queryBuilder().orderBy("id", true).limit(1l).prepare();
-        List<Object> list = dao.query(preparedQuery);
-        if (list == null || list.size() > 1) {
-            throw new ApplicationInitializationException("Database error: got " + list + " from [" + preparedQuery + "]");
+        if (checkSchema) {
+            PreparedQuery preparedQuery = dao.queryBuilder().orderBy("id", true).limit(1l).prepare();
+            List<Object> list = dao.query(preparedQuery);
+            if (list == null || list.size() > 1) {
+                throw new ApplicationInitializationException("Database error: got " + list + " from [" + preparedQuery + "]");
+            }
         }
     }
 

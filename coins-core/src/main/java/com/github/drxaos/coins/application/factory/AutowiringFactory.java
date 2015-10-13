@@ -207,7 +207,7 @@ public class AutowiringFactory {
         Set<String> result = new HashSet<>();
         Class c = cls;
         while (c != null) {
-            for (Field field : cls.getDeclaredFields()) {
+            for (Field field : c.getDeclaredFields()) {
                 Inject inject = (Inject) Iterables.tryFind(
                         Arrays.asList(field.getDeclaredAnnotations()),
                         (a) -> (a instanceof Inject)).orNull();
