@@ -41,7 +41,7 @@ public abstract class Application {
         factory.registerClass(classes);
     }
 
-    abstract public void init();
+    abstract public void init() throws ApplicationInitializationException;
 
     public void start() throws ApplicationInitializationException {
         init();

@@ -5,7 +5,7 @@ import com.github.drxaos.coins.CoinsCoreModule;
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
-import com.github.drxaos.coins.application.database.h2.CoinsDbH2Module;
+import com.github.drxaos.coins.application.database.mysql.CoinsDbMysqlModule;
 import com.github.drxaos.coins.domain.InitialData;
 import com.github.drxaos.coins.spark.components.JsonTransformer;
 import com.github.drxaos.coins.spark.components.SparkPublisher;
@@ -49,7 +49,7 @@ public class Main {
         @Override
         public void onApplicationInit(Application application) throws ApplicationInitializationException {
 
-            props.put("jdbc.url", "jdbc:h2:./coins;database_To_Upper=false");
+            props.put("jdbc.url", "jdbc:mysql://localhost/coins?user=root&password=root");
 
         }
     }
@@ -81,7 +81,7 @@ public class Main {
                 addClasses(CoinsCoreModule.TYPES);
                 addObjects(CoinsCoreModule.COMPONENTS);
 
-                addObjects(CoinsDbH2Module.COMPONENTS);
+                addObjects(CoinsDbMysqlModule.COMPONENTS);
             }
         };
 
@@ -91,4 +91,3 @@ public class Main {
         System.out.println("Spark running: http://localhost:4567/");
     }
 }
-

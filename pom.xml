@@ -15,7 +15,7 @@
         <!--<module>coins-android</module>-->
         <!--<module>coins-javafx</module>-->
         <module>coins-front-angular</module>
-        <module>coins-db-h2</module>
+        <module>coins-db-mysql</module>
     </modules>
 
     <build>

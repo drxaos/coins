@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="generated" id="2015-10-26 18:50-1">
+        <createTable tableName="accounts">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="startValue" type="DECIMAL(20, 2)"/>
+            <column name="created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="closed" type="datetime"/>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-2">
+        <createTable tableName="categories">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expense" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="income" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-3">
+        <createTable tableName="transactions">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT"/>
+            <column name="outcomeAccount_id" type="BIGINT"/>
+            <column name="outcomeValue" type="DECIMAL(20, 2)"/>
+            <column name="incomeAccount_id" type="BIGINT"/>
+            <column name="incomeValue" type="DECIMAL(20, 2)"/>
+            <column name="comment" type="VARCHAR(255)"/>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-4">
+        <createTable tableName="users">
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lang" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-5">
+        <addUniqueConstraint columnNames="user_id, name" constraintName="user_id" tableName="categories"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-6">
+        <addUniqueConstraint columnNames="name" constraintName="users_name_idx" tableName="users"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-7">
+        <createIndex indexName="FK_transactions_user_id_users_id" tableName="transactions">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-8">
+        <createIndex indexName="accounts_closed_idx" tableName="accounts">
+            <column name="closed"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-9">
+        <createIndex indexName="accounts_created_idx" tableName="accounts">
+            <column name="created"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-10">
+        <createIndex indexName="accounts_name_idx" tableName="accounts">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-11">
+        <createIndex indexName="accounts_user_idx" tableName="accounts">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-12">
+        <createIndex indexName="categories_name_idx" tableName="categories">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-13">
+        <createIndex indexName="categories_user_idx" tableName="categories">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-14">
+        <createIndex indexName="transactions_category_idx" tableName="transactions">
+            <column name="category_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-15">
+        <createIndex indexName="transactions_date_idx" tableName="transactions">
+            <column name="date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-16">
+        <createIndex indexName="transactions_incomeAccount_idx" tableName="transactions">
+            <column name="incomeAccount_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-17">
+        <createIndex indexName="transactions_outcomeAccount_idx" tableName="transactions">
+            <column name="outcomeAccount_id"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet author="xaos" id="2015-10-26 20:00" labels="release"><comment>r0.00.00</comment></changeSet>
+
+
+
+    <changeSet author="generated" id="2015-10-26 18:50-18">
+        <createIndex indexName="users_email_idx" tableName="users">
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-19">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="accounts"
+                                 constraintName="FK_accounts_user_id_users_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-20">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="categories"
+                                 constraintName="FK_categories_user_id_users_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-21">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="transactions"
+                                 constraintName="FK_transactions_category_id_categories_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="categories"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-22">
+        <addForeignKeyConstraint baseColumnNames="incomeAccount_id" baseTableName="transactions"
+                                 constraintName="FK_transactions_incomeAccount_id_accounts_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="accounts"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-23">
+        <addForeignKeyConstraint baseColumnNames="outcomeAccount_id" baseTableName="transactions"
+                                 constraintName="FK_transactions_outcomeAccount_id_accounts_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="accounts"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-26 18:50-24">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="transactions"
+                                 constraintName="FK_transactions_user_id_users_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet author="xaos" id="2015-10-26 20:16" labels="release"><comment>r0.00.01</comment></changeSet>
+
+</databaseChangeLog>

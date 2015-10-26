@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.drxaos</groupId>
-            <artifactId>coins-db-h2</artifactId>
+            <artifactId>coins-db-mysql</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

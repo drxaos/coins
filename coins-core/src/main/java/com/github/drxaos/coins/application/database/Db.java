@@ -4,7 +4,6 @@ import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.events.ApplicationInit;
 import com.github.drxaos.coins.application.events.ApplicationStop;
-import com.github.drxaos.coins.application.factory.AutowiringFactory;
 import com.github.drxaos.coins.application.factory.Component;
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.dao.Dao;
@@ -29,15 +28,12 @@ import java.util.concurrent.Callable;
 @Component
 public abstract class Db implements ApplicationInit, ApplicationStop {
 
-    protected AutowiringFactory factory;
-
     protected JdbcConnectionSource connectionSource;
     protected Map<Class, Dao> daoMap = new HashMap<>();
 
     @Override
     public void onApplicationInit(Application application) throws ApplicationInitializationException {
-        factory = application.getFactory();
-        Entity.factory = factory;
+        Entity.factory = application.getFactory();
 
         initConnection();
 
