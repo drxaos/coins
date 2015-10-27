@@ -47,6 +47,8 @@ public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         try {
+            // TODO check auth
+
             threadLocal.set(new SparkRequest(request, response));
             OUT out = handler.handle(this);
             return out;

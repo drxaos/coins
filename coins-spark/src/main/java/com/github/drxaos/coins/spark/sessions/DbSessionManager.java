@@ -162,6 +162,10 @@ public class DbSessionManager extends AbstractSessionManager {
                 if (session.dirty) {
                     storeSession(session, true);
                     session.dirty = false;
+                } else {
+
+                    // TODO check if deleted, update accessed
+
                 }
             }
             return session;
