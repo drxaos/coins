@@ -10,6 +10,8 @@ public interface AbstractTransport<IN, OUT> {
 
     void auth(User user);
 
+    void dropActiveSessions(boolean keepCurrent);
+
     String params(String name);
 
     void status(int httpCode);

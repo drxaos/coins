@@ -72,6 +72,7 @@ public class AuthController extends AbstractRestController {
 
             try {
                 authService.changePassword(user, input.oldPassword, input.newPassword);
+                transport.dropActiveSessions(true);
             } catch (CheckPasswordException e) {
                 vr.fieldError("oldPassword", "incorrect");
                 return new RestError("field-error", vr);

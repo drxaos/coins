@@ -180,6 +180,15 @@ public class DbSessionManager extends AbstractSessionManager {
         db.getDao(com.github.drxaos.coins.domain.Session.class).deleteBuilder().delete();
     }
 
+    public void invalidateSessions(Long userId, String keepSession) throws Exception {
+        log.debug("invalidate sessions");
+
+        DeleteBuilder<com.github.drxaos.coins.domain.Session, Long> builder =
+                db.getDao(com.github.drxaos.coins.domain.Session.class).deleteBuilder();
+        builder.where().eq("userId", userId).and().not().eq("name", keepSession);
+        builder.delete();
+    }
+
     @Override
     protected AbstractSession newSession(HttpServletRequest request) {
         String sessionId = request.getRequestedSessionId();

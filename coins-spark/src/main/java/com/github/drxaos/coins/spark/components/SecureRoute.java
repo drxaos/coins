@@ -6,16 +6,22 @@ import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.controller.AbstractTransport;
 import com.github.drxaos.coins.controller.RestHandler;
 import com.github.drxaos.coins.domain.User;
+import com.github.drxaos.coins.spark.sessions.DbSessionManager;
+import lombok.extern.slf4j.Slf4j;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 import java.sql.SQLException;
 
+@Slf4j
 public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
 
     @Inject
     protected JsonTransformer json;
+
+    @Inject
+    DbSessionManager sessionManager;
 
     @Inject
     Db db;
@@ -80,6 +86,16 @@ public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
     public void auth(User user) {
         threadLocal.get().request.session().attribute("user", user);
         threadLocal.get().request.session().attribute("__userId", user != null ? user.id() : null);
+    }
+
+    public void dropActiveSessions(boolean keepCurrent) {
+        User user = loggedInUser();
+        String sessionId = keepCurrent ? threadLocal.get().request.session().id() : "";
+        try {
+            sessionManager.invalidateSessions(user.id(), sessionId);
+        } catch (Exception e) {
+            log.error("cannot invalidate sessions", e);
+        }
     }
 
     @Override
