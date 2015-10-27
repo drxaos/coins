@@ -5,6 +5,7 @@ import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.domain.User;
+import com.github.drxaos.coins.errors.CheckPasswordException;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
@@ -29,5 +30,25 @@ public class AuthService {
             throw new TypedSqlException(e, TypedSqlException.Type.UNKNOWN);
         }
     }
+
+    public void changePassword(User user, String oldPassword, String newPassword) throws TypedSqlException {
+        if (checkAuth(user.name(), oldPassword) == null) {
+            throw new CheckPasswordException();
+        }
+        changePassword(user, newPassword);
+    }
+
+    public void changePassword(User user, String password) throws TypedSqlException {
+        try {
+            db.callInTransaction(() ->
+                    db.getDao(User.class)
+                            .queryForId(user.id())
+                            .password(password)
+                            .save());
+        } catch (SQLException e) {
+            throw new TypedSqlException(e, TypedSqlException.Type.UNKNOWN);
+        }
+    }
+
 
 }

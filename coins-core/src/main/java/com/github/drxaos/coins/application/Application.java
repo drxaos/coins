@@ -1,8 +1,8 @@
 package com.github.drxaos.coins.application;
 
-import com.github.drxaos.coins.application.events.ApplicationInit;
-import com.github.drxaos.coins.application.events.ApplicationStart;
-import com.github.drxaos.coins.application.events.ApplicationStop;
+import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
+import com.github.drxaos.coins.application.events.ApplicationStartEventListener;
+import com.github.drxaos.coins.application.events.ApplicationStopEventListener;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
 
 import java.util.Arrays;
@@ -45,19 +45,19 @@ public abstract class Application {
 
     public void start() throws ApplicationInitializationException {
         init();
-        for (ApplicationInit obj : factory.getObjectsByInterface(ApplicationInit.class)) {
+        for (ApplicationInitEventListener obj : factory.getObjectsByInterface(ApplicationInitEventListener.class)) {
             obj.onApplicationInit(this);
         }
         state = State.INITIALIZED;
 
-        for (ApplicationStart obj : factory.getObjectsByInterface(ApplicationStart.class)) {
+        for (ApplicationStartEventListener obj : factory.getObjectsByInterface(ApplicationStartEventListener.class)) {
             obj.onApplicationStart(this);
         }
         state = State.STARTED;
     }
 
     public void stop() throws ApplicationInitializationException {
-        for (ApplicationStop obj : factory.getObjectsByInterface(ApplicationStop.class)) {
+        for (ApplicationStopEventListener obj : factory.getObjectsByInterface(ApplicationStopEventListener.class)) {
             obj.onApplicationStop(this);
         }
         state = State.STOPPED;

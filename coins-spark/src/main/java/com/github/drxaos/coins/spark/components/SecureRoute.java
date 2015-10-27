@@ -40,10 +40,13 @@ public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        threadLocal.set(new SparkRequest(request, response));
-        OUT out = handler.handle(this);
-        threadLocal.set(null);
-        return out;
+        try {
+            threadLocal.set(new SparkRequest(request, response));
+            OUT out = handler.handle(this);
+            return out;
+        } finally {
+            threadLocal.set(null);
+        }
     }
 
     public IN input(Class<IN> type) {

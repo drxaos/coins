@@ -3,7 +3,7 @@ package com.github.drxaos.coins.service.user;
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
-import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
 import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.application.factory.Inject;
 
@@ -12,7 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Component
-public class PasswordService implements ApplicationInit {
+public class PasswordService implements ApplicationInitEventListener {
 
     @Inject
     ApplicationProps props;

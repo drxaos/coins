@@ -1,15 +1,15 @@
 package com.github.drxaos.coins.controller.account;
 
-import com.github.drxaos.coins.application.Application;
-import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.Db;
 import com.github.drxaos.coins.application.database.OptimisticLockException;
 import com.github.drxaos.coins.application.database.TypedSqlException;
-import com.github.drxaos.coins.application.events.ApplicationStart;
 import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.validation.ValidationException;
+import com.github.drxaos.coins.controller.AbstractRestController;
 import com.github.drxaos.coins.controller.AbstractRestPublisher;
+import com.github.drxaos.coins.controller.Publish;
+import com.github.drxaos.coins.controller.PublishingContext;
 import com.github.drxaos.coins.controller.crud.*;
 import com.github.drxaos.coins.domain.Account;
 import com.github.drxaos.coins.domain.User;
@@ -17,7 +17,6 @@ import com.github.drxaos.coins.service.tx.TxService;
 import com.github.drxaos.coins.utils.DateUtil;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -27,12 +26,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public class AccountController implements ApplicationStart {
-
-    public static final String CONTEXT = "/api/v1/accounts";
-
-    @Inject
-    AbstractRestPublisher publisher;
+@PublishingContext("/api/v1/accounts")
+public class AccountController extends AbstractRestController {
 
     @Inject
     DateUtil dateUtil;
@@ -42,15 +37,6 @@ public class AccountController implements ApplicationStart {
 
     @Inject
     Db db;
-
-    @Override
-    public void onApplicationStart(Application application) throws ApplicationInitializationException {
-        publisher.publish(AbstractRestPublisher.Method.POST, CONTEXT, create);
-        publisher.publish(AbstractRestPublisher.Method.GET, CONTEXT + "/:id", get);
-        publisher.publish(AbstractRestPublisher.Method.PUT, CONTEXT + "/:id", update);
-        publisher.publish(AbstractRestPublisher.Method.DELETE, CONTEXT + "/:id", delete);
-        publisher.publish(AbstractRestPublisher.Method.GET, CONTEXT, list);
-    }
 
     protected boolean checkAccountExists(Account entity, User user) throws CrudException {
         try {
@@ -67,6 +53,7 @@ public class AccountController implements ApplicationStart {
     }
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.POST, path = "")
     public final CrudCreateRoute<Account> create = new CrudCreateRoute<Account>(Account.class) {
         @Override
         protected Account process(Account entity) throws CrudException {
@@ -86,6 +73,7 @@ public class AccountController implements ApplicationStart {
     };
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.GET, path = "/:id")
     public final CrudGetRoute<Account> get = new CrudGetRoute<Account>(Account.class) {
         @Override
         protected Account process(Account entity) throws CrudException {
@@ -102,6 +90,7 @@ public class AccountController implements ApplicationStart {
     };
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.PUT, path = "/:id")
     public final CrudUpdateRoute<Account> update = new CrudUpdateRoute<Account>(Account.class) {
         @Override
         protected Account process(Account oldEntity, Account newEntity) throws CrudException {
@@ -123,7 +112,9 @@ public class AccountController implements ApplicationStart {
             return Collections.singletonMap("name", entity.name());
         }
     };
+
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.DELETE, path = "/:id")
     public final CrudDeleteRoute<Account> delete = new CrudDeleteRoute<Account>(Account.class) {
         @Override
         protected void action(Account entity) throws TypedSqlException, OptimisticLockException, ValidationException {
@@ -143,7 +134,9 @@ public class AccountController implements ApplicationStart {
             return Collections.singletonMap("name", entity.name());
         }
     };
+
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.GET, path = "")
     public final CrudListRoute<Account> list = new CrudListRoute<Account>(Account.class) {
         @Override
         protected void processQuery(QueryBuilder<Account, Long> queryBuilder) throws CrudException {

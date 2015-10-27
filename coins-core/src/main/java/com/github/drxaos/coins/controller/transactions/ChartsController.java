@@ -1,16 +1,13 @@
 package com.github.drxaos.coins.controller.transactions;
 
-import com.github.drxaos.coins.application.Application;
-import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.Db;
-import com.github.drxaos.coins.application.events.ApplicationStart;
 import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.application.factory.Inject;
-import com.github.drxaos.coins.controller.AbstractRestPublisher;
-import com.github.drxaos.coins.controller.RestHandler;
+import com.github.drxaos.coins.controller.*;
 import com.github.drxaos.coins.domain.Account;
 import com.github.drxaos.coins.domain.Tx;
 import com.j256.ormlite.stmt.QueryBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,19 +15,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class ChartsController implements ApplicationStart {
-
-    public static final String CONTEXT = "/api/v1/charts";
-
-    @Inject
-    AbstractRestPublisher publisher;
-
-    @Override
-    public void onApplicationStart(Application application) throws ApplicationInitializationException {
-        publisher.publish(AbstractRestPublisher.Method.GET, CONTEXT + "/stock", get);
-    }
+@Slf4j
+@PublishingContext("/api/v1/charts")
+public class ChartsController extends AbstractRestController {
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.GET, path = "/stock")
     public final RestHandler<Void, List<List<Object>>> get = new RestHandler<Void, List<List<Object>>>() {
 
         @Inject

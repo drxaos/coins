@@ -1,16 +1,10 @@
 package com.github.drxaos.coins.controller.crud;
 
-import com.google.gson.annotations.Expose;
+import com.github.drxaos.coins.application.controller.RestError;
 
-public class CrudError {
-    @Expose
-    String error;
-
-    @Expose
-    Object data;
+public class CrudError extends RestError {
 
     public CrudError(String error, Object data) {
-        this.error = error;
-        this.data = data;
+        super(error, data);
     }
 }

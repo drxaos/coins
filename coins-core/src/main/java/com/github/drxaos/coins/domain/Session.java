@@ -1,4 +1,4 @@
-package com.github.drxaos.coins.spark.sessions;
+package com.github.drxaos.coins.domain;
 
 import com.github.drxaos.coins.application.database.Entity;
 import com.github.drxaos.coins.application.database.TypedSqlException;
@@ -18,7 +18,7 @@ import java.util.Date;
 @Accessors(fluent = true, chain = true)
 @EqualsAndHashCode(callSuper = false)
 @DatabaseTable(tableName = "sessions")
-public class StoredSession extends Entity<StoredSession> {
+public class Session extends Entity<Session> {
 
     @DatabaseField(canBeNull = false, uniqueIndex = true)
     String name;
@@ -29,9 +29,15 @@ public class StoredSession extends Entity<StoredSession> {
     @DatabaseField(canBeNull = false)
     Date accessed;
 
+    @DatabaseField(canBeNull = true)
+    Long userId;
+
+    @DatabaseField(canBeNull = true)
+    String label;
+
     @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
     byte[] data;
 
-    public StoredSession() throws TypedSqlException {
+    public Session() throws TypedSqlException {
     }
 }

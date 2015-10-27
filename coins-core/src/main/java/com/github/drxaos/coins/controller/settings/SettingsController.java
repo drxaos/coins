@@ -1,32 +1,21 @@
 package com.github.drxaos.coins.controller.settings;
 
-import com.github.drxaos.coins.application.Application;
-import com.github.drxaos.coins.application.ApplicationInitializationException;
-import com.github.drxaos.coins.application.events.ApplicationStart;
 import com.github.drxaos.coins.application.factory.Autowire;
 import com.github.drxaos.coins.application.factory.Inject;
-import com.github.drxaos.coins.controller.AbstractRestPublisher;
-import com.github.drxaos.coins.controller.RestHandler;
+import com.github.drxaos.coins.controller.*;
 import com.github.drxaos.coins.domain.User;
 import com.github.drxaos.coins.service.settings.SettingsService;
+import lombok.extern.slf4j.Slf4j;
 
-public class SettingsController implements ApplicationStart {
-
-    public static final String CONTEXT = "/api/v1/settings";
-
-    @Inject
-    AbstractRestPublisher publisher;
-
-    @Override
-    public void onApplicationStart(Application application) throws ApplicationInitializationException {
-        publisher.publish(AbstractRestPublisher.Method.GET, CONTEXT, getSettings);
-        publisher.publish(AbstractRestPublisher.Method.PUT, CONTEXT + "/lang", setLang);
-    }
+@Slf4j
+@PublishingContext("/api/v1/settings")
+public class SettingsController extends AbstractRestController {
 
     @Inject
     SettingsService settingsService;
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.GET, path = "")
     public final RestHandler<Void, SettingsResponse> getSettings = new RestHandler<Void, SettingsResponse>() {
         @Override
         public SettingsResponse handle() throws Exception {
@@ -40,6 +29,7 @@ public class SettingsController implements ApplicationStart {
     };
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.PUT, path = "/lang")
     public final RestHandler<SetLangRequest, String> setLang = new RestHandler<SetLangRequest, String>() {
         @Override
         public String handle() throws Exception {

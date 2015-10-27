@@ -3,7 +3,7 @@ package com.github.drxaos.coins.application.database.mysql.migration;
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.mysql.MysqlDb;
-import com.github.drxaos.coins.application.events.ApplicationStop;
+import com.github.drxaos.coins.application.events.ApplicationStopEventListener;
 import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.j256.ormlite.support.DatabaseConnection;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 @Slf4j
 @Component
-public class MysqlDbMigrationTarget extends MysqlDb implements ApplicationStop {
+public class MysqlDbMigrationTarget extends MysqlDb implements ApplicationStopEventListener {
 
     @Inject
     MysqlDbMigrationSource source;

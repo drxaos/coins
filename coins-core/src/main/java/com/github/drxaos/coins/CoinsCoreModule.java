@@ -7,10 +7,7 @@ import com.github.drxaos.coins.controller.category.CategoryController;
 import com.github.drxaos.coins.controller.settings.SettingsController;
 import com.github.drxaos.coins.controller.transactions.ChartsController;
 import com.github.drxaos.coins.controller.transactions.TxController;
-import com.github.drxaos.coins.domain.Account;
-import com.github.drxaos.coins.domain.Category;
-import com.github.drxaos.coins.domain.Tx;
-import com.github.drxaos.coins.domain.User;
+import com.github.drxaos.coins.domain.*;
 import com.github.drxaos.coins.service.settings.SettingsService;
 import com.github.drxaos.coins.service.tx.TxService;
 import com.github.drxaos.coins.service.user.AuthService;
@@ -27,7 +24,9 @@ public interface CoinsCoreModule {
             Account.class,
             Category.class,
             Tx.class,
-            User.class
+            User.class,
+            Session.class,
+            Option.class
     );
 
     List<Class> COMPONENTS = ImmutableList.of(

@@ -1,20 +1,17 @@
 package com.github.drxaos.coins.application.database;
 
+import com.github.drxaos.coins.application.controller.Command;
 import com.github.drxaos.coins.application.factory.AutowiringFactory;
 import com.github.drxaos.coins.application.factory.Inject;
-import com.github.drxaos.coins.application.validation.ValidationError;
 import com.github.drxaos.coins.application.validation.ValidationException;
-import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
 
-public class Entity<T> implements Serializable {
+public class Entity<T> extends Command implements Serializable {
 
     @Expose
     @DatabaseField(generatedId = true)
@@ -64,25 +61,6 @@ public class Entity<T> implements Serializable {
             factory.autowire(this);
             setDao(db.getDao(this.getClass()));
         }
-    }
-
-    protected ValidationResult<T> validationResult;
-
-    public ValidationResult<T> validate() {
-        ValidationResult result = new ValidationResult<T>((T) this);
-        validator(result);
-        return result;
-    }
-
-    public boolean hasErrors() {
-        return validationResult != null && validationResult.hasErrors();
-    }
-
-    public List<ValidationError> getErrors() {
-        return validationResult != null ? validationResult.getErrors() : Collections.<ValidationError>emptyList();
-    }
-
-    protected void validator(ValidationResult result) {
     }
 
     protected void checkForDao() throws TypedSqlException {

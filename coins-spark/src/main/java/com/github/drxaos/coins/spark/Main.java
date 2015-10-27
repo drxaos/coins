@@ -12,7 +12,7 @@ import com.github.drxaos.coins.spark.components.SparkPublisher;
 import com.github.drxaos.coins.spark.config.Http;
 import com.github.drxaos.coins.spark.config.Security;
 import com.github.drxaos.coins.spark.sessions.DbSessionManager;
-import com.github.drxaos.coins.spark.sessions.StoredSession;
+import com.github.drxaos.coins.domain.Session;
 import spark.Spark;
 
 import java.lang.reflect.Field;
@@ -60,7 +60,7 @@ public class Main {
             public void init() {
 
                 addClasses(
-                        StoredSession.class
+                        Session.class
                 );
 
                 // Config

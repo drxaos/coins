@@ -3,7 +3,7 @@ package com.github.drxaos.coins.domain;
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.Db;
-import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.utils.DateUtil;
 import com.j256.ormlite.dao.Dao;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @Slf4j
-public class InitialData implements ApplicationInit {
+public class InitialData implements ApplicationInitEventListener {
 
     @Inject
     Db db;
@@ -95,16 +95,19 @@ public class InitialData implements ApplicationInit {
 
                         Date date = dateUtil.parseDate("03.01.2000");
                         BigDecimal val = new BigDecimal(450);
+                        String[] comments = {"Food", "Gasoline", "Cinema", "Cafe"};
+                        Category[] categories = {foodCategory, otherCategory, otherCategory, foodCategory};
                         for (int i = 0; i < 50; i++) {
                             date = new Date(date.getTime() + 1000 * 60 * 60 * 24 * (Math.round(Math.random() * 10)));
                             BigDecimal spent = new BigDecimal(Math.round(Math.random() * 100));
+                            int n = (int) (Math.random() * 4);
                             Tx genericTx = new Tx()
                                     .user(user)
                                     .date(date)
-                                    .category(otherCategory)
+                                    .category(categories[n])
                                     .outcomeAccount(walletAccount)
                                     .outcomeValue(spent)
-                                    .comment("Gasoline")
+                                    .comment(comments[n])
                                     .save();
                             log.info(genericTx.toString());
 
@@ -114,7 +117,7 @@ public class InitialData implements ApplicationInit {
                                 Tx salary2Tx = new Tx()
                                         .user(user)
                                         .date(date)
-                                        .category(otherCategory)
+                                        .category(salaryCategory)
                                         .incomeAccount(walletAccount)
                                         .incomeValue(salary)
                                         .comment("Salary")

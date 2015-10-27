@@ -2,7 +2,7 @@ package com.github.drxaos.coins.spark.config;
 
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
-import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
 import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.domain.User;
 import spark.Filter;
@@ -13,7 +13,7 @@ import spark.Spark;
 import java.util.Arrays;
 
 @Component(dependencies = {Http.class})
-public class Security implements ApplicationInit {
+public class Security implements ApplicationInitEventListener {
 
     @Override
     public void onApplicationInit(Application application) throws ApplicationInitializationException {

@@ -62,18 +62,23 @@ public class DbSessionManager extends AbstractSessionManager {
         stream.writeObject(toSave);
         stream.close();
 
-        StoredSession s;
-        List<StoredSession> sessionList = db.getDao(StoredSession.class).queryForEq("name", session.getClusterId());
+        com.github.drxaos.coins.domain.Session s;
+        List<com.github.drxaos.coins.domain.Session> sessionList = db.getDao(com.github.drxaos.coins.domain.Session.class).queryForEq("name", session.getClusterId());
         if (sessionList.size() > 0) {
             s = sessionList.get(0);
             if (!update) {
                 s.created(dateUtil.now());
             }
         } else {
-            s = new StoredSession().created(dateUtil.now());
+            s = new com.github.drxaos.coins.domain.Session().created(dateUtil.now());
         }
 
-        s.name(session.getClusterId()).accessed(dateUtil.now()).data(b.toByteArray()).save();
+        s.name(session.getClusterId())
+                .accessed(dateUtil.now())
+                .data(b.toByteArray())
+                .userId((Long) session.getAttribute("__userId"))
+                .label((String) session.getAttribute("__sessionLabel"))
+                .save();
     }
 
     protected void clearOldSessions() throws Exception {
@@ -81,7 +86,7 @@ public class DbSessionManager extends AbstractSessionManager {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(dateUtil.now());
         cal.add(Calendar.MINUTE, -keepMinutes);
-        DeleteBuilder<StoredSession, Long> deleteBuilder = db.getDao(StoredSession.class).deleteBuilder();
+        DeleteBuilder<com.github.drxaos.coins.domain.Session, Long> deleteBuilder = db.getDao(com.github.drxaos.coins.domain.Session.class).deleteBuilder();
         deleteBuilder.where().lt("accessed", cal.getTime());
         deleteBuilder.delete();
     }
@@ -94,8 +99,8 @@ public class DbSessionManager extends AbstractSessionManager {
 
         clearOldSessions();
 
-        StoredSession s;
-        List<StoredSession> sessionList = db.getDao(StoredSession.class).queryForEq("name", name);
+        com.github.drxaos.coins.domain.Session s;
+        List<com.github.drxaos.coins.domain.Session> sessionList = db.getDao(com.github.drxaos.coins.domain.Session.class).queryForEq("name", name);
         if (sessionList.size() > 0) {
             s = sessionList.get(0);
         } else {
@@ -172,7 +177,7 @@ public class DbSessionManager extends AbstractSessionManager {
         log.debug("invalidate sessions");
 
         _sessions.clear();
-        db.getDao(StoredSession.class).deleteBuilder().delete();
+        db.getDao(com.github.drxaos.coins.domain.Session.class).deleteBuilder().delete();
     }
 
     @Override
@@ -189,7 +194,7 @@ public class DbSessionManager extends AbstractSessionManager {
     protected boolean removeSession(String idInCluster) {
         try {
             log.debug("remove session: " + idInCluster);
-            DeleteBuilder<StoredSession, Long> deleteBuilder = db.getDao(StoredSession.class).deleteBuilder();
+            DeleteBuilder<com.github.drxaos.coins.domain.Session, Long> deleteBuilder = db.getDao(com.github.drxaos.coins.domain.Session.class).deleteBuilder();
             deleteBuilder.where().eq("name", idInCluster);
             int n = deleteBuilder.delete();
             return n > 0;
@@ -203,7 +208,7 @@ public class DbSessionManager extends AbstractSessionManager {
     public void renewSessionId(String oldClusterId, String oldNodeId, String newClusterId, String newNodeId) {
         try {
             log.debug("update session: " + oldClusterId + " -> " + newClusterId);
-            UpdateBuilder<StoredSession, Long> updateBuilder = db.getDao(StoredSession.class).updateBuilder();
+            UpdateBuilder<com.github.drxaos.coins.domain.Session, Long> updateBuilder = db.getDao(com.github.drxaos.coins.domain.Session.class).updateBuilder();
             updateBuilder.where().eq("name", oldClusterId);
             updateBuilder.updateColumnValue("name", newClusterId);
             updateBuilder.update();

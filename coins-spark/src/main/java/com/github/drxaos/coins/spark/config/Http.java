@@ -2,8 +2,8 @@ package com.github.drxaos.coins.spark.config;
 
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
-import com.github.drxaos.coins.application.events.ApplicationInit;
-import com.github.drxaos.coins.application.events.ApplicationStop;
+import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
+import com.github.drxaos.coins.application.events.ApplicationStopEventListener;
 import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.spark.sessions.DbSessionManager;
@@ -27,7 +27,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class Http implements ApplicationInit, ApplicationStop {
+public class Http implements ApplicationInitEventListener, ApplicationStopEventListener {
 
     @Inject
     DbSessionManager dbSessionManager;

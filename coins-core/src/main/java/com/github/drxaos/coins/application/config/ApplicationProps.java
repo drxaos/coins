@@ -2,7 +2,7 @@ package com.github.drxaos.coins.application.config;
 
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
-import com.github.drxaos.coins.application.events.ApplicationInit;
+import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
 import com.github.drxaos.coins.application.factory.Component;
 import com.google.common.base.Optional;
 import com.google.common.primitives.Doubles;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public abstract class ApplicationProps implements ApplicationInit {
+public abstract class ApplicationProps implements ApplicationInitEventListener {
 
     protected Map<String, String> props = new HashMap<>();
 

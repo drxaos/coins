@@ -68,9 +68,9 @@ function HomeCtrl($location, AuthService, $rootScope, $http, $translate) {
                                         x: e.pageX || e.clientX,
                                         y: e.pageY || e.clientY
                                     },
-                                    headingText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ': ' + this.y + ' ' + $translate.instant('HOME_CHART_RUR'),
+                                    headingText: Highcharts.dateFormat('%A, %b %e, %Y', this.x),
                                     maincontentText: "tx...",
-                                    width: 300
+                                    width: 250
                                 });
                             }
                         }

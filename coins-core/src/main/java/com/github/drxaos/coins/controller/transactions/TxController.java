@@ -1,39 +1,27 @@
 package com.github.drxaos.coins.controller.transactions;
 
-import com.github.drxaos.coins.application.Application;
-import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.TypedSqlException;
-import com.github.drxaos.coins.application.events.ApplicationStart;
 import com.github.drxaos.coins.application.factory.Autowire;
-import com.github.drxaos.coins.application.factory.Inject;
+import com.github.drxaos.coins.controller.AbstractRestController;
 import com.github.drxaos.coins.controller.AbstractRestPublisher;
+import com.github.drxaos.coins.controller.Publish;
+import com.github.drxaos.coins.controller.PublishingContext;
 import com.github.drxaos.coins.controller.crud.*;
-import com.github.drxaos.coins.domain.Category;
 import com.github.drxaos.coins.domain.Tx;
 import com.j256.ormlite.stmt.QueryBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class TxController implements ApplicationStart {
-
-    public static final String CONTEXT = "/api/v1/transactions";
-
-    @Inject
-    AbstractRestPublisher publisher;
-
-    @Override
-    public void onApplicationStart(Application application) throws ApplicationInitializationException {
-        publisher.publish(AbstractRestPublisher.Method.POST, CONTEXT, create);
-        publisher.publish(AbstractRestPublisher.Method.GET, CONTEXT + "/:id", get);
-        publisher.publish(AbstractRestPublisher.Method.PUT, CONTEXT + "/:id", update);
-        publisher.publish(AbstractRestPublisher.Method.DELETE, CONTEXT + "/:id", delete);
-        publisher.publish(AbstractRestPublisher.Method.GET, CONTEXT, list);
-    }
+@Slf4j
+@PublishingContext("/api/v1/transactions")
+public class TxController extends AbstractRestController {
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.POST, path = "")
     public final CrudCreateRoute<Tx> create = new CrudCreateRoute<Tx>(Tx.class) {
         @Override
         protected Tx process(Tx entity) throws CrudException {
@@ -47,6 +35,7 @@ public class TxController implements ApplicationStart {
     };
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.GET, path = "/:id")
     public final CrudGetRoute<Tx> get = new CrudGetRoute<Tx>(Tx.class) {
         @Override
         protected Tx process(Tx entity) throws CrudException {
@@ -58,6 +47,7 @@ public class TxController implements ApplicationStart {
     };
 
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.PUT, path = "/:id")
     public final CrudUpdateRoute<Tx> update = new CrudUpdateRoute<Tx>(Tx.class) {
         @Override
         protected Tx process(Tx oldEntity, Tx newEntity) throws CrudException {
@@ -72,7 +62,9 @@ public class TxController implements ApplicationStart {
             return Collections.singletonMap("name", entity.name());
         }
     };
+
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.DELETE, path = "/:id")
     public final CrudDeleteRoute<Tx> delete = new CrudDeleteRoute<Tx>(Tx.class) {
         @Override
         protected void process(Tx entity) throws CrudException {
@@ -86,7 +78,9 @@ public class TxController implements ApplicationStart {
             return Collections.singletonMap("name", entity.name());
         }
     };
+
     @Autowire
+    @Publish(method = AbstractRestPublisher.Method.GET, path = "")
     public final CrudListRoute<Tx> list = new CrudListRoute<Tx>(Tx.class) {
         @Override
         protected void processQuery(QueryBuilder<Tx, Long> queryBuilder) throws CrudException {

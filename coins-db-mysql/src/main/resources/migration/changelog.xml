@@ -5,6 +5,10 @@
 
     <changeSet author="generated" id="2015-10-26 18:50-1">
         <createTable tableName="accounts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -22,14 +26,14 @@
                 <constraints nullable="false"/>
             </column>
             <column name="closed" type="datetime"/>
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="version" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="generated" id="2015-10-26 18:50-2">
         <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -42,14 +46,14 @@
             <column name="income" type="BIT">
                 <constraints nullable="false"/>
             </column>
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="version" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="generated" id="2015-10-26 18:50-3">
         <createTable tableName="transactions">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -62,14 +66,14 @@
             <column name="incomeAccount_id" type="BIGINT"/>
             <column name="incomeValue" type="DECIMAL(20, 2)"/>
             <column name="comment" type="VARCHAR(255)"/>
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="version" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="generated" id="2015-10-26 18:50-4">
         <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -82,10 +86,6 @@
             <column name="lang" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="version" type="BIGINT"/>
         </createTable>
     </changeSet>
 
@@ -197,6 +197,60 @@
                                  referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
 
-    <changeSet author="xaos" id="2015-10-26 20:16" labels="release"><comment>r0.00.01</comment></changeSet>
+
+    <changeSet author="xaos" id="2015-10-26 20:16" labels="release">
+        <comment>r0.00.01</comment>
+    </changeSet>
+
+
+    <changeSet author="generated" id="2015-10-27 15:10-1">
+        <createTable tableName="options">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-27 15:10-2">
+        <createTable tableName="sessions">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="accessed" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="BIGINT"/>
+            <column name="label" type="VARCHAR(255)"/>
+            <column name="data" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-27 15:10-3">
+        <addUniqueConstraint columnNames="name" constraintName="sessions_name_idx" tableName="sessions"/>
+    </changeSet>
+    <changeSet author="generated" id="2015-10-27 15:10-4">
+        <createIndex indexName="options_name_idx" tableName="options">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet author="xaos" id="2015-10-27 15:11" labels="release">
+        <comment>r0.00.02</comment>
+    </changeSet>
 
 </databaseChangeLog>
