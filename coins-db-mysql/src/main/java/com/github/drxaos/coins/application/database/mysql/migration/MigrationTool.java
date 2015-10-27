@@ -32,7 +32,7 @@ public class MigrationTool {
                             addObjects(MigrateToolCommand.class, MysqlDbMigrationSource.class);
                             break;
                         case "release":
-                            addObjects(ReleaseToolCommand.class);
+                            addObjects(ReleaseToolCommand.class, MysqlDbMigrationSource.class);
                             break;
                     }
                 }

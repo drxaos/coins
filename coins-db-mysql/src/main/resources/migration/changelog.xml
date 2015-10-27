@@ -88,12 +88,16 @@
             <column name="version" type="BIGINT"/>
         </createTable>
     </changeSet>
+
+
     <changeSet author="generated" id="2015-10-26 18:50-5">
         <addUniqueConstraint columnNames="user_id, name" constraintName="user_id" tableName="categories"/>
     </changeSet>
     <changeSet author="generated" id="2015-10-26 18:50-6">
         <addUniqueConstraint columnNames="name" constraintName="users_name_idx" tableName="users"/>
     </changeSet>
+
+
     <changeSet author="generated" id="2015-10-26 18:50-7">
         <createIndex indexName="FK_transactions_user_id_users_id" tableName="transactions">
             <column name="user_id"/>
@@ -149,17 +153,13 @@
             <column name="outcomeAccount_id"/>
         </createIndex>
     </changeSet>
-
-
-    <changeSet author="xaos" id="2015-10-26 20:00" labels="release"><comment>r0.00.00</comment></changeSet>
-
-
-
     <changeSet author="generated" id="2015-10-26 18:50-18">
         <createIndex indexName="users_email_idx" tableName="users">
             <column name="email"/>
         </createIndex>
     </changeSet>
+
+
     <changeSet author="generated" id="2015-10-26 18:50-19">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="accounts"
                                  constraintName="FK_accounts_user_id_users_id" deferrable="false"
