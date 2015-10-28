@@ -162,10 +162,22 @@ public class DbSessionManager extends AbstractSessionManager {
                 if (session.dirty) {
                     storeSession(session, true);
                     session.dirty = false;
-                } else {
+                } else if (session.getLastAccessedTime() + 1000 < dateUtil.now().getTime()) {
 
-                    // TODO check if deleted, update accessed
+                    UpdateBuilder<com.github.drxaos.coins.domain.Session, Long> builder =
+                            db.getDao(com.github.drxaos.coins.domain.Session.class)
+                                    .updateBuilder();
+                    builder.updateColumnValue("accessed", dateUtil.now());
+                    builder.where().eq("name", session.getClusterId());
+                    int updated = builder.update();
 
+                    if (updated == 0) {
+                        // no session
+                        synchronized (_sessions) {
+                            _sessions.remove(idInCluster);
+                        }
+                        return null;
+                    }
                 }
             }
             return session;
