@@ -16,19 +16,19 @@ public class SparkPublisher extends AbstractRestPublisher implements Application
     JsonTransformer json;
 
     @Override
-    public void publish(Method method, String path, RestHandler handler) {
+    public void publish(Method method, String path, RestHandler handler, boolean anonymousAccess) {
         switch (method) {
             case GET:
-                Spark.get(path, application.getFactory().autowire(new SecureRoute<>(handler)), json);
+                Spark.get(path, application.getFactory().autowire(new SecureRoute<>(handler, anonymousAccess)), json);
                 return;
             case POST:
-                Spark.post(path, application.getFactory().autowire(new SecureRoute<>(handler)), json);
+                Spark.post(path, application.getFactory().autowire(new SecureRoute<>(handler, anonymousAccess)), json);
                 break;
             case PUT:
-                Spark.put(path, application.getFactory().autowire(new SecureRoute<>(handler)), json);
+                Spark.put(path, application.getFactory().autowire(new SecureRoute<>(handler, anonymousAccess)), json);
                 break;
             case DELETE:
-                Spark.delete(path, application.getFactory().autowire(new SecureRoute<>(handler)), json);
+                Spark.delete(path, application.getFactory().autowire(new SecureRoute<>(handler, anonymousAccess)), json);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown method: " + method);

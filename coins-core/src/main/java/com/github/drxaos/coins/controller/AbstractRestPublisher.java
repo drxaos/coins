@@ -9,5 +9,5 @@ abstract public class AbstractRestPublisher {
         GET, POST, PUT, DELETE;
     }
 
-    abstract public void publish(Method method, String path, RestHandler handler);
+    abstract public void publish(Method method, String path, RestHandler handler, boolean anonymousAccess);
 }

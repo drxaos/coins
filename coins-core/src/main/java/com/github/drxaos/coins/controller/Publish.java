@@ -11,4 +11,6 @@ public @interface Publish {
     AbstractRestPublisher.Method method();
 
     String path();
+
+    boolean anonymousAccess() default false;
 }

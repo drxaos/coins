@@ -16,7 +16,7 @@ public class AuthController extends AbstractRestController {
     AuthService authService;
 
     @Autowire
-    @Publish(method = AbstractRestPublisher.Method.POST, path = "/sign_in")
+    @Publish(method = AbstractRestPublisher.Method.POST, path = "/sign_in", anonymousAccess = true)
     public final RestHandler<AuthRequest, AuthResponse> signIn = new RestHandler<AuthRequest, AuthResponse>() {
         @Override
         public AuthResponse handle() throws Exception {
@@ -45,7 +45,7 @@ public class AuthController extends AbstractRestController {
     };
 
     @Autowire
-    @Publish(method = AbstractRestPublisher.Method.GET, path = "/whoami")
+    @Publish(method = AbstractRestPublisher.Method.GET, path = "/whoami", anonymousAccess = true)
     public final RestHandler<Void, WhoamiResponse> whoAmI = new RestHandler<Void, WhoamiResponse>() {
         @Override
         public WhoamiResponse handle() throws Exception {

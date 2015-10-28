@@ -5,6 +5,7 @@ import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.controller.AbstractTransport;
 import com.github.drxaos.coins.controller.RestHandler;
+import com.github.drxaos.coins.controller.auth.AccessDeniedResponse;
 import com.github.drxaos.coins.domain.User;
 import com.github.drxaos.coins.spark.sessions.DbSessionManager;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
 
     protected RestHandler<IN, OUT> handler;
 
+    protected boolean anonymousAccess = false;
+
     public static class SparkRequest {
         Request request;
         Response response;
@@ -38,8 +41,9 @@ public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
         }
     }
 
-    public SecureRoute(RestHandler<IN, OUT> handler) {
+    public SecureRoute(RestHandler<IN, OUT> handler, boolean anonymousAccess) {
         this.handler = handler;
+        this.anonymousAccess = anonymousAccess;
     }
 
     ThreadLocal<SparkRequest> threadLocal = new ThreadLocal<>();
@@ -47,11 +51,15 @@ public class SecureRoute<IN, OUT> implements Route, AbstractTransport<IN, OUT> {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         try {
-            // TODO check auth
-
             threadLocal.set(new SparkRequest(request, response));
+
+            if (!anonymousAccess && loggedInUser() == null) {
+                return new AccessDeniedResponse();
+            }
+
             OUT out = handler.handle(this);
             return out;
+
         } finally {
             threadLocal.set(null);
         }

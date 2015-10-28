@@ -37,7 +37,7 @@ public class AbstractRestController implements ApplicationStartEventListener {
 
                     if (publish != null) {
                         try {
-                            publisher.publish(publish.method(), context + publish.path(), (RestHandler) field.get(this));
+                            publisher.publish(publish.method(), context + publish.path(), (RestHandler) field.get(this), publish.anonymousAccess());
                         } catch (IllegalAccessException e) {
                             log.error("cannot publish action", e);
                         }
