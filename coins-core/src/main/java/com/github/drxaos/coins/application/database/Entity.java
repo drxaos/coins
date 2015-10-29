@@ -11,7 +11,7 @@ import com.j256.ormlite.field.DatabaseField;
 import java.io.Serializable;
 import java.sql.SQLException;
 
-public class Entity<T> extends Command implements Serializable {
+public class Entity<T> extends Command<T> implements Serializable {
 
     @Expose
     @DatabaseField(generatedId = true)

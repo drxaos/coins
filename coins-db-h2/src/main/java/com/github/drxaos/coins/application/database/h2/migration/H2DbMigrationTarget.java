@@ -3,7 +3,7 @@ package com.github.drxaos.coins.application.database.h2.migration;
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.h2.H2Db;
-import com.github.drxaos.coins.application.events.ApplicationStart;
+import com.github.drxaos.coins.application.events.ApplicationStartEventListener;
 import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.utils.DateUtil;
@@ -30,7 +30,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class H2DbMigrationTarget extends H2Db implements ApplicationStart {
+public class H2DbMigrationTarget extends H2Db implements ApplicationStartEventListener {
 
     @Inject
     H2DbMigrationSource source;

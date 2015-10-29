@@ -33,6 +33,14 @@ public abstract class Application {
         factory.createObject(classes);
     }
 
+    public void addInstances(Object... objects) {
+        addInstances(Arrays.asList(objects));
+    }
+
+    public void addInstances(List<Object> objects) {
+        factory.registerObject(objects);
+    }
+
     public void addClasses(Class... classes) {
         addClasses(Arrays.asList(classes));
     }

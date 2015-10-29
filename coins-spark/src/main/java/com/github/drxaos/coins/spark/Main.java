@@ -12,37 +12,9 @@ import com.github.drxaos.coins.spark.components.SparkPublisher;
 import com.github.drxaos.coins.spark.config.Http;
 import com.github.drxaos.coins.spark.config.Security;
 import com.github.drxaos.coins.spark.sessions.DbSessionManager;
-import com.github.drxaos.coins.domain.Session;
 import spark.Spark;
 
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-import java.util.TimeZone;
-
 public class Main {
-
-    static {
-        // force default encoding
-        try {
-            String property = System.getProperty("file.encoding");
-            if (property != null && property.toUpperCase().equals("UTF-8")) {
-                System.setProperty("file.encoding", "UTF-8");
-                Field charset = Charset.class.getDeclaredField("defaultCharset");
-                charset.setAccessible(true);
-                charset.set(null, null);
-            }
-        } catch (Exception e) {
-            //skip
-        }
-
-        // force UTC timezone
-        try {
-            System.setProperty("user.timezone", "UTC");
-            TimeZone.setDefault(null);
-        } catch (Exception e) {
-            //skip
-        }
-    }
 
     public static class Config extends ApplicationProps {
 
@@ -58,10 +30,6 @@ public class Main {
         Application application = new Application() {
             @Override
             public void init() {
-
-                addClasses(
-                        Session.class
-                );
 
                 // Config
                 addObjects(

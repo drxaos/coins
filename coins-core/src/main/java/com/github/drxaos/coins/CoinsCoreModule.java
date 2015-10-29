@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public interface CoinsCoreModule {
+    StartupFixes STARTUP_FIXES = new StartupFixes();
 
     List<Class> TYPES = ImmutableList.of(
             // Database
@@ -48,5 +49,3 @@ public interface CoinsCoreModule {
             DateUtil.class
     );
 }
-
-

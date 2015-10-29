@@ -14,13 +14,13 @@ import lombok.experimental.FieldDefaults;
 public class ValidationError {
 
     @Expose
-    String fieldName;
+    public String fieldName;
 
     @Expose
-    String message;
+    public String message;
 
     @Expose
-    Object[] args;
+    public Object[] args;
 
     public ValidationError() {
     }

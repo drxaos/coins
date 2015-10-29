@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 @Slf4j
 public class AutowiringFactory {
@@ -51,6 +52,15 @@ public class AutowiringFactory {
 
     public List<Object> getObjects() {
         return getObjectsByInterface(null);
+    }
+
+    public <T> T getObject(Class<T> cls) {
+        for (Object o : registry.values()) {
+            if (o.getClass() == cls) {
+                return (T) o;
+            }
+        }
+        return null;
     }
 
     public <T> List<T> getObjectsByInterface(Class<T> withInterface) {
@@ -95,6 +105,7 @@ public class AutowiringFactory {
     }
 
     public void registerClass(Class cls) {
+        // TODO add @Inject-s to targetMap and check if they can be autowired
         classRegistry.add(cls);
     }
 
@@ -103,10 +114,18 @@ public class AutowiringFactory {
     }
 
     public List<Object> createObject(List<Class> classes) throws FactoryException {
-        return FluentIterable.from(classes).<Object>transform((c) -> createObject(c)).toList();
+        return FluentIterable.from(classes).<Object>transform((c) -> register(c, (Callable<Object>) () -> instantiate(c))).toList();
     }
 
-    public <T> T createObject(Class<T> cls) throws FactoryException {
+    public List<Object> registerObject(Object... objects) throws FactoryException {
+        return registerObject(Arrays.asList(objects));
+    }
+
+    public List<Object> registerObject(List<Object> objects) throws FactoryException {
+        return FluentIterable.from(objects).<Object>transform((o) -> register((Class<Object>) o.getClass(), (Callable<Object>) () -> o)).toList();
+    }
+
+    protected <T> T register(Class<T> cls, Callable<T> instantiator) throws FactoryException {
 
         String clsWiringName = getClsWiringName(cls);
         if (registry.containsKey(clsWiringName)) {
@@ -117,11 +136,9 @@ public class AutowiringFactory {
 
         T instance;
         try {
-            Constructor<T> constructor = cls.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            instance = constructor.newInstance();
+            instance = instantiator.call();
         } catch (Exception e) {
-            throw new FactoryException("Cannot create new instance of " + cls, e);
+            throw new FactoryException("cannot instantiate", e);
         }
 
         registry.put(clsWiringName, instance);
@@ -142,6 +159,18 @@ public class AutowiringFactory {
 
         autowire(instance, true);
 
+        return instance;
+    }
+
+    private <T> T instantiate(Class<T> cls) {
+        T instance;
+        try {
+            Constructor<T> constructor = cls.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            instance = constructor.newInstance();
+        } catch (Exception e) {
+            throw new FactoryException("Cannot create new instance of " + cls, e);
+        }
         return instance;
     }
 
