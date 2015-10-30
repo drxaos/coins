@@ -21,6 +21,6 @@ public class TestListener extends RunListener {
 
     @Override
     public void testRunFinished(Result result) throws Exception {
-        H2DbHelper.clearState(false);
+        H2DbHelper.clear(false);
     }
 }

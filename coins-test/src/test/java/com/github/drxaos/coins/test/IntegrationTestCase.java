@@ -15,8 +15,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 @Category(IntegrationCategory.class)
 @RunWith(IntegrationRunner.class)
 abstract public class IntegrationTestCase extends AbstractTestCase {
@@ -30,38 +28,17 @@ abstract public class IntegrationTestCase extends AbstractTestCase {
         }
     }
 
-    static final AtomicReference<Boolean> dbInitialized = new AtomicReference<>(false);
+    Application application;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        synchronized (dbInitialized) {
-            if (!dbInitialized.get()) {
-                H2DbHelper.clearState(true);
-
-                H2DbHelper.testName = "test";
-                Application application = new Application() {
-                    @Override
-                    public void init() {
-                        addClasses(CoinsCoreModule.TYPES);
-                        addObjects(Config.class);
-                        addObjects(FluentIterable.from(CoinsDbH2Module.COMPONENTS).filter((c) -> c != H2Db.class).toList());
-                        addObjects(H2DbHelper.class);
-                    }
-                };
-                application.start();
-                application.getFactory().getObject(H2DbHelper.class).executeMigration();
-                application.stop();
-
-                dbInitialized.set(true);
-            }
-        }
-
+        H2DbHelper.init();
         H2DbHelper.testName = this.getClass().getName() + "." + name.getMethodName();
         H2DbHelper.prepareState();
 
-        Application application = new Application() {
+        application = new Application() {
             @Override
             public void init() {
                 addClasses(CoinsCoreModule.TYPES);
@@ -74,12 +51,13 @@ abstract public class IntegrationTestCase extends AbstractTestCase {
             }
         };
         application.start();
-
         application.getFactory().autowire(this);
     }
 
     @After
     public void tearDown() throws Exception {
+        application.stop();
         H2DbHelper.removeState();
+        super.tearDown();
     }
 }

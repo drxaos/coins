@@ -7,11 +7,7 @@ import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.database.mysql.CoinsDbMysqlModule;
 import com.github.drxaos.coins.domain.InitialData;
-import com.github.drxaos.coins.spark.components.JsonTransformer;
-import com.github.drxaos.coins.spark.components.SparkPublisher;
 import com.github.drxaos.coins.spark.config.Http;
-import com.github.drxaos.coins.spark.config.Security;
-import com.github.drxaos.coins.spark.sessions.DbSessionManager;
 import spark.Spark;
 
 public class Main {
@@ -38,13 +34,7 @@ public class Main {
                 );
 
                 // Web
-                addObjects(
-                        Http.class,
-                        Security.class,
-                        DbSessionManager.class,
-                        JsonTransformer.class,
-                        SparkPublisher.class
-                );
+                addObjects(CoinsSparkModule.COMPONENTS);
 
                 addClasses(CoinsCoreModule.TYPES);
                 addObjects(CoinsCoreModule.COMPONENTS);
@@ -56,6 +46,7 @@ public class Main {
         application.start();
         Spark.awaitInitialization();
 
-        System.out.println("Spark running: http://localhost:4567/");
+        Http http = application.getFactory().getObject(Http.class);
+        System.out.println("Spark running: http://" + http.host + ":" + http.port + "/");
     }
 }

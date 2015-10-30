@@ -8,6 +8,7 @@ import com.github.drxaos.coins.controller.settings.SettingsController;
 import com.github.drxaos.coins.controller.transactions.ChartsController;
 import com.github.drxaos.coins.controller.transactions.TxController;
 import com.github.drxaos.coins.domain.*;
+import com.github.drxaos.coins.service.chart.ChartService;
 import com.github.drxaos.coins.service.settings.SettingsService;
 import com.github.drxaos.coins.service.tx.TxService;
 import com.github.drxaos.coins.service.user.AuthService;
@@ -44,6 +45,7 @@ public interface CoinsCoreModule {
             AuthService.class,
             SettingsService.class,
             TxService.class,
+            ChartService.class,
 
             // Utils
             DateUtil.class

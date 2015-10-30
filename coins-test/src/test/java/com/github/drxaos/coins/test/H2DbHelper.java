@@ -1,8 +1,12 @@
 package com.github.drxaos.coins.test;
 
+import com.github.drxaos.coins.CoinsCoreModule;
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.config.ApplicationProps;
+import com.github.drxaos.coins.application.database.h2.CoinsDbH2Module;
 import com.github.drxaos.coins.application.database.h2.H2Db;
+import com.google.common.collect.FluentIterable;
 import com.j256.ormlite.jdbc.JdbcDatabaseConnection;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
@@ -21,11 +25,44 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class H2DbHelper extends H2Db {
 
     static String testName = "test";
     static String runName = "testdb";
+
+    static final AtomicReference<Boolean> dbInitialized = new AtomicReference<>(false);
+
+    public static class Config extends ApplicationProps {
+        @Override
+        public void onApplicationInit(Application application) throws ApplicationInitializationException {
+        }
+    }
+
+    static void init() throws ApplicationInitializationException {
+        synchronized (dbInitialized) {
+            if (!dbInitialized.get()) {
+                H2DbHelper.clear(true);
+
+                H2DbHelper.testName = "test";
+                Application application = new Application() {
+                    @Override
+                    public void init() {
+                        addClasses(CoinsCoreModule.TYPES);
+                        addObjects(Config.class);
+                        addObjects(FluentIterable.from(CoinsDbH2Module.COMPONENTS).filter((c) -> c != H2Db.class).toList());
+                        addObjects(H2DbHelper.class);
+                    }
+                };
+                application.start();
+                application.getFactory().getObject(H2DbHelper.class).executeMigration();
+                application.stop();
+
+                dbInitialized.set(true);
+            }
+        }
+    }
 
     @Override
     public String getJdbcUrl() {
@@ -95,7 +132,7 @@ public class H2DbHelper extends H2Db {
         f.delete();
     }
 
-    public static void clearState(boolean init) {
+    public static void clear(boolean init) {
         File folder = new File("./" + runName + "");
         delete(folder);
         if (init) {

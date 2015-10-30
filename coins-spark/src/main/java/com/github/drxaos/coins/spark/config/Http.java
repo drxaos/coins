@@ -2,6 +2,7 @@ package com.github.drxaos.coins.spark.config;
 
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
 import com.github.drxaos.coins.application.events.ApplicationStopEventListener;
 import com.github.drxaos.coins.application.factory.Component;
@@ -32,6 +33,12 @@ public class Http implements ApplicationInitEventListener, ApplicationStopEventL
     @Inject
     DbSessionManager dbSessionManager;
 
+    @Inject
+    ApplicationProps props;
+
+    public int port = 4567;
+    public String host = "127.0.0.1";
+
     @Override
     public void onApplicationInit(Application application) throws ApplicationInitializationException {
 
@@ -40,7 +47,10 @@ public class Http implements ApplicationInitEventListener, ApplicationStopEventL
         int timeOutMillis = 5000;
         Spark.threadPool(maxThreads, minThreads, timeOutMillis);
 
-        Spark.port(4567);
+        host = props.getString("server.host", host);
+        Spark.ipAddress(host);
+        port = props.getInteger("server.port", port);
+        Spark.port(port);
 
         Spark.staticFileLocation("static");
 
