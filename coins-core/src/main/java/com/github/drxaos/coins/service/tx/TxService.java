@@ -10,7 +10,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.stmt.QueryBuilder;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -23,7 +22,7 @@ public class TxService {
     @Inject
     Db db;
 
-    public BigDecimal currentValue(Account account) throws TypedSqlException {
+    public BigDecimal calculateCurrentAccountValue(Account account) throws TypedSqlException {
         try {
             Dao<Tx, Long> txes = db.getDao(Tx.class);
             BigDecimal incomeSum, outcomeSum;
@@ -53,5 +52,4 @@ public class TxService {
             throw e;
         }
     }
-
 }

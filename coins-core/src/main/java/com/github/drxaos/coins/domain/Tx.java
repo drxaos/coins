@@ -3,6 +3,7 @@ package com.github.drxaos.coins.domain;
 import com.github.drxaos.coins.application.database.Entity;
 import com.github.drxaos.coins.application.database.TypedSqlException;
 import com.github.drxaos.coins.application.factory.Inject;
+import com.github.drxaos.coins.application.validation.ValidationResult;
 import com.github.drxaos.coins.utils.DateUtil;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
@@ -64,5 +65,21 @@ public class Tx extends Entity<Tx> {
     }
 
     public Tx() throws TypedSqlException {
+    }
+
+    @Override
+    protected void validator(ValidationResult result) {
+        if (incomeAccount != null && date.before(incomeAccount.created())) {
+            result.fieldError("date", "date.before.incomeAccount", date, incomeAccount.created());
+        }
+        if (incomeAccount != null && incomeAccount.isClosed() && date.after(incomeAccount.closed())) {
+            result.fieldError("date", "date.after.incomeAccount", date, incomeAccount.closed());
+        }
+        if (outcomeAccount != null && date.before(outcomeAccount.created())) {
+            result.fieldError("date", "date.before.outcomeAccount", date, outcomeAccount.created());
+        }
+        if (outcomeAccount != null && outcomeAccount.isClosed() && date.after(outcomeAccount.closed())) {
+            result.fieldError("date", "date.after.outcomeAccount", date, outcomeAccount.closed());
+        }
     }
 }

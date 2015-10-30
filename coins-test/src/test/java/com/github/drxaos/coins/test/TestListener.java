@@ -4,6 +4,9 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
 
+/**
+ * Used from maven surefire plugin
+ */
 public class TestListener extends RunListener {
 
     public static long getPID() {
@@ -14,7 +17,6 @@ public class TestListener extends RunListener {
     @Override
     public void testRunStarted(Description description) throws Exception {
         H2DbHelper.runName = "testdb" + getPID();
-        super.testRunStarted(description);
     }
 
     @Override

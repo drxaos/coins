@@ -1,4 +1,9 @@
 package com.github.drxaos.coins.test;
 
-public class FunctionRunner {
+import org.junit.runners.model.InitializationError;
+
+public class FunctionRunner extends AbstractRunner {
+    public FunctionRunner(Class<?> klass) throws InitializationError {
+        super(klass);
+    }
 }

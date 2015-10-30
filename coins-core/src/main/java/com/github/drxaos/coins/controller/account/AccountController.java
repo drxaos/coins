@@ -81,7 +81,7 @@ public class AccountController extends AbstractRestController {
                 throw new CrudException(404, "not-found", Collections.singletonMap("id", entity.id()));
             }
             try {
-                entity.value(txService.currentValue(entity));
+                entity.value(txService.calculateCurrentAccountValue(entity));
             } catch (TypedSqlException e) {
                 throw new CrudException(500, "Server error", null);
             }
@@ -154,7 +154,7 @@ public class AccountController extends AbstractRestController {
         protected List<Account> processList(List<Account> list) throws CrudException {
             for (Account account : list) {
                 try {
-                    account.value(txService.currentValue(account));
+                    account.value(txService.calculateCurrentAccountValue(account));
                 } catch (TypedSqlException e) {
                     throw new CrudException(500, "Server error", null);
                 }
