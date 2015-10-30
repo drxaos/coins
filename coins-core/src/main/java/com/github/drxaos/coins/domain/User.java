@@ -71,6 +71,6 @@ public class User extends Entity<User> {
     }
 
     public boolean checkPassword(String password) {
-        return this.password.equals(passwordService.encode(password));
+        return passwordService.check(password, this.password);
     }
 }

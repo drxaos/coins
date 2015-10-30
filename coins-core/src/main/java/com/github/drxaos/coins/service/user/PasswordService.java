@@ -36,6 +36,10 @@ public class PasswordService implements ApplicationInitEventListener {
         }
     }
 
+    public boolean check(String password, String hash) {
+        return hash.equals(encode(password));
+    }
+
     @Override
     public void onApplicationInit(Application application) throws ApplicationInitializationException {
         try {

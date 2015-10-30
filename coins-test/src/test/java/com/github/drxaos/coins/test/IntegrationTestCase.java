@@ -7,7 +7,6 @@ import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.database.h2.CoinsDbH2Module;
 import com.github.drxaos.coins.application.database.h2.H2Db;
 import com.google.common.collect.FluentIterable;
-import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Category(IntegrationCategory.class)
 @RunWith(IntegrationRunner.class)
-abstract public class IntegrationTestCase extends TestCase {
+abstract public class IntegrationTestCase extends AbstractTestCase {
 
     @Rule
     public TestName name = new TestName();
