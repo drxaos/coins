@@ -51,6 +51,7 @@ abstract public class IntegrationTestCase extends TestCase {
                     }
                 };
                 application.start();
+                application.getFactory().getObject(H2DbHelper.class).executeMigration();
                 application.stop();
 
                 dbInitialized.set(true);

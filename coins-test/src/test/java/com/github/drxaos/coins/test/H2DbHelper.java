@@ -3,6 +3,17 @@ package com.github.drxaos.coins.test;
 import com.github.drxaos.coins.application.Application;
 import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.database.h2.H2Db;
+import com.j256.ormlite.jdbc.JdbcDatabaseConnection;
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.integration.commandline.CommandLineResourceAccessor;
+import liquibase.resource.CompositeResourceAccessor;
+import liquibase.resource.FileSystemResourceAccessor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,14 +34,24 @@ public class H2DbHelper extends H2Db {
 
     @Override
     public void onApplicationInit(Application application) throws ApplicationInitializationException {
-        if (testName.equals("test")) {
-            setCreateSchema(true);
-            setCheckSchema(true);
-        } else {
-            setCreateSchema(false);
-            setCheckSchema(false);
-        }
+        setCreateSchema(false);
+        setCheckSchema(false);
         super.onApplicationInit(application);
+    }
+
+    public void executeMigration() {
+        try {
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(((JdbcDatabaseConnection) this.getConnectionSource().getReadWriteConnection()).getInternalConnection()));
+            FileSystemResourceAccessor fsOpener = new FileSystemResourceAccessor();
+            CommandLineResourceAccessor clOpener = new CommandLineResourceAccessor(this.getClass().getClassLoader());
+            CompositeResourceAccessor fileOpener = new CompositeResourceAccessor(fsOpener, clOpener);
+
+            Liquibase liquibase = new Liquibase("migration/changelog.xml", fileOpener, database);
+            liquibase.update(new Contexts(), new LabelExpression("!release"));
+
+        } catch (SQLException | LiquibaseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void prepareState() throws SQLException, IOException, ApplicationInitializationException {
