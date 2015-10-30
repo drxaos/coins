@@ -1,4 +1,4 @@
-package com.github.drxaos.coins.fixtures;
+package com.github.drxaos.coins.application.test;
 
 public class FixturesLoadingException extends RuntimeException {
     public FixturesLoadingException() {

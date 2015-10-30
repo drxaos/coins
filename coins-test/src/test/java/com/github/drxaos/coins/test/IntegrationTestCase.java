@@ -6,6 +6,7 @@ import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.database.h2.CoinsDbH2Module;
 import com.github.drxaos.coins.application.database.h2.H2Db;
+import com.github.drxaos.coins.application.test.Fixtures;
 import com.google.common.collect.FluentIterable;
 import org.junit.After;
 import org.junit.Before;
@@ -69,6 +70,7 @@ abstract public class IntegrationTestCase extends AbstractTestCase {
                 addObjects(Config.class);
                 addObjects(FluentIterable.from(CoinsDbH2Module.COMPONENTS).filter((c) -> c != H2Db.class).toList());
                 addObjects(H2DbHelper.class);
+                addObjects(Fixtures.class);
             }
         };
         application.start();

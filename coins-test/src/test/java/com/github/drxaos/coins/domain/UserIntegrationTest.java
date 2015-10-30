@@ -54,19 +54,15 @@ public class UserIntegrationTest extends IntegrationTestCase {
                 .password("password1")
                 .save();
 
-        try {
-            User user2 = new User()
-                    .email("user2@example.com")
-                    .lang("RU")
-                    .name("user1")
-                    .password("password2")
-                    .save();
-        } catch (TypedSqlException e) {
-            assertEquals(TypedSqlException.Type.CONFLICT, e.getType());
-            return;
-        }
-
-        fail("exception expected");
+        TypedSqlException e = shouldFail(TypedSqlException.class, () ->
+                        new User()
+                                .email("user2@example.com")
+                                .lang("RU")
+                                .name("user1")
+                                .password("password2")
+                                .save()
+        );
+        assertEquals(TypedSqlException.Type.CONFLICT, e.getType());
     }
 
     @Test

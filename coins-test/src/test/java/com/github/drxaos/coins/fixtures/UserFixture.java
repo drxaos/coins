@@ -1,24 +1,47 @@
 package com.github.drxaos.coins.fixtures;
 
-import com.github.drxaos.coins.application.database.OptimisticLockException;
-import com.github.drxaos.coins.application.database.TypedSqlException;
-import com.github.drxaos.coins.application.validation.ValidationException;
+import com.github.drxaos.coins.application.test.Fixture;
 import com.github.drxaos.coins.domain.User;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-public class UserFixture extends Fixtures {
+@Accessors(fluent = true, chain = true)
+public class UserFixture extends Fixture {
 
     public User user;
 
-    public UserFixture(String name) throws TypedSqlException, ValidationException, OptimisticLockException {
-        user = new User()
-                .name(name)
-                .email(name + "@example.com")
-                .lang("RU")
-                .password("password")
-                .save();
+    public UserFixture() {
     }
 
-    public UserFixture() throws OptimisticLockException, ValidationException, TypedSqlException {
-        this("user");
+    String fixtureName = null;
+
+    public UserFixture(String fixtureName) {
+        this.fixtureName = fixtureName;
+    }
+
+    @Setter
+    String name = "user";
+    @Setter
+    String email = null;
+    @Setter
+    String lang = "RU";
+    @Setter
+    String password = "password";
+
+    @Override
+    protected void init() throws Exception {
+        if (email == null) {
+            email = name + "@example.com";
+        }
+
+        user = new User()
+                .name(name)
+                .email(email)
+                .lang(lang)
+                .password(password)
+                .save();
+        if (fixtureName != null) {
+            put("customUser" + fixtureName, user);
+        }
     }
 }
