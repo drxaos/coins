@@ -7,7 +7,7 @@ import lombok.Value;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RestPublisherStub extends AbstractRestPublisher {
+public class IntegrationRestPublisherStub extends AbstractRestPublisher {
 
     @Value
     public static class Handler {

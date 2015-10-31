@@ -24,7 +24,7 @@ public class UserFixture extends Fixture {
     @Setter
     String email = null;
     @Setter
-    String lang = "RU";
+    String lang = "ru";
     @Setter
     String password = "password";
 

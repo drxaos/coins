@@ -9,6 +9,7 @@ import com.github.drxaos.coins.application.factory.Component;
 import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.spark.sessions.DbSessionManager;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -95,6 +96,9 @@ public class Http implements ApplicationInitEventListener, ApplicationStopEventL
                     }
 
                     sessionHandler.setSessionManager(dbSessionManager);
+
+                    Connector[] connectors = server.getConnectors();
+                    server.setConnectors(connectors);
 
                     server.start();
                 } catch (Exception e) {

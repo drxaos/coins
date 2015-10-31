@@ -43,7 +43,7 @@ abstract public class IntegrationTestCase extends AbstractTestCase {
             public void init() {
                 addClasses(CoinsCoreModule.TYPES);
                 addObjects(CoinsCoreModule.COMPONENTS);
-                addObjects(RestPublisherStub.class);
+                addObjects(IntegrationRestPublisherStub.class);
                 addObjects(Config.class);
                 addObjects(FluentIterable.from(CoinsDbH2Module.COMPONENTS).filter((c) -> c != H2Db.class).toList());
                 addObjects(H2DbHelper.class);

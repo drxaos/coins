@@ -12,6 +12,7 @@ import com.github.drxaos.coins.spark.config.Http;
 import com.google.common.collect.FluentIterable;
 import com.jayway.jsonpath.JsonPath;
 import lombok.Value;
+import lombok.experimental.Accessors;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
@@ -25,12 +26,13 @@ import spark.Spark;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(FunctionCategory.class)
-@RunWith(FunctionRunner.class)
-abstract public class FunctionTestCase extends AbstractTestCase {
+@Category(RestCategory.class)
+@RunWith(RestRunner.class)
+abstract public class RestTestCase extends AbstractTestCase {
 
     @Rule
     public TestName name = new TestName();
@@ -78,6 +80,18 @@ abstract public class FunctionTestCase extends AbstractTestCase {
         Http http = application.getFactory().getObject(Http.class);
         baseUrl = "http://" + http.host + ":" + http.port + "";
         application.getFactory().autowire(this);
+
+        int count = 0;
+        boolean ok = false;
+        while (!ok && count < 10) {
+            try {
+                get("/");
+                ok = true;
+            } catch (SocketException e) {
+                Thread.sleep(100);
+            }
+            count++;
+        }
     }
 
     @After
@@ -88,12 +102,13 @@ abstract public class FunctionTestCase extends AbstractTestCase {
     }
 
     @Value
+    @Accessors(fluent = true, chain = true)
     public static class Response {
         int code;
-        String json;
+        String content;
 
         public <T> T query(String path) {
-            return JsonPath.read(json, path);
+            return JsonPath.read(content, path);
         }
     }
 
@@ -121,8 +136,8 @@ abstract public class FunctionTestCase extends AbstractTestCase {
         return new Response(statusCode, new String(out.toByteArray()));
     }
 
-    protected Response get(String url, String data) throws IOException {
-        return exec("get", url, data);
+    protected Response get(String url) throws IOException {
+        return exec("get", url, null);
     }
 
     protected Response post(String url, String data) throws IOException {

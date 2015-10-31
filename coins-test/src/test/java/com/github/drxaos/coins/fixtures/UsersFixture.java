@@ -13,7 +13,7 @@ public class UsersFixture extends Fixture {
         user1 = new User()
                 .name("user1")
                 .email("user1@example.com")
-                .lang("RU")
+                .lang("ru")
                 .password("password1")
                 .save();
         put("user1", user1);
@@ -21,7 +21,7 @@ public class UsersFixture extends Fixture {
         user2 = new User()
                 .name("user2")
                 .email("user2@example.com")
-                .lang("RU")
+                .lang("ru")
                 .password("password2")
                 .save();
         put("user2", user1);

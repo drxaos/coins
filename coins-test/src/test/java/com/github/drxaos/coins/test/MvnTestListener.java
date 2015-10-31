@@ -7,7 +7,7 @@ import org.junit.runner.notification.RunListener;
 /**
  * Used from maven surefire plugin
  */
-public class TestListener extends RunListener {
+public class MvnTestListener extends RunListener {
 
     public static long getPID() {
         String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
