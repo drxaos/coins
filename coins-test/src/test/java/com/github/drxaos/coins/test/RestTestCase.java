@@ -14,8 +14,12 @@ import com.jayway.jsonpath.JsonPath;
 import lombok.Value;
 import lombok.experimental.Accessors;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -124,12 +128,37 @@ abstract public class RestTestCase extends AbstractTestCase {
         put("delete", (url) -> Request.Delete(baseUrl + url));
     }};
 
+    String currentSession = "default";
+    Map<String, BasicCookieStore> sessions = new HashMap<String, BasicCookieStore>() {{
+        put(currentSession, new BasicCookieStore());
+    }};
+
+    protected String getCurrentSession() {
+        return currentSession;
+    }
+
+    protected void setCurrentSession(String currentSession) {
+        this.currentSession = currentSession;
+        if (!sessions.containsKey(currentSession)) {
+            sessions.put(currentSession, new BasicCookieStore());
+        }
+    }
+
+    protected void setSessionId(String sessionId) {
+        sessions.get(currentSession).addCookie(new BasicClientCookie("JSESSIONID", sessionId));
+    }
+
     protected Response exec(String method, String url, String data) throws IOException {
         Request request = methods.get(method).make(url);
         if (data != null && !data.isEmpty()) {
             request = request.bodyString(data, ContentType.APPLICATION_JSON);
         }
-        HttpResponse httpResponse = request.execute().returnResponse();
+
+        CookieStore cookieStore = new BasicCookieStore();
+        Executor executor = Executor.newInstance();
+
+        HttpResponse httpResponse = executor.use(cookieStore)
+                .execute(request).returnResponse();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         httpResponse.getEntity().writeTo(out);
         int statusCode = httpResponse.getStatusLine().getStatusCode();
