@@ -65,9 +65,9 @@ public class DbSessionManager extends AbstractSessionManager {
         }
     }
 
-    protected void storeSession(Session session, boolean update) throws Exception {
+    protected boolean storeSession(Session session, boolean update) throws Exception {
         if (session == null)
-            return;
+            return false;
 
         log.debug("store session: " + session.getClusterId());
 
@@ -78,8 +78,10 @@ public class DbSessionManager extends AbstractSessionManager {
             if (!update) {
                 s.created(dateUtil.now());
             }
-        } else {
+        } else if (!update) {
             s = new com.github.drxaos.coins.domain.Session().created(dateUtil.now());
+        } else {
+            return false;
         }
 
         s.name(session.getClusterId())
@@ -88,6 +90,7 @@ public class DbSessionManager extends AbstractSessionManager {
                 .userId((Long) session.getAttribute("__userId"))
                 .label((String) session.getAttribute("__sessionLabel"))
                 .save();
+        return true;
     }
 
     protected void clearOldSessions() throws Exception {
@@ -208,7 +211,13 @@ public class DbSessionManager extends AbstractSessionManager {
                 }
             } else {
                 if (session.dirty) {
-                    storeSession(session, true);
+                    boolean success = storeSession(session, true);
+                    if (!success) {
+                        synchronized (_sessions) {
+                            _sessions.remove(idInCluster);
+                        }
+                        return null;
+                    }
                     session.dirty = false;
                 } else if (session.getLastAccessedTime() + 1000 < dateUtil.now().getTime()) {
 
