@@ -7,6 +7,8 @@ import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.database.h2.CoinsDbH2Module;
 import com.github.drxaos.coins.application.database.h2.H2Db;
 import com.github.drxaos.coins.application.test.Fixtures;
+import com.github.drxaos.coins.mock.DateUtilMock;
+import com.github.drxaos.coins.utils.DateUtil;
 import com.google.common.collect.FluentIterable;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +44,8 @@ abstract public class IntegrationTestCase extends AbstractTestCase {
             @Override
             public void init() {
                 addClasses(CoinsCoreModule.TYPES);
-                addObjects(CoinsCoreModule.COMPONENTS);
+                addObjects(FluentIterable.from(CoinsCoreModule.COMPONENTS).filter((c) -> c != DateUtil.class).toList());
+                addObjects(DateUtilMock.class);
                 addObjects(IntegrationRestPublisherStub.class);
                 addObjects(Config.class);
                 addObjects(FluentIterable.from(CoinsDbH2Module.COMPONENTS).filter((c) -> c != H2Db.class).toList());

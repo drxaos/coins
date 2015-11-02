@@ -1,12 +1,11 @@
 package com.github.drxaos.coins.application.test;
 
+import com.github.drxaos.coins.application.factory.Inject;
+
 abstract public class Fixture {
 
-    Fixtures fixtures;
-
-    void setFixtures(Fixtures fixtures) {
-        this.fixtures = fixtures;
-    }
+    @Inject
+    protected Fixtures fixtures;
 
     protected <T extends Fixture> T require(Class<T> fixtureType) {
         return fixtures.require(fixtureType);

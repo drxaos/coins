@@ -1,11 +1,14 @@
 package com.github.drxaos.coins.utils;
 
+import com.github.drxaos.coins.application.factory.Component;
+
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Component
 public class DateUtil {
     public Date now() {
         return new GregorianCalendar().getTime();

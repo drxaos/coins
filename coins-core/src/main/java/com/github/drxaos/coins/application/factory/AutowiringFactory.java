@@ -2,7 +2,6 @@ package com.github.drxaos.coins.application.factory;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
@@ -191,10 +190,16 @@ public class AutowiringFactory {
                             (a) -> (a instanceof Inject)).orNull();
 
                     if (inject != null) {
-                        String autowireName = inject.value();
-                        if (autowireName == null || autowireName.isEmpty()) {
-                            autowireName = getClsWiringName(field.getType());
+                        Class ft = field.getType();
+                        Class fc = ft;
+                        while (fc != null && fc != Object.class) {
+                            if (fc.getAnnotation(Component.class) != null) {
+                                ft = fc;
+                                break;
+                            }
+                            fc = fc.getSuperclass();
                         }
+                        String autowireName = getClsWiringName(ft);
                         Target target = new Target(instance, field);
                         if (registry.containsKey(autowireName)) {
                             try {
@@ -242,9 +247,7 @@ public class AutowiringFactory {
                         (a) -> (a instanceof Inject)).orNull();
 
                 if (inject != null) {
-                    result.add(Optional
-                            .fromNullable(Strings.emptyToNull(inject.value()))
-                            .or(getClsWiringName(field.getType())));
+                    result.add(getClsWiringName(field.getType()));
                 }
             }
             c = c.getSuperclass();

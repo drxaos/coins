@@ -1,12 +1,18 @@
 package com.github.drxaos.coins.application.test;
 
+import com.github.drxaos.coins.application.Application;
+import com.github.drxaos.coins.application.ApplicationInitializationException;
+import com.github.drxaos.coins.application.events.ApplicationInitEventListener;
+import com.github.drxaos.coins.application.factory.AutowiringFactory;
 import com.github.drxaos.coins.application.factory.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class Fixtures {
+public class Fixtures implements ApplicationInitEventListener {
+
+    AutowiringFactory factory;
 
     Map<String, Object> objects = new HashMap<>();
 
@@ -23,7 +29,7 @@ public class Fixtures {
         if (fixture == null) {
             try {
                 fixture = fixtureType.newInstance();
-                fixture.setFixtures(this);
+                factory.autowire(fixture);
                 fixture.init();
                 fixtures.put(fixtureType, fixture);
             } catch (Exception e) {
@@ -36,7 +42,7 @@ public class Fixtures {
     public <T extends Fixture> T add(T fixture) {
         if (!fixtures.containsKey(fixture.getClass())) {
             try {
-                fixture.setFixtures(this);
+                factory.autowire(fixture);
                 fixture.init();
                 fixtures.put(fixture.getClass(), fixture);
             } catch (Exception e) {
@@ -52,5 +58,10 @@ public class Fixtures {
 
     void put(String name, Object obj) {
         objects.put(name, obj);
+    }
+
+    @Override
+    public void onApplicationInit(Application application) throws ApplicationInitializationException {
+        factory = application.getFactory();
     }
 }

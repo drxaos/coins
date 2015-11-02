@@ -8,16 +8,21 @@ import com.google.common.collect.Maps;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jetty.http.HttpCookie;
 import org.eclipse.jetty.server.session.AbstractSession;
 import org.eclipse.jetty.server.session.AbstractSessionManager;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.*;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
+
+import static java.lang.Math.round;
 
 @Slf4j
 public class DbSessionManager extends AbstractSessionManager {
@@ -48,6 +53,16 @@ public class DbSessionManager extends AbstractSessionManager {
             super.setAttribute(name, value);
             dirty = true;
         }
+
+        @Override
+        public boolean access(long time) {
+            return super.access(time);
+        }
+
+        @Override
+        public void cookieSet() {
+            super.cookieSet();
+        }
     }
 
     protected void storeSession(Session session, boolean update) throws Exception {
@@ -55,12 +70,6 @@ public class DbSessionManager extends AbstractSessionManager {
             return;
 
         log.debug("store session: " + session.getClusterId());
-
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        ObjectOutputStream stream = new ObjectOutputStream(b);
-        HashMap<String, Object> toSave = new HashMap<>(Maps.filterKeys(session.getAttributeMap(), (k) -> k.startsWith("__")));
-        stream.writeObject(toSave);
-        stream.close();
 
         com.github.drxaos.coins.domain.Session s;
         List<com.github.drxaos.coins.domain.Session> sessionList = db.getDao(com.github.drxaos.coins.domain.Session.class).queryForEq("name", session.getClusterId());
@@ -75,7 +84,7 @@ public class DbSessionManager extends AbstractSessionManager {
 
         s.name(session.getClusterId())
                 .accessed(dateUtil.now())
-                .data(b.toByteArray())
+                .dataMap(session.getAttributeMap())
                 .userId((Long) session.getAttribute("__userId"))
                 .label((String) session.getAttribute("__sessionLabel"))
                 .save();
@@ -89,6 +98,50 @@ public class DbSessionManager extends AbstractSessionManager {
         DeleteBuilder<com.github.drxaos.coins.domain.Session, Long> deleteBuilder = db.getDao(com.github.drxaos.coins.domain.Session.class).deleteBuilder();
         deleteBuilder.where().lt("accessed", cal.getTime());
         deleteBuilder.delete();
+    }
+
+    @Override
+    public HttpCookie access(HttpSession session, boolean secure) {
+        long now = dateUtil.now().getTime();
+
+        Session s = (Session) ((SessionIf) session).getSession();
+
+        if (s.access(now)) {
+            // Do we need to refresh the cookie?
+            if (isUsingCookies() &&
+                    (s.isIdChanged() ||
+                            (getSessionCookieConfig().getMaxAge() > 0 && getRefreshCookieAge() > 0 && ((now - s.getCookieSetTime()) / 1000 > getRefreshCookieAge()))
+                    )
+                    ) {
+                HttpCookie cookie = getSessionCookie(session, _context == null ? "/" : (_context.getContextPath()), secure);
+                s.cookieSet();
+                s.setIdChanged(false);
+                return cookie;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void removeSession(AbstractSession session, boolean invalidate) {
+        // Remove session from context and global maps
+        boolean removed = removeSession(session.getClusterId());
+
+        if (removed) {
+            _sessionsStats.decrement();
+            _sessionTimeStats.set(round((dateUtil.now().getTime() - session.getCreationTime()) / 1000.0));
+
+            // Remove session from all context and global id maps
+            _sessionIdManager.removeSession(session);
+            if (invalidate)
+                _sessionIdManager.invalidateAll(session.getClusterId());
+
+            if (invalidate && _sessionListeners != null) {
+                HttpSessionEvent event = new HttpSessionEvent(session);
+                for (HttpSessionListener listener : _sessionListeners)
+                    listener.sessionDestroyed(event);
+            }
+        }
     }
 
     protected Session loadSession(String name) throws Exception {
@@ -107,12 +160,7 @@ public class DbSessionManager extends AbstractSessionManager {
             return null;
         }
 
-        ByteArrayInputStream b = new ByteArrayInputStream(s.data());
-        ObjectInputStream stream = new ObjectInputStream(b);
-        HashMap<String, Object> map = (HashMap<String, Object>) stream.readObject();
-        stream.close();
-
-        Session session = new Session(this, s.created().getTime(), s.accessed().getTime(), name, map);
+        Session session = new Session(this, s.created().getTime(), s.accessed().getTime(), name, s.dataMap());
 
         s.accessed(dateUtil.now()).save();
 

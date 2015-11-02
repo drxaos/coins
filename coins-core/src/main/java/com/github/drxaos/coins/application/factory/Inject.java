@@ -7,5 +7,4 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface Inject {
-    String value() default "";
 }

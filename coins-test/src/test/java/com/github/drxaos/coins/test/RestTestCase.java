@@ -6,9 +6,12 @@ import com.github.drxaos.coins.application.ApplicationInitializationException;
 import com.github.drxaos.coins.application.config.ApplicationProps;
 import com.github.drxaos.coins.application.database.h2.CoinsDbH2Module;
 import com.github.drxaos.coins.application.database.h2.H2Db;
+import com.github.drxaos.coins.application.factory.Inject;
 import com.github.drxaos.coins.application.test.Fixtures;
+import com.github.drxaos.coins.mock.DateUtilMock;
 import com.github.drxaos.coins.spark.CoinsSparkModule;
 import com.github.drxaos.coins.spark.config.Http;
+import com.github.drxaos.coins.utils.DateUtil;
 import com.google.common.collect.FluentIterable;
 import com.jayway.jsonpath.JsonPath;
 import lombok.Value;
@@ -58,6 +61,9 @@ abstract public class RestTestCase extends AbstractTestCase {
 
     protected String baseUrl;
 
+    @Inject
+    ApplicationProps props;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -70,7 +76,8 @@ abstract public class RestTestCase extends AbstractTestCase {
             @Override
             public void init() {
                 addClasses(CoinsCoreModule.TYPES);
-                addObjects(CoinsCoreModule.COMPONENTS);
+                addObjects(FluentIterable.from(CoinsCoreModule.COMPONENTS).filter((c) -> c != DateUtil.class).toList());
+                addObjects(DateUtilMock.class);
                 addObjects(CoinsSparkModule.COMPONENTS);
                 addObjects(Config.class);
                 addObjects(FluentIterable.from(CoinsDbH2Module.COMPONENTS).filter((c) -> c != H2Db.class).toList());
@@ -145,7 +152,11 @@ abstract public class RestTestCase extends AbstractTestCase {
     }
 
     protected void setSessionId(String sessionId) {
-        sessions.get(currentSession).addCookie(new BasicClientCookie("JSESSIONID", sessionId));
+        BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", sessionId);
+        cookie.setPath("/");
+        cookie.setAttribute("Path", "/");
+        cookie.setDomain(props.getString("server.host", "127.0.0.1"));
+        sessions.get(currentSession).addCookie(cookie);
     }
 
     protected Response exec(String method, String url, String data) throws IOException {
@@ -154,7 +165,7 @@ abstract public class RestTestCase extends AbstractTestCase {
             request = request.bodyString(data, ContentType.APPLICATION_JSON);
         }
 
-        CookieStore cookieStore = new BasicCookieStore();
+        CookieStore cookieStore = sessions.get(currentSession);
         Executor executor = Executor.newInstance();
 
         HttpResponse httpResponse = executor.use(cookieStore)
